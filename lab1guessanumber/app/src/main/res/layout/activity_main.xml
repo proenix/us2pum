@@ -6,13 +6,61 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
+    <Button
+        android:id="@+id/buttonCheck"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="32dp"
+        android:labelFor="@id/editTextGuessNumber"
+        android:text="@string/sprawdzam"
+        app:layout_constraintStart_toStartOf="@+id/editTextGuessNumber"
+        app:layout_constraintTop_toBottomOf="@+id/editTextGuessNumber" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:text="@string/mainActivityTitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textViewGuessNumberError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@android:color/holo_red_dark"
+        app:layout_constraintStart_toStartOf="@+id/editTextGuessNumber"
+        app:layout_constraintTop_toBottomOf="@+id/editTextGuessNumber" />
+
+    <TextView
+        android:id="@+id/textViewResult"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/buttonCheck"
+        app:layout_constraintTop_toBottomOf="@+id/buttonCheck" />
+
+    <Button
+        android:id="@+id/buttonReset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/reset"
+        app:layout_constraintStart_toEndOf="@+id/buttonCheck"
+        app:layout_constraintTop_toTopOf="@+id/buttonCheck" />
+
+    <EditText
+        android:id="@+id/editTextGuessNumber"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:ems="10"
+        android:inputType="numberSigned"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        android:importantForAutofill="no" />
 </androidx.constraintlayout.widget.ConstraintLayout>

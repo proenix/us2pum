@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Guess A Number</string>
+    <string name="mainActivityTitle">Zgadnij liczbę z przedziału -2000 do 2000.</string>
+    <string name="sprawdzam">Sprawdzam</string>
+    <string name="reset">Resetuj</string>
 </resources>
