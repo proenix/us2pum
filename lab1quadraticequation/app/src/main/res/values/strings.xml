@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Quadratic Equation</string>
+    <string name="main_app_title">Pierwiastki Równania Kwadratowego</string>
+    <string name="wspolczynnik_a">Współczynnik A</string>
+    <string name="wspolczynnik_b">Współczynnik B</string>
+    <string name="wspolczynnik_c">Współczynnik C</string>
+    <string name="NotQuadraticEquation">Równanie nie jest równaniem kwadratowym.</string>
 </resources>
