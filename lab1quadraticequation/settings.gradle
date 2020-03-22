@@ -1,0 +1,2 @@
+rootProject.name='Quadratic Equation'
+include ':app'
