@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Street Light</string>
+    <string name="czerwone">Czerwone</string>
+    <string name="zolte">Żółte</string>
+    <string name="zielone">Zielone</string>
+    <string name="LightChangeNotAllowed">Nie możesz teraz zmienić na ten kolor światła.</string>
 </resources>
