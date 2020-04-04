@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">Tic Tac Toe</string>
+    <string name="tic_tac_toe">Tic Tac Toe</string>
+    <string name="wynik_gracz_x">Wynik Gracz X</string>
+    <string name="wynik_gracz_o">Wynik Gracz O</string>
+    <string name="aktualny_ruch">Aktualny ruch:</string>
+    <string name="BoardButtonCannotBePlaced">Nie można wypełnić pola!</string>
+    <string name="StartingNewGame">Rozpoczynam nową grę.</string>
+    <string name="BoardButtonFull">Plansza pełna. Rozpocznij nową grę!</string>
+    <string name="PlayerWins">Gracz "%1$s" wygrywa!</string>
 </resources>

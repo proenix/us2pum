@@ -7,12 +7,193 @@
     tools:context=".MainActivity">
 
     <TextView
+        android:id="@+id/textView7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:layout_marginTop="8dp"
+        android:text="@string/tic_tac_toe"
+        android:textAppearance="@style/TextAppearance.AppCompat.Large"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TableLayout
+        android:id="@+id/ticTacToeTable"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="32dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView7">
+
+        <TableRow
+            android:id="@+id/row0"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/b00"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="100dip"
+                android:height="100dip"
+                android:textAllCaps="true" />
+
+            <Button
+                android:id="@+id/b01"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="100dip"
+                android:height="100dip"
+                android:textAllCaps="true" />
+
+            <Button
+                android:id="@+id/b02"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="100dip"
+                android:height="100dip"
+                android:textAllCaps="true" />
+
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/b10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="100dip"
+                android:height="100dip"
+                android:textAllCaps="true" />
+
+            <Button
+                android:id="@+id/b11"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="100dip"
+                android:height="100dip"
+                android:textAllCaps="true" />
+
+            <Button
+                android:id="@+id/b12"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="100dip"
+                android:height="100dip"
+                android:tag="12"
+                android:textAllCaps="true" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/row2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/b20"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="100dip"
+                android:height="100dip"
+                android:textAllCaps="true" />
+
+            <Button
+                android:id="@+id/b21"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="100dip"
+                android:height="100dip"
+                android:textAllCaps="true" />
+
+            <Button
+                android:id="@+id/b22"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:width="100dip"
+                android:height="100dip"
+                android:drawableTint="#FFFFFF"
+                android:tag="22"
+                android:textAllCaps="true" />
+        </TableRow>
+
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:text="@string/wynik_gracz_x"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCurrentPlayer" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="32dp"
+        android:text="@string/wynik_gracz_o"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewCurrentPlayer" />
+
+    <TextView
+        android:id="@+id/textViewPlayerScoreX"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="@+id/textView"
+        app:layout_constraintStart_toStartOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+    <TextView
+        android:id="@+id/textViewPlayerScoreO"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="0"
+        app:layout_constraintEnd_toEndOf="@+id/textView2"
+        app:layout_constraintStart_toStartOf="@+id/textView2"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
+
+    <TextView
+        android:id="@+id/textView5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/aktualny_ruch"
+        app:layout_constraintEnd_toEndOf="@+id/ticTacToeTable"
+        app:layout_constraintStart_toStartOf="@+id/ticTacToeTable"
+        app:layout_constraintTop_toBottomOf="@+id/ticTacToeTable" />
+
+    <TextView
+        android:id="@+id/textViewCurrentPlayer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:autoText="false"
+        android:textAllCaps="true"
+        app:layout_constraintEnd_toEndOf="@+id/textView5"
+        app:layout_constraintStart_toStartOf="@+id/textView5"
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
+
+    <Button
+        android:id="@+id/buttonNextGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="Następna gra"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewPlayerScoreX" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
