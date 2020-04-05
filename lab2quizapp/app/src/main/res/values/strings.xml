@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Quiz App</string>
+    <string name="incorrectAnswer">Błędna odpowiedź!</string>
+    <string name="incorrectAnswerCorrectIs">Błędna odpowiedź! Prawidłowa to: %1$s</string>
+    <string name="correctAnswer">Prawidłowa odpowiedź!</string>
+    <string name="answerFieldCannotBeEmpty">Pole z odpowiedzią nie może być puste.</string>
+    <string name="submitAnswer">Zatwierdź Odpowiedź</string>
+    <string name="enterAnswer">Wpisz odpowiedź</string>
 </resources>
