@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="pizza_rozmiar_array">
+        <item>mały</item>
+        <item>średni</item>
+        <item>duży</item>
+    </string-array>
+    <string-array name="pizza_rozmiar_odmiana_array">
+        <item>małą</item>
+        <item>średnią</item>
+        <item>dużą</item>
+    </string-array>
+    <string-array name="pizza_rozmiar_cena_array">
+        <item>0.00</item>
+        <item>3.00</item>
+        <item>6.00</item>
+    </string-array>
+    <string-array name="pizza_ciasto_array">
+        <item>cienkie</item>
+        <item>grube</item>
+    </string-array>
+    <string-array name="pizza_ciasto_odmiana_array">
+        <item>cienkim</item>
+        <item>grubym</item>
+    </string-array>
+    <string-array name="pizza_ciasto_cena_array">
+        <item>0.00</item>
+        <item>2.00</item>
+    </string-array>
+    <string-array name="skladniki_podstawowe_array">
+        <item>Szynka</item>
+        <item>Ser</item>
+        <item>Pieczarki</item>
+        <item>Oliwki</item>
+        <item>Boczek</item>
+        <item>Kurczak</item>
+        <item>Cebula</item>
+    </string-array>
+    <string-array name="skladniki_podstawowe_odmiana_array">
+        <item>szynki</item>
+        <item>sera</item>
+        <item>pieczarek</item>
+        <item>oliwek</item>
+        <item>boczku</item>
+        <item>kurczaka</item>
+        <item>cebuli</item>
+    </string-array>
+    <string-array name="skladniki_podstawowe_cena_array">
+        <item>2.00</item>
+        <item>1.00</item>
+        <item>1.00</item>
+        <item>4.00</item>
+        <item>2.00</item>
+        <item>2.00</item>
+        <item>1.00</item>
+    </string-array>
+    <string-array name="skladniki_dodatkowe_array">
+        <item>Czosnek</item>
+        <item>Salami</item>
+        <item>Krewetki</item>
+        <item>Kapary</item>
+        <item>Tuńczyk</item>
+        <item>Sos Pomidorowy</item>
+        <item>Sos Czosnkowy</item>
+        <item>Oregano</item>
+    </string-array>
+    <string-array name="skladniki_dodatkowe_odmiana_array">
+        <item>czosnku</item>
+        <item>salami</item>
+        <item>krewetek</item>
+        <item>kaparów</item>
+        <item>tuńczyka</item>
+        <item>sosu pomidorowego</item>
+        <item>sos czosnkowego</item>
+        <item>oregano</item>
+    </string-array>
+    <string-array name="skladniki_dodatkowe_cena_array">
+        <item>3.00</item>
+        <item>3.50</item>
+        <item>5.00</item>
+        <item>3.00</item>
+        <item>4.00</item>
+        <item>2.00</item>
+        <item>2.00</item>
+        <item>1.50</item>
+    </string-array>
+</resources>

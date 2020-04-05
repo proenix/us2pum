@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Pizza</string>
+    <string name="max2dodatkowe">Wybierz maksymalnie 2 dodatkowe składniki.</string>
+    <string name="min3stand">Wybierz przynajmniej 3 podstawowe składniki.</string>
+    <string name="typCena">. Cena pizzy to %1$s zł.</string>
+    <string name="wybierz_typ_ciasta">Wybierz typ ciasta:</string>
+    <string name="wybierz_rozmiar_pizzy">Wybierz rozmiar pizzy:</string>
+    <string name="wybierz_skladniki_podstawowe">Wybierz składniki podstawowe:</string>
+    <string name="wybierz_skldniki_dodatkowe">Wybierz skłądniki dodatkowe:</string>
+    <string name="zamow">Zamów</string>
+    <string name="orderedPart1">Zamówiono\u0020</string>
+    <string name="orderedPart2">\u0020pizzę na\u0020</string>
+    <string name="orderedPart3">\u0020cieście, składającą się z\u0020</string>
+</resources>
