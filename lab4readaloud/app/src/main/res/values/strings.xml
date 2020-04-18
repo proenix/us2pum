@@ -6,4 +6,9 @@
     <string name="speak_polish">Speak Polish</string>
     <string name="reading_speed">Reading Speed:</string>
     <string name="open_from_application_files">Open from Application Files</string>
+    <string name="sample_text">Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś piękność twą w głównym sądzie w tkackim pudermanie). Wdział więc, jak roratne świéce. Pierwsza z krzykiem podróżnego barwą spłonęła rumian jak drudzy i psy za nim</string>
+    <string name="error_creating_sample_file">Error occurred, while creating sample text file.</string>
+    <string name="error_cannot_load_text_from_file">Error, cannot load text from selected file.</string>
+    <string name="error_tts_initialization_failed">Text To Speech initialization failed.</string>
+    <string name="error_tts_lang_not_supported">Text To Speech language not supported or package missing.</string>
 </resources>

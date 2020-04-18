@@ -46,6 +46,7 @@ public class FileChooser extends AppCompatActivity {
      * @param selectedDir Absolute path to directory that is to be displayed.
      */
     private void refreshView(final String selectedDir) {
+        // TODO: 18/04/2020 Add switcher between external and internal storage.
         try {
             llFileChooser.removeAllViews();
             textViewCurentPath.setText(lastDirOpenPath);
@@ -63,6 +64,7 @@ public class FileChooser extends AppCompatActivity {
                 public void onClick(View v) {
                     Toast.makeText(FileChooser.this, "..", Toast.LENGTH_SHORT).show();
                     try {
+                        // TODO: 18/04/2020 Do not go below current app directory.
                         String newPath = currentDir.getParentFile().getAbsolutePath();
                         lastDirOpenPath = newPath;
                     } catch (NullPointerException e) {

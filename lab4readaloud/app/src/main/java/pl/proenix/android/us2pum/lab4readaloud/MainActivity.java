@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.speech.tts.TextToSpeech;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -17,13 +16,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.nio.file.SimpleFileVisitor;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener, View.OnClickListener {
@@ -34,51 +30,41 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private float readingSpeed = 1;
     private Button buttonSpeakEn, buttonSpeakPl, buttonOpenFile;
     private EditText editTextSpeak;
-    private SeekBar seekBarSpeakSpeed;
     private TextView textViewReadSpeed;
 
     private String lastDirOpenPath;
-    private String fileToRead;
+    private String appFilesPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // initialize TextToSpeach module
+        // initialize TextToSpeech module
         tts = new TextToSpeech(this, this);
 
         buttonSpeakEn = findViewById(R.id.buttonSpeakEn);
         buttonSpeakPl = findViewById(R.id.buttonSpeakPl);
         editTextSpeak = findViewById(R.id.editTextSpeak);
-        seekBarSpeakSpeed = findViewById(R.id.seekBar);
+        buttonOpenFile = findViewById(R.id.buttonOpenFile);
         textViewReadSpeed = findViewById(R.id.textViewReadSpeed);
         textViewReadSpeed.setText(String.valueOf(readingSpeed));
-        buttonOpenFile = findViewById(R.id.buttonOpenFile);
+        SeekBar seekBarSpeakSpeed = findViewById(R.id.seekBar);
 
         buttonSpeakEn.setOnClickListener(this);
         buttonSpeakPl.setOnClickListener(this);
         buttonOpenFile.setOnClickListener(this);
 
-        if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED ||
-            Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED_READ_ONLY) {
-            lastDirOpenPath = Environment.getRootDirectory().getAbsolutePath();
+        if ((Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) ||
+            (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED_READ_ONLY))) {
+            appFilesPath = getExternalFilesDir(null).getAbsolutePath();
         } else {
-            lastDirOpenPath = getFilesDir().getAbsolutePath();
+            appFilesPath = getFilesDir().getAbsolutePath();
         }
+        lastDirOpenPath = appFilesPath;
 
-        // Create sample file
-        String filename = "sample.text";
-        String fileContents = "Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś piękność twą w głównym sądzie w tkackim pudermanie). Wdział więc, jak roratne świéce. Pierwsza z krzykiem podróżnego barwą spłonęła rumian jak drudzy i psy za nim";
-        Context context = getBaseContext();
-        try (FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE)) {
-            fos.write(fileContents.getBytes());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        // Create sample file in storage
+        createSampleFile();
 
         // Sets speed of reading. Check seekBar bar progress.
         seekBarSpeakSpeed.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -111,7 +97,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 
-        editTextSpeak.setText("Litwo! Ojczyzno moja! Ty jesteś jak zdrowie. Ile cię stracił. Dziś piękność twą w głównym sądzie w tkackim pudermanie). Wdział więc, jak roratne świéce. Pierwsza z krzykiem podróżnego barwą spłonęła rumian jak drudzy i psy za nim");
+        editTextSpeak.setText(R.string.sample_text);
     }
 
     @Override
@@ -133,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             buttonSpeakEn.setEnabled(true);
             buttonSpeakPl.setEnabled(true);
         } else {
-            Toast.makeText(this, "Text To Speech initialization failed.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.error_tts_initialization_failed, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -145,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private void speakAloud(String language, String text) {
         int result = tts.setLanguage(localeFromString(language));
         if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
-            Toast.makeText(this, "Text To Speech language not supported or package missing.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, R.string.error_tts_lang_not_supported, Toast.LENGTH_LONG).show();
         } else {
             tts.setSpeechRate(readingSpeed);
             tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "1");
@@ -194,34 +180,63 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         }
     }
 
+    /**
+     * Create sample file in external or internal application storage.
+     */
+    private void createSampleFile() {
+        String filename = "sample.txt";
+        String fileContents = (String) getText(R.string.sample_text);
+        Context context = getBaseContext();
+
+        try (FileOutputStream fos = context.openFileOutput(filename, Context.MODE_PRIVATE)) {
+            fos.write(fileContents.getBytes());
+        } catch (IOException e) {
+            Toast.makeText(context, R.string.error_creating_sample_file, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * Load text from selected file to text field.
+     * @param fileToRead Path to file.
+     */
+    private void loadTextToReadFromFile(String fileToRead)
+    {
+        StringBuilder text = new StringBuilder();
+        File file = new File(fileToRead);
+        try {
+            BufferedReader br;
+            br = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                text.append(line);
+                text.append('\n');
+            }
+            br.close();
+        } catch (IOException e) {
+            Toast.makeText(this, R.string.error_cannot_load_text_from_file, Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+        editTextSpeak.setText(text.toString());
+    }
+
+    /**
+     * Process returned activity results.
+     * @param requestCode Returned activity code.
+     * @param resultCode Returned activity result code.
+     * @param data Data transferred from closed activity.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case REQUEST_CODE_CHOOSE_FILE:
-                if (resultCode == RESULT_OK) {
-                    lastDirOpenPath = data.getStringExtra("lastDirOpenPath");
-                    fileToRead = data.getStringExtra("selectedDir");
+        if (requestCode == REQUEST_CODE_CHOOSE_FILE && resultCode == RESULT_OK) {
+            if (data != null) {
+                String fileToRead = data.getStringExtra("selectedDir");
 
-                    File file = new File(fileToRead);
-                    StringBuilder text = new StringBuilder();
-                    try {
-                        BufferedReader br = new BufferedReader(new FileReader(file));
-                        String line;
-
-                        while ((line = br.readLine()) != null) {
-                            text.append(line);
-                            text.append('\n');
-                        }
-                        br.close();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    editTextSpeak.setText(text.toString());
+                if (fileToRead != null) {
+                    loadTextToReadFromFile(fileToRead);
                 }
-                break;
+            }
         }
     }
 }
