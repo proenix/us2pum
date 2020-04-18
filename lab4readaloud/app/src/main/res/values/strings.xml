@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Read Aloud</string>
+    <string name="read_text_below">Read text below</string>
+    <string name="speak">Speak</string>
+    <string name="speak_english">Speak English</string>
+    <string name="speak_polish">Speak Polish</string>
 </resources>
