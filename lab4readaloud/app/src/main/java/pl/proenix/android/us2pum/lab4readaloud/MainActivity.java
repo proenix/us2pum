@@ -32,7 +32,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
     private TextToSpeech tts;
     private float readingSpeed = 1;
-    private Button buttonSpeakEn, buttonSpeakPl, buttonOpenFile;
+    private Button buttonSpeakEn, buttonSpeakPl, buttonOpenFile, buttonOpenFromASAF;
     private EditText editTextSpeak;
     private TextView textViewReadSpeed;
 
@@ -51,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         buttonSpeakPl = findViewById(R.id.buttonSpeakPl);
         editTextSpeak = findViewById(R.id.editTextSpeak);
         buttonOpenFile = findViewById(R.id.buttonOpenFile);
+        buttonOpenFromASAF = findViewById(R.id.buttonOpenFromASAF);
         textViewReadSpeed = findViewById(R.id.textViewReadSpeed);
         textViewReadSpeed.setText(String.valueOf(readingSpeed));
         SeekBar seekBarSpeakSpeed = findViewById(R.id.seekBar);
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         buttonSpeakEn.setOnClickListener(this);
         buttonSpeakPl.setOnClickListener(this);
         buttonOpenFile.setOnClickListener(this);
+        buttonOpenFromASAF.setOnClickListener(this);
 
         if ((Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) ||
             (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED_READ_ONLY))) {
@@ -99,19 +101,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { }
-        });
-
-        Button btn = findViewById(R.id.buttonOpenFromASAF);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-                intent.addCategory(Intent.CATEGORY_OPENABLE);
-                intent.setType("text/plain");
-                intent.putExtra(Intent.EXTRA_TITLE, "sample.txt");
-
-                startActivityForResult(intent, REQUEST_CODE_ACTION_OPEN_DOCUMENT);
-            }
         });
     }
 
@@ -192,6 +181,12 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             Intent intent = new Intent(getApplicationContext(), FileChooser.class);
             intent.putExtra("lastDirOpenPath", lastDirOpenPath);
             startActivityForResult(intent, REQUEST_CODE_CHOOSE_FILE);
+        }
+        if (v.getId() == buttonOpenFromASAF.getId()) {
+            Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+            intent.setType("text/plain");
+            startActivityForResult(intent, REQUEST_CODE_ACTION_OPEN_DOCUMENT);
         }
     }
 
