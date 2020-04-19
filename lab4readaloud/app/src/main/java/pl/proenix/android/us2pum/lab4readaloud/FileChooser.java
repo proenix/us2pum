@@ -1,8 +1,12 @@
 package pl.proenix.android.us2pum.lab4readaloud;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.view.View;
@@ -19,6 +23,8 @@ import java.util.Objects;
 
 public class FileChooser extends AppCompatActivity {
 
+    private final static int MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE = 3;
+
     private LinearLayout llFileChooser;
     private TextView textViewCurrentPath;
     private File currentDir;
@@ -31,6 +37,19 @@ public class FileChooser extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_file_chooser);
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        MY_PERMISSIONS_REQUEST_READ_EXTERNAL_STORAGE);
+            }
+        }
 
         llFileChooser = findViewById(R.id.llFileChooser);
         textViewCurrentPath = findViewById(R.id.textViewCurrentPath);
