@@ -3,8 +3,10 @@ package pl.proenix.android.us2pum.lab4readaloud;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.speech.tts.TextToSpeech;
@@ -18,13 +20,15 @@ import android.widget.Toast;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener, View.OnClickListener {
 
     private final static int REQUEST_CODE_CHOOSE_FILE = 1;
+    private final static int REQUEST_CODE_ACTION_OPEN_DOCUMENT = 2;
 
     private TextToSpeech tts;
     private float readingSpeed = 1;
@@ -97,7 +101,18 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
 
-        editTextSpeak.setText(R.string.sample_text);
+        Button btn = findViewById(R.id.buttonOpenFromASAF);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                intent.addCategory(Intent.CATEGORY_OPENABLE);
+                intent.setType("text/plain");
+                intent.putExtra(Intent.EXTRA_TITLE, "sample.txt");
+
+                startActivityForResult(intent, REQUEST_CODE_ACTION_OPEN_DOCUMENT);
+            }
+        });
     }
 
     @Override
@@ -197,27 +212,28 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
     /**
      * Load text from selected file to text field.
-     * @param fileToRead Path to file.
+     * @param uri URI to file.
      */
-    private void loadTextToReadFromFile(String fileToRead)
+    private void loadTextToReadFromFile(Uri uri)
     {
-        StringBuilder text = new StringBuilder();
-        File file = new File(fileToRead);
+        // TODO: 19/04/2020 Refactor to use URI as file provider
+        ContentResolver cr = getContentResolver();
+        cr.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try {
-            BufferedReader br;
-            br = new BufferedReader(new FileReader(file));
+            InputStream inputStream = cr.openInputStream(uri);
+            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+            BufferedReader br = new BufferedReader(inputStreamReader);
+            StringBuffer text = new StringBuffer();
             String line;
-
             while ((line = br.readLine()) != null) {
                 text.append(line);
                 text.append('\n');
             }
             br.close();
+            editTextSpeak.setText(text.toString());
         } catch (IOException e) {
-            Toast.makeText(this, R.string.error_cannot_load_text_from_file, Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-        editTextSpeak.setText(text.toString());
     }
 
     /**
@@ -234,7 +250,20 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 String fileToRead = data.getStringExtra("selectedDir");
 
                 if (fileToRead != null) {
-                    loadTextToReadFromFile(fileToRead);
+                    loadTextToReadFromFile(Uri.fromFile(new File(fileToRead)));
+                }
+            }
+        }
+        if (requestCode == REQUEST_CODE_ACTION_OPEN_DOCUMENT && resultCode == RESULT_OK) {
+            if (data != null) {
+                Uri uri = data.getData();
+
+                if (uri != null) {
+                    try {
+                        loadTextToReadFromFile(uri);
+                    } catch (SecurityException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }

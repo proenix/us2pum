@@ -11,4 +11,5 @@
     <string name="error_cannot_load_text_from_file">Error, cannot load text from selected file.</string>
     <string name="error_tts_initialization_failed">Text To Speech initialization failed.</string>
     <string name="error_tts_lang_not_supported">Text To Speech language not supported or package missing.</string>
+    <string name="open_from_asaf">Open from ASAF</string>
 </resources>
