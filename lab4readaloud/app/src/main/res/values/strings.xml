@@ -13,4 +13,7 @@
     <string name="error_tts_lang_not_supported">Text To Speech language not supported or package missing.</string>
     <string name="open_from_asaf">Open from ASAF</string>
     <string name="error_could_not_load_text_from_selected_file">Error, could not load text from selected file.</string>
+    <string name="blank" />
+    <string name="external_storage">External Storage</string>
+    <string name="select_file_to_read_from_app_internal_or_external_storage">Select file to read from app internal\nor external storage.</string>
 </resources>

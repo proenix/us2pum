@@ -8,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.speech.tts.TextToSpeech;
 import android.view.View;
 import android.widget.Button;
@@ -27,7 +26,7 @@ import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener, View.OnClickListener {
 
-    private final static int REQUEST_CODE_CHOOSE_FILE = 1;
+    private final static int REQUEST_CODE_APP_CHOOSE_FILE = 1;
     private final static int REQUEST_CODE_ACTION_OPEN_DOCUMENT = 2;
 
     private TextToSpeech tts;
@@ -37,7 +36,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private TextView textViewReadSpeed;
 
     private String lastDirOpenPath;
-    private String appFilesPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,15 +60,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         buttonOpenFile.setOnClickListener(this);
         buttonOpenFromASAF.setOnClickListener(this);
 
-        if ((Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) ||
-            (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED_READ_ONLY))) {
-            appFilesPath = getExternalFilesDir(null).getAbsolutePath();
-        } else {
-            appFilesPath = getFilesDir().getAbsolutePath();
-        }
-        lastDirOpenPath = appFilesPath;
-
         // Create sample file in storage
+        lastDirOpenPath = getFilesDir().getAbsolutePath();
         createSampleFile();
 
         // Sets speed of reading. Check seekBar bar progress.
@@ -184,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         if (v.getId() == buttonOpenFile.getId()) {
             Intent intent = new Intent(getApplicationContext(), FileChooser.class);
             intent.putExtra("lastDirOpenPath", lastDirOpenPath);
-            startActivityForResult(intent, REQUEST_CODE_CHOOSE_FILE);
+            startActivityForResult(intent, REQUEST_CODE_APP_CHOOSE_FILE);
         }
         if (v.getId() == buttonOpenFromASAF.getId()) {
             Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
@@ -247,7 +238,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Result from application storage internal or external.
-        if (requestCode == REQUEST_CODE_CHOOSE_FILE && resultCode == RESULT_OK) {
+        if (requestCode == REQUEST_CODE_APP_CHOOSE_FILE && resultCode == RESULT_OK) {
             if (data != null) {
                 String fileToRead = data.getStringExtra("selectedDir");
 

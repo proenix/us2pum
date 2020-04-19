@@ -8,20 +8,22 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
-import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.util.Objects;
 
 public class FileChooser extends AppCompatActivity {
 
     private LinearLayout llFileChooser;
-    private TextView textViewCurentPath;
+    private TextView textViewCurrentPath;
     private File currentDir;
     private File[] currentDirFiles;
-    private String lastDirOpenPath;
+    private String lastDirOpenPath = getFilesDir().getAbsolutePath();
 
     private Button back;
 
@@ -31,7 +33,28 @@ public class FileChooser extends AppCompatActivity {
         setContentView(R.layout.activity_file_chooser);
 
         llFileChooser = findViewById(R.id.llFileChooser);
-        textViewCurentPath = findViewById(R.id.textViewCurrentPath);
+        textViewCurrentPath = findViewById(R.id.textViewCurrentPath);
+        CheckBox checkBoxToggleExternal = findViewById(R.id.checkBoxToggleExternal);
+        if (isExternalStorageAvailable()) {
+            checkBoxToggleExternal.setVisibility(View.VISIBLE);
+        }
+
+        checkBoxToggleExternal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // Reset opened dir on checked change.
+                if (isChecked && isExternalStorageAvailable()) {
+                    try {
+                        lastDirOpenPath = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
+                    } catch (NullPointerException e) {
+                        lastDirOpenPath = getFilesDir().getAbsolutePath();
+                    }
+                } else {
+                    lastDirOpenPath = getFilesDir().getAbsolutePath();
+                }
+                refreshView(lastDirOpenPath);
+            }
+        });
 
         // Get lastDirOpenPath from MainActivity
         Intent intent = getIntent();
@@ -42,6 +65,14 @@ public class FileChooser extends AppCompatActivity {
     }
 
     /**
+     * Check if external app storage is available.
+     * @return True if external app storage is available.
+     */
+    private boolean isExternalStorageAvailable() {
+        return (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) || (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED_READ_ONLY));
+    }
+
+    /**
      * Prepare items on scrollView.
      * @param selectedDir Absolute path to directory that is to be displayed.
      */
@@ -49,7 +80,7 @@ public class FileChooser extends AppCompatActivity {
         // TODO: 18/04/2020 Add switcher between external and internal storage.
         try {
             llFileChooser.removeAllViews();
-            textViewCurentPath.setText(lastDirOpenPath);
+            textViewCurrentPath.setText(lastDirOpenPath);
 
             currentDir = new File(selectedDir);
             currentDirFiles = currentDir.listFiles();

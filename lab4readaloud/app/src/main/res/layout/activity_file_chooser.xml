@@ -19,18 +19,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/textView3"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dip"
-            android:text="Select file to read." />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textView3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dip"
+                android:layout_weight="0.5"
+                android:text="@string/select_file_to_read_from_app_internal_or_external_storage" />
+
+            <CheckBox
+                android:id="@+id/checkBoxToggleExternal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|clip_vertical"
+                android:layout_weight="0.5"
+                android:clickable="false"
+                android:text="@string/external_storage"
+                android:visibility="invisible" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/textViewCurrentPath"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="?" />
+            android:text="@string/blank" />
 
         <ScrollView
             android:layout_width="match_parent"
