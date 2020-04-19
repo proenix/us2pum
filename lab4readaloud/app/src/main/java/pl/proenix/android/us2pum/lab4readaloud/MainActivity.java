@@ -207,7 +207,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private void loadTextToReadFromFile(Uri uri)
     {
         ContentResolver cr = getContentResolver();
-        cr.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try {
             InputStream inputStream = cr.openInputStream(uri);
             if (inputStream != null) {
@@ -224,7 +223,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         } catch (IOException e) {
             Toast.makeText(this, R.string.error_could_not_load_text_from_selected_file, Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
         }
     }
 

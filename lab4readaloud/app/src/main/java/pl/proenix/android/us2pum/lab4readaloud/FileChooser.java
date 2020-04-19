@@ -5,11 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,9 +23,9 @@ public class FileChooser extends AppCompatActivity {
     private TextView textViewCurrentPath;
     private File currentDir;
     private File[] currentDirFiles;
-    private String lastDirOpenPath = getFilesDir().getAbsolutePath();
 
-    private Button back;
+    private String lastDirOpenPath;
+    private String topDir;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,16 +34,24 @@ public class FileChooser extends AppCompatActivity {
 
         llFileChooser = findViewById(R.id.llFileChooser);
         textViewCurrentPath = findViewById(R.id.textViewCurrentPath);
+        ImageButton imageButtonBackToTopDir = findViewById(R.id.imageButtonBackToAppDir);
+        imageButtonBackToTopDir.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Get back to base app dir.
+                refreshView(topDir);
+            }
+        });
+
         CheckBox checkBoxToggleExternal = findViewById(R.id.checkBoxToggleExternal);
         if (isExternalStorageAvailable()) {
             checkBoxToggleExternal.setVisibility(View.VISIBLE);
         }
-
         checkBoxToggleExternal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 // Reset opened dir on checked change.
-                if (isChecked && isExternalStorageAvailable()) {
+                if (buttonView.isChecked() && isExternalStorageAvailable()) {
                     try {
                         lastDirOpenPath = Objects.requireNonNull(getExternalFilesDir(null)).getAbsolutePath();
                     } catch (NullPointerException e) {
@@ -52,9 +60,13 @@ public class FileChooser extends AppCompatActivity {
                 } else {
                     lastDirOpenPath = getFilesDir().getAbsolutePath();
                 }
+                topDir = lastDirOpenPath;
                 refreshView(lastDirOpenPath);
             }
         });
+
+        // Set safe topDir (always internal app storage)
+        topDir = getFilesDir().getAbsolutePath();
 
         // Get lastDirOpenPath from MainActivity
         Intent intent = getIntent();
@@ -77,69 +89,80 @@ public class FileChooser extends AppCompatActivity {
      * @param selectedDir Absolute path to directory that is to be displayed.
      */
     private void refreshView(final String selectedDir) {
-        // TODO: 18/04/2020 Add switcher between external and internal storage.
+        llFileChooser.removeAllViews();
+        textViewCurrentPath.setText(selectedDir);
         try {
-            llFileChooser.removeAllViews();
-            textViewCurrentPath.setText(lastDirOpenPath);
-
             currentDir = new File(selectedDir);
             currentDirFiles = currentDir.listFiles();
-            File file;
-
-            back = new Button(this);
-            back.setText("..");
-            back.setId(View.generateViewId());
-            llFileChooser.addView(back);
-            back.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Toast.makeText(FileChooser.this, "..", Toast.LENGTH_SHORT).show();
-                    try {
-                        // TODO: 18/04/2020 Do not go below current app directory.
-                        String newPath = currentDir.getParentFile().getAbsolutePath();
-                        lastDirOpenPath = newPath;
-                    } catch (NullPointerException e) {
-                        Toast.makeText(FileChooser.this, "Parent does not exist.", Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                    }
-                    refreshView(lastDirOpenPath);
-                }
-            });
+            addPreviousButton(llFileChooser);
             for (int i = 1; i < currentDirFiles.length; i++) {
-                file = currentDirFiles[i];
-
-                Button et = new Button(this);
-                et.setId(i);
-                if (file.isDirectory()) {
-                    et.setText("[DIR] " + currentDirFiles[i].getName());
+                if (currentDirFiles[i].isDirectory()) {
+                    this.addButton("[DIR] " + currentDirFiles[i].getName(), llFileChooser, i);
                 } else {
-                    et.setText(file.getName());
+                    this.addButton(currentDirFiles[i].getName(), llFileChooser, i);
                 }
-                et.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        String newPath = currentDirFiles[v.getId()].getAbsolutePath();
-                        // Check if selected Path is Directory
-                        File tmp = new File(newPath);
-                        if (tmp.isDirectory()) {
-                            lastDirOpenPath = newPath;
-                            refreshView(lastDirOpenPath);
-                        } else {
-                            Intent intent = new Intent();
-                            intent.putExtra("lastDirOpenPath", lastDirOpenPath);
-                            intent.putExtra("selectedDir", newPath);
-                            setResult(RESULT_OK, intent);
-                            FileChooser.super.onBackPressed();
-                        }
-                    }
-                });
-                llFileChooser.addView(et);
             }
-        } catch (Exception e) {
-            Log.e("FileManipulation", lastDirOpenPath +"  "+ e.toString());
+        } catch (Exception ignored) {
         }
     }
 
+    /**
+     * Add button to directory/file list in selected Linear Layout.
+     * @param text Name to display on button.
+     * @param ll LinearLayout to which button is added.
+     * @param id Custom Id of button.
+     */
+    private void addButton(String text, LinearLayout ll, Integer id) {
+        Button button = new Button(this);
+        button.setText(text);
+        button.setId(id);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String newPath = currentDirFiles[v.getId()].getAbsolutePath();
+
+                File tmp = new File(newPath);
+                if (tmp.isDirectory()) {
+                    lastDirOpenPath = newPath;
+                    refreshView(lastDirOpenPath);
+                } else {
+                    Intent intent = new Intent();
+                    intent.putExtra("lastDirOpenPath", lastDirOpenPath);
+                    intent.putExtra("selectedDir", newPath);
+                    setResult(RESULT_OK, intent);
+                    FileChooser.super.onBackPressed();
+                }
+            }
+        });
+        ll.addView(button);
+    }
+
+    /**
+     * Add parent folder in selected Linear Layout.
+     * @param ll LinearLayout to which button is added.
+     */
+    private void addPreviousButton(LinearLayout ll) {
+        Button button = new Button(this);
+        button.setText("..");
+        button.setId(View.generateViewId());
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    lastDirOpenPath = Objects.requireNonNull(currentDir.getParentFile()).getAbsolutePath();
+                } catch (NullPointerException e) {
+                    Toast.makeText(FileChooser.this, "Parent directory does not exist.", Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+                refreshView(lastDirOpenPath);
+            }
+        });
+        ll.addView(button);
+    }
+
+    /**
+     * Return data to previous activity.
+     */
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
