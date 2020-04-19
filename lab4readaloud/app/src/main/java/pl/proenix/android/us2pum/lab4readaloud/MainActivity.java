@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         // initialize TextToSpeech module
         tts = new TextToSpeech(this, this);
 
+        // Initialize controls
         buttonSpeakEn = findViewById(R.id.buttonSpeakEn);
         buttonSpeakPl = findViewById(R.id.buttonSpeakPl);
         editTextSpeak = findViewById(R.id.editTextSpeak);
@@ -104,6 +105,9 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         });
     }
 
+    /**
+     * Stop Text To Speech service on destroy.
+     */
     @Override
     protected void onDestroy() {
         if (tts != null) {
@@ -211,22 +215,24 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
      */
     private void loadTextToReadFromFile(Uri uri)
     {
-        // TODO: 19/04/2020 Refactor to use URI as file provider
         ContentResolver cr = getContentResolver();
         cr.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
         try {
             InputStream inputStream = cr.openInputStream(uri);
-            InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-            BufferedReader br = new BufferedReader(inputStreamReader);
-            StringBuffer text = new StringBuffer();
-            String line;
-            while ((line = br.readLine()) != null) {
-                text.append(line);
-                text.append('\n');
+            if (inputStream != null) {
+                InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
+                BufferedReader br = new BufferedReader(inputStreamReader);
+                StringBuilder text = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    text.append(line);
+                    text.append('\n');
+                }
+                br.close();
+                editTextSpeak.setText(text.toString());
             }
-            br.close();
-            editTextSpeak.setText(text.toString());
         } catch (IOException e) {
+            Toast.makeText(this, R.string.error_could_not_load_text_from_selected_file, Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
     }
@@ -240,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // Result from application storage internal or external.
         if (requestCode == REQUEST_CODE_CHOOSE_FILE && resultCode == RESULT_OK) {
             if (data != null) {
                 String fileToRead = data.getStringExtra("selectedDir");
@@ -249,16 +256,12 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 }
             }
         }
+        // Result from Android Storage Access Framework
         if (requestCode == REQUEST_CODE_ACTION_OPEN_DOCUMENT && resultCode == RESULT_OK) {
             if (data != null) {
                 Uri uri = data.getData();
-
                 if (uri != null) {
-                    try {
-                        loadTextToReadFromFile(uri);
-                    } catch (SecurityException e) {
-                        e.printStackTrace();
-                    }
+                    loadTextToReadFromFile(uri);
                 }
             }
         }
