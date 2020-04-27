@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">PointOfInterest</string>
+    <string name="title_activity_maps">Map</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="text_placeholder">Text placeholder.</string>
+    <string name="points_of_interest">Points Of Interest</string>
+    <string name="description">Description</string>
+    <string name="map">Map</string>
+    <string name="place_thumbnail">Place Thumbnail</string>
 </resources>
