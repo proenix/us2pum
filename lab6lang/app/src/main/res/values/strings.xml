@@ -9,4 +9,9 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="About">About</string>
+    <string name="app_about">About Application</string>
+    <string name="app_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum efficitur tincidunt.\nInteger suscipit leo eu suscipit rutrum. Ut at rutrum mauris. Maecenas nec dapibus urna, id egestas nisl. </string>
+    <string name="app_author">Author: Piotr Trzepacz</string>
+    <string name="app_version">Version: 0.0.1</string>
 </resources>
