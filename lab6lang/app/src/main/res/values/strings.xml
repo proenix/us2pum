@@ -31,4 +31,5 @@
     <string name="do_you_really_want_to_unlearn_word">Do you really want to unlearn %s word?</string>
     <string name="word_learned">Word learned!</string>
     <string name="word_unlearned">Word unlearned!</string>
+    <string name="all_words_learned">All words learned! Congratulations</string>
 </resources>
