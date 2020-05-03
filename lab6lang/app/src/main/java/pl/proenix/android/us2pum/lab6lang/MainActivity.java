@@ -7,6 +7,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,12 +19,37 @@ import android.widget.PopupWindow;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final String DEBUG_TAG = "AndroidLang";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        DatabaseHandler db = new DatabaseHandler(this);
+        db.resetDatabase();
+
+        int eng_word = -1;
+        int pol_word_1 = -1;
+        int pol_word_2 = -1;
+        Log.d(DEBUG_TAG, "Reset table state and insert sample data.");
+        // Add first English Word.
+        eng_word = db.addWord(new Word("car", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0));
+        pol_word_1 = db.addWord(new Word("samochód", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0));
+        db.addWordsRelation(eng_word, pol_word_1);
+        pol_word_2 = db.addWord(new Word("auto", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0));
+        db.addWordsRelation(eng_word, pol_word_2);
+
+        // Add second English Word.
+        eng_word = db.addWord(new Word("vehicle", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0));
+        db.addWordsRelation(eng_word, pol_word_1);
+        db.addWordsRelation(eng_word, pol_word_2);
+
+        Log.d(DEBUG_TAG, "Total Words Count: "+ String.valueOf(db.getWordsCount()));
+        Log.d(DEBUG_TAG, "English Words Count: "+ String.valueOf(db.getWordsCountByLanguage(Word.WORD_LANGUAGE_ENGLISH)));
+
 
 //        FloatingActionButton fab = findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
