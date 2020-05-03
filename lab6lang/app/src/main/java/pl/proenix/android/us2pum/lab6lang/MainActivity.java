@@ -35,6 +35,11 @@ public class MainActivity extends AppCompatActivity {
 //        });
     }
 
+    /**
+     * Inflate Menu with options from xml file.
+     * @param menu Menu.
+     * @return Boolean true
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -42,6 +47,11 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * Handle Menu option selections.
+     * @param item MenuItem clicked.
+     * @return Boolean
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -51,28 +61,35 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_about) {
-            // Show About App.
-            LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-            View popupView = inflater.inflate(R.layout.popup_about_app, null);
-
-            int width = LinearLayout.LayoutParams.WRAP_CONTENT;
-            int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-            boolean focusable = true;
-            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
-
-            popupWindow.setElevation(20);
-            popupWindow.showAtLocation(findViewById(R.id.mainActivity), Gravity.CENTER, 0,0 );
-            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
-
-            popupView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    popupWindow.dismiss();
-                    return false;
-                }
-            });
+            openPopupAboutApp();
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Open Popup About App on Main Activity.
+     */
+    private void openPopupAboutApp() {
+        // Show About App.
+        LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+        View popupView = inflater.inflate(R.layout.popup_about_app, null);
+
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        boolean focusable = true;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+
+        popupWindow.setElevation(20);
+        popupWindow.showAtLocation(findViewById(R.id.mainActivity), Gravity.CENTER, 0,0 );
+        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+
+        popupView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                popupWindow.dismiss();
+                return false;
+            }
+        });
     }
 }
