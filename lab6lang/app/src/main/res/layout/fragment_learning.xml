@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SecondFragment">
+    tools:context=".LearningFragment">
 
     <LinearLayout
         android:id="@+id/linearLayoutLearning"
@@ -23,11 +23,37 @@
             android:background="@color/colorPrimaryEnglish"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/textViewLearningLeft"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="0/10" />
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/buttonLearningPrevious"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_weight="1"
+                    android:text="@string/previous" />
+
+                <TextView
+                    android:id="@+id/textViewLearningLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_weight="3"
+                    android:gravity="center"
+                    android:padding="5dip"
+                    android:textColor="@color/colorWhite" />
+
+                <Button
+                    android:id="@+id/buttonLearningNext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+                    android:text="@string/next" />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/textEnglishWord"
@@ -35,7 +61,6 @@
                 android:layout_height="match_parent"
                 android:layout_weight="0.5"
                 android:gravity="center"
-                android:text="EnglishWord"
                 android:textAppearance="@style/TextAppearance.AppCompat.Large"
                 android:textColor="#FFFFFF"
                 android:textSize="30sp"
@@ -46,7 +71,7 @@
                 style="@style/Widget.AppCompat.Button.Borderless"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="right"
+                android:layout_gravity="end"
                 android:text="@string/learn_set_learned"
                 android:textColor="#FFFFFF" />
         </LinearLayout>
@@ -54,8 +79,8 @@
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="right"
-            android:gravity="right"
+            android:layout_gravity="end"
+            android:gravity="end"
             android:orientation="horizontal">
 
         </LinearLayout>
@@ -68,23 +93,9 @@
             <LinearLayout
                 android:id="@+id/linearLayoutWordMeaning"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="10dip">
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="5dip"
-                    android:text="Słówko 1" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="5dip"
-                    android:text="Słówko 2" />
 
             </LinearLayout>
         </ScrollView>

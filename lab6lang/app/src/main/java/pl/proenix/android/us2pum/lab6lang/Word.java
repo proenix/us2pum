@@ -1,5 +1,10 @@
 package pl.proenix.android.us2pum.lab6lang;
 
+import android.util.Log;
+import android.widget.ArrayAdapter;
+
+import java.util.List;
+
 /**
  * Class wrap Word objects.
  */
@@ -10,12 +15,16 @@ public class Word {
     public static final int WORD_NOT_LEARNABLE = 0;
     public static final int WORD_LEARNABLE = 1;
 
+    public static final int WORD_TO_LEARN = 0;
 
     private int _id;
     private String _name;
     private int _language; // 0 - English; 1 - Polish
     private int _learnable; // Is displayed in learning process or helper word.
     private int _learnState;
+
+    private List<Word> _relatedSameLanguage;
+    private List<Word> _relatedOppositeLanguage;
 
     public Word() {}
 
@@ -85,4 +94,55 @@ public class Word {
     public void setLearnState(int learnState) {
         this._learnState = learnState;
     }
+
+    public void setAsLearned() {
+        this._learnState += 1;
+        this.save();
+    }
+    public void setAsNotLearned() {
+        this._learnState = WORD_TO_LEARN;
+        this.save();
+    }
+
+    /**
+     * Return Opposite Language value.
+     * @return WORD_LANGUAGE_POLISH|WORD_LANGUAGE_ENGLISH value.
+     */
+    public int getOppositeLanguage() {
+        if (this._language == WORD_LANGUAGE_ENGLISH) {
+            return WORD_LANGUAGE_POLISH;
+        } else {
+            return WORD_LANGUAGE_ENGLISH;
+        }
+    }
+
+    /**
+     * Save or Update in database.
+     */
+    public void save() {
+        MainActivity.db.updateWord(this);
+    };
+
+    /**
+     * Get related Words for this Word. Only opposite language.
+     * @return List of Word objects.
+     */
+    public List<Word> getRelatedWordsOtherLanguage() {
+        if (this._relatedOppositeLanguage == null) {
+            this._relatedOppositeLanguage = MainActivity.db.getRelatedWordsByIdAndLanguage(this._id, this.getOppositeLanguage());
+        }
+        return this._relatedOppositeLanguage;
+    }
+
+    /**
+     * Get related Words for this Word. Only same language.
+     * @return List of Word objects.
+     */
+    public List<Word> getRelatedWordsSameLanguage() {
+        if (this._relatedSameLanguage == null) {
+            this._relatedSameLanguage = MainActivity.db.getRelatedWordsByIdAndLanguage(this._id, this._language);
+        }
+        return this._relatedSameLanguage;
+    }
+
 }

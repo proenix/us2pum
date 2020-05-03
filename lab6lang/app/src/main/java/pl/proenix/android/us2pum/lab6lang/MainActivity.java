@@ -20,6 +20,7 @@ import android.widget.PopupWindow;
 public class MainActivity extends AppCompatActivity {
 
     private static final String DEBUG_TAG = "AndroidLang";
+    public static DatabaseHandler db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +29,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DatabaseHandler db = new DatabaseHandler(this);
+        db = new DatabaseHandler(this);
+//        DatabaseHandler db = new DatabaseHandler(this);
         db.resetDatabase();
 
         int eng_word = -1;
@@ -39,13 +41,25 @@ public class MainActivity extends AppCompatActivity {
         eng_word = db.addWord(new Word("car", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0));
         pol_word_1 = db.addWord(new Word("samochód", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0));
         db.addWordsRelation(eng_word, pol_word_1);
-        pol_word_2 = db.addWord(new Word("auto", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0));
+        pol_word_2 = db.addWord(new Word("auto", Word.WORD_LANGUAGE_POLISH, Word.WORD_NOT_LEARNABLE,0));
         db.addWordsRelation(eng_word, pol_word_2);
 
         // Add second English Word.
         eng_word = db.addWord(new Word("vehicle", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0));
         db.addWordsRelation(eng_word, pol_word_1);
         db.addWordsRelation(eng_word, pol_word_2);
+
+        eng_word = db.addWord(new Word("city", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0));
+        pol_word_1 = db.addWord(new Word("miasto", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0));
+        db.addWordsRelation(eng_word, pol_word_1);
+
+        eng_word = db.addWord(new Word("computer", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0));
+        pol_word_1 = db.addWord(new Word("komputer", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0));
+        db.addWordsRelation(eng_word, pol_word_1);
+
+        eng_word = db.addWord(new Word("parsley", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0));
+        pol_word_1 = db.addWord(new Word("pietruszka", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0));
+        db.addWordsRelation(eng_word, pol_word_1);
 
         Log.d(DEBUG_TAG, "Total Words Count: "+ String.valueOf(db.getWordsCount()));
         Log.d(DEBUG_TAG, "English Words Count: "+ String.valueOf(db.getWordsCountByLanguage(Word.WORD_LANGUAGE_ENGLISH)));

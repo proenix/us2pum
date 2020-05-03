@@ -20,7 +20,7 @@
     </fragment>
     <fragment
         android:id="@+id/LearningMode"
-        android:name="pl.proenix.android.us2pum.lab6lang.SecondFragment"
+        android:name="pl.proenix.android.us2pum.lab6lang.LearningFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_learning"/>
     <fragment

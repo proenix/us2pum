@@ -5,8 +5,12 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
-import androidx.core.view.ViewPropertyAnimatorListener;
+import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
@@ -35,8 +39,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_WORD_TABLE = "CREATE TABLE " + TABLE_WORDS + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"
-                + KEY_LEARNABLE + " INTEGER,"
                 + KEY_LANG + " INTEGER, "
+                + KEY_LEARNABLE + " INTEGER,"
                 + KEY_LEARN_STATE + " INTEGER "
                 + ")";
         db.execSQL(CREATE_WORD_TABLE);
@@ -202,5 +206,104 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             return  number;
         }
         return 0;
+    }
+
+    List<Word> getWordsByLanguageAndLearnable(int language, int learnable) {
+        List<Word> words = new ArrayList<Word>();
+        String wordsQuery = "SELECT * FROM " + TABLE_WORDS
+                + " WHERE " + KEY_LANG + " = " + language
+                + " AND " + KEY_LEARNABLE + " = " + learnable;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(wordsQuery, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Word word = new Word(
+                    Integer.parseInt(cursor.getString(0)),
+                    cursor.getString(1),
+                    Integer.parseInt(cursor.getString(2)),
+                    Integer.parseInt(cursor.getString(3)),
+                    Integer.parseInt(cursor.getString(4)));
+                Log.d("AndroidLang",
+                        "ID: " + String.valueOf(word.getID()) + "\n"+
+                                "Name: " + word.getName() +"\n"+
+                                "Lang: " + String.valueOf(word.getLanguage()) +"\n"+
+                                "Learnable: " + String.valueOf(word.getLearnable()) +"\n"+
+                                "LearnState: " + String.valueOf(word.getLearnState())
+                );
+                words.add(word);
+            }
+        }
+        return words;
+    }
+
+    List<Word> getWordsByLanguageAndLearnableAndLearnState(int language, int learnable, int learnState, @Nullable String learnStateOperator) {
+        if (learnStateOperator == null) {
+            learnStateOperator = "=";
+        }
+        List<Word> words = new ArrayList<Word>();
+        String wordsQuery = "SELECT * FROM " + TABLE_WORDS
+                + " WHERE " + KEY_LANG + " = " + language
+                + " AND " + KEY_LEARNABLE + " = " + learnable
+                + " AND " + KEY_LEARN_STATE + " " + learnStateOperator + " " + learnState;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(wordsQuery, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Word word = new Word(
+                        Integer.parseInt(cursor.getString(0)),
+                        cursor.getString(1),
+                        Integer.parseInt(cursor.getString(2)),
+                        Integer.parseInt(cursor.getString(3)),
+                        Integer.parseInt(cursor.getString(4)));
+//                Log.d("AndroidLang",
+//                        "ID: " + String.valueOf(word.getID()) + "\n"+
+//                                "Name: " + word.getName() +"\n"+
+//                                "Lang: " + String.valueOf(word.getLanguage()) +"\n"+
+//                                "Learnable: " + String.valueOf(word.getLearnable()) +"\n"+
+//                                "LearnState: " + String.valueOf(word.getLearnState())
+//                );
+                words.add(word);
+            };
+        }
+        return words;
+    }
+
+    public int updateWord(Word word) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_NAME, word.getName()); // Word
+        values.put(KEY_LANG, word.getLanguage()); // Lang
+        values.put(KEY_LEARNABLE, word.getLearnable()); // Learnable
+        values.put(KEY_LEARN_STATE, word.getLearnState());
+
+        // updating row
+        db.update(TABLE_WORDS, values, KEY_ID + " = ?",
+                new String[] { String.valueOf(word.getID()) });
+//        Log.d("AndroidLang",
+//                "ID: " + String.valueOf(word.getID()) + "\n"+
+//                        "Name: " + word.getName() +"\n"+
+//                        "Lang: " + String.valueOf(word.getLanguage()) +"\n"+
+//                        "Learnable: " + String.valueOf(word.getLearnable()) +"\n"+
+//                        "LearnState: " + String.valueOf(word.getLearnState())
+//        );
+        return 0;
+    }
+
+    public List<Word> getRelatedWordsByIdAndLanguage(int id, int oppositeLanguage) {
+        List<Word> wordList = new ArrayList<Word>();
+        String wordRelationQuery = "SELECT  * FROM " + TABLE_WORDS_RELATION
+                + " WHERE " + KEY_ID_WORD_1 + " = " + id;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(wordRelationQuery, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                wordList.add(this.getWordById(Integer.parseInt(cursor.getString(2))));
+            };
+        }
+        return wordList;
     }
 }

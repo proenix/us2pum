@@ -4,4 +4,7 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="colorPrimaryEnglish">#26C6DA</color>
+    <color name="colorPrimaryPolish">#26C6DA</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorRed">#D32F2F</color>
 </resources>
