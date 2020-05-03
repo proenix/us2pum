@@ -208,6 +208,23 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return 0;
     }
 
+    public int getWordsCountByLanguageAndLearnState(int language, int learnState, @Nullable String learnStateOperator) {
+        if (learnStateOperator == null) {
+            learnStateOperator = "=";
+        }
+        String countQuery = "SELECT  * FROM " + TABLE_WORDS
+                + " WHERE " + KEY_LANG + " = " + language
+                + " AND " + KEY_LEARN_STATE + " " + learnStateOperator + " " + learnState;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(countQuery, null);
+        if (cursor != null) {
+            int number = cursor.getCount();
+            cursor.close();
+            return  number;
+        }
+        return 0;
+    }
+
     List<Word> getWordsByLanguageAndLearnable(int language, int learnable) {
         List<Word> words = new ArrayList<Word>();
         String wordsQuery = "SELECT * FROM " + TABLE_WORDS
