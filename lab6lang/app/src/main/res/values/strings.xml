@@ -1,11 +1,13 @@
 <resources>
     <string name="app_name">Lang</string>
     <string name="action_settings">Settings</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
@@ -14,4 +16,13 @@
     <string name="app_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum efficitur tincidunt.\nInteger suscipit leo eu suscipit rutrum. Ut at rutrum mauris. Maecenas nec dapibus urna, id egestas nisl. </string>
     <string name="app_author">Author: Piotr Trzepacz</string>
     <string name="app_version">Version: 0.0.1</string>
+    <string name="choose_mode">Choose learning mode</string>
+    <string name="mode_name_learning">Learning</string>
+    <string name="mode_name_test">Test</string>
+    <string name="end_learning">Exit Learning</string>
+    <string name="learn_set_learned">Set as Learned</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="submit_answer">Submit</string>
 </resources>

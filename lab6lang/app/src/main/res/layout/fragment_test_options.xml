@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TestOptionsFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Choose Test mode"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/buttonTestToEnglish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Polish to English" />
+
+        <Button
+            android:id="@+id/buttonTestToPolish"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="English to Polish" />
+
+        <Button
+            android:id="@+id/buttonTestBoth"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mixed" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

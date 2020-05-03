@@ -3,26 +3,47 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
+    app:startDestination="@id/MainActivity">
 
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="pl.proenix.android.us2pum.lab6lang.FirstFragment"
+        android:id="@+id/MainActivity"
+        android:name="pl.proenix.android.us2pum.lab6lang.ChooseModeFragment"
         android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
+        tools:layout="@layout/fragment_choose_mode">
 
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_MainActivity_to_testOptionsFragment"
+            app:destination="@id/TestOptions" />
+        <action
+            android:id="@+id/action_MainActivity_to_LearningMode"
+            app:destination="@id/LearningMode" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
+        android:id="@+id/LearningMode"
         android:name="pl.proenix.android.us2pum.lab6lang.SecondFragment"
         android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
+        tools:layout="@layout/fragment_learning"/>
+    <fragment
+        android:id="@+id/TestOptions"
+        android:name="pl.proenix.android.us2pum.lab6lang.TestOptionsFragment"
+        android:label="fragment_test_options"
+        tools:layout="@layout/fragment_test_options" >
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_TestOptions_to_testFragment"
+            app:destination="@id/testFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/testFragment"
+        android:name="pl.proenix.android.us2pum.lab6lang.TestFragment"
+        android:label="fragment_test"
+        tools:layout="@layout/fragment_test" >
+        <action
+            android:id="@+id/action_testFragment_to_testSummaryFragment"
+            app:destination="@id/testSummaryFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/testSummaryFragment"
+        android:name="pl.proenix.android.us2pum.lab6lang.TestSummaryFragment"
+        android:label="fragment_test_summary"
+        tools:layout="@layout/fragment_test_summary" />
 </navigation>
