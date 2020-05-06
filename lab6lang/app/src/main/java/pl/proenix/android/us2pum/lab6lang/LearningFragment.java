@@ -20,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import java.util.Collections;
 import java.util.List;
 
+
+// TODO: 03/05/2020 Remove button on bottom to exit?
 public class LearningFragment extends Fragment implements View.OnClickListener {
 
     private static final String DEBUG_TAG = "AndroidLang";

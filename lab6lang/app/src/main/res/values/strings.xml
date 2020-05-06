@@ -32,4 +32,9 @@
     <string name="word_learned">Word learned!</string>
     <string name="word_unlearned">Word unlearned!</string>
     <string name="all_words_learned">All words learned! Congratulations</string>
+    <string name="choose_test_mode">Choose Test mode</string>
+    <string name="polish_to_english">Polish to English</string>
+    <string name="english_to_polish">English to Polish</string>
+    <string name="mixed">Mixed</string>
+    <string name="number_of_test_elements">(Optional) Number of test elements:</string>
 </resources>

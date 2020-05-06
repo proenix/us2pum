@@ -37,7 +37,7 @@ public class ChooseModeFragment extends Fragment {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(ChooseModeFragment.this)
-                        .navigate(R.id.action_MainActivity_to_testOptionsFragment);
+                        .navigate(R.id.action_MainActivity_to_TestOptions);
             }
         });
 

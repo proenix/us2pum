@@ -37,15 +37,16 @@ public class MainActivity extends AppCompatActivity {
         int pol_word_1 = -1;
         int pol_word_2 = -1;
         Log.d(DEBUG_TAG, "Reset table state and insert sample data.");
+
         // Add first English Word.
-        eng_word = db.addWord(new Word("car", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0));
+        eng_word = db.addWord(new Word("car", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,1));
         pol_word_1 = db.addWord(new Word("samochód", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0));
         db.addWordsRelation(eng_word, pol_word_1);
         pol_word_2 = db.addWord(new Word("auto", Word.WORD_LANGUAGE_POLISH, Word.WORD_NOT_LEARNABLE,0));
         db.addWordsRelation(eng_word, pol_word_2);
 
         // Add second English Word.
-        eng_word = db.addWord(new Word("vehicle", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0));
+        eng_word = db.addWord(new Word("vehicle", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,1));
         db.addWordsRelation(eng_word, pol_word_1);
         db.addWordsRelation(eng_word, pol_word_2);
 
@@ -73,6 +74,10 @@ public class MainActivity extends AppCompatActivity {
 //                        .setAction("Action", null).show();
 //            }
 //        });
+
+        // TODO: 06/05/2020 Create migration routine - data imported once for application lifecycle. Preferably to write something in DatabaseHandler.
+
+        // TODO: 06/05/2020 Feature: add step between menu and learning activity - list of words and learning status.
     }
 
     /**

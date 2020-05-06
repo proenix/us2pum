@@ -8,7 +8,21 @@
 
     <!-- TODO: Update blank fragment layout -->
 
+    <TextView
+        android:id="@+id/textView6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="@string/choose_test_mode"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -17,29 +31,54 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Choose Test mode"
-            android:textStyle="bold" />
-
         <Button
             android:id="@+id/buttonTestToEnglish"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Polish to English" />
+            android:text="@string/polish_to_english" />
 
         <Button
             android:id="@+id/buttonTestToPolish"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="English to Polish" />
+            android:text="@string/english_to_polish" />
 
         <Button
             android:id="@+id/buttonTestBoth"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Mixed" />
+            android:text="@string/mixed" />
+
     </LinearLayout>
+
+    <SeekBar
+        android:id="@+id/seekBarNumberOfElements"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:max="20"
+        android:progress="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView3" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="@string/number_of_test_elements"
+        app:layout_constraintStart_toStartOf="@+id/seekBarNumberOfElements"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+    <TextView
+        android:id="@+id/textViewNumberOfElementsSummary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@+id/seekBarNumberOfElements"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="@+id/seekBarNumberOfElements"
+        app:layout_constraintTop_toBottomOf="@+id/seekBarNumberOfElements" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
