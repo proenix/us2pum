@@ -29,6 +29,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dip"
                 android:paddingTop="10dip"
+                android:textColor="@color/colorWhite"
                 android:text="0/10" />
 
             <TextView
@@ -53,8 +54,19 @@
                 android:textColor="#FFFFFF" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/textViewInputBarIndicator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@color/colorBackgroundToPolish"
+            android:gravity="center"
+            android:padding="4dip"
+            android:text="TextView"
+            android:textColor="@color/colorTextToPolish" />
+
         <EditText
-            android:id="@+id/editText"
+            android:id="@+id/editTextWordToTest"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="40dip"

@@ -51,14 +51,14 @@ public class LearningFragment extends Fragment implements View.OnClickListener {
         super.onViewCreated(view, savedInstanceState);
 
         // Get English words with learnable status and not learned.
-        words = MainActivity.db.getWordsByLanguageAndLearnableAndLearnState(Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE, Word.WORD_TO_LEARN, "=");
+        words = MainActivity.db.getWordsByLanguageAndLearnableAndLearnState(Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE, Word.WORD_TO_LEARN, "=", null);
         Collections.shuffle(words);
         if (words.size() == 0) {
             Toast.makeText(view.getContext(), R.string.all_words_learned, Toast.LENGTH_LONG).show();
         }
 
         // Get English words with learnable status and already learned.
-        words.addAll(MainActivity.db.getWordsByLanguageAndLearnableAndLearnState(Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE, Word.WORD_TO_LEARN, ">"));
+        words.addAll(MainActivity.db.getWordsByLanguageAndLearnableAndLearnState(Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE, Word.WORD_TO_LEARN, ">", null));
 
         // Load references to elements.
         buttonSetAsLearned = view.findViewById(R.id.buttonSetAsLearned);

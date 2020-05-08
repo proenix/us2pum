@@ -34,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
         db.resetDatabase();
 
         int eng_word = -1;
+        int eng_word_2 = -1;
         int pol_word_1 = -1;
         int pol_word_2 = -1;
         Log.d(DEBUG_TAG, "Reset table state and insert sample data.");
@@ -46,9 +47,12 @@ public class MainActivity extends AppCompatActivity {
         db.addWordsRelation(eng_word, pol_word_2);
 
         // Add second English Word.
-        eng_word = db.addWord(new Word("vehicle", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,1));
-        db.addWordsRelation(eng_word, pol_word_1);
-        db.addWordsRelation(eng_word, pol_word_2);
+        eng_word_2 = db.addWord(new Word("vehicle", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,1));
+        db.addWordsRelation(eng_word_2, pol_word_1);
+        db.addWordsRelation(eng_word_2, pol_word_2);
+
+        db.addWordsRelation(eng_word, eng_word_2);
+        db.addWordsRelation(eng_word_2, eng_word);
 
         eng_word = db.addWord(new Word("city", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0));
         pol_word_1 = db.addWord(new Word("miasto", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0));

@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 /**
  * Fragment for getting user preferences for Test action.
+ * // TODO: 06/05/2020 Add Option to check until written OK. 
+ * // TODO: 06/05/2020 Add Option to go to wait after correct answer. 
  */
 public class TestOptionsFragment extends Fragment implements View.OnClickListener {
 
@@ -100,19 +102,19 @@ public class TestOptionsFragment extends Fragment implements View.OnClickListene
         bundle.putInt("numberOfTests", seekBarTestElements.getProgress() + 1);
         if (v.getId() == buttonTestToEnglish.getId()) {
             Log.d(DEBUG_TAG, "To English");
-            bundle.putInt("mode", TestFragment.TEST_MODE_TO_ENGLISH);
+            bundle.putInt("mode", Test.TEST_MODE_TO_ENGLISH);
             NavHostFragment.findNavController(TestOptionsFragment.this)
                     .navigate(R.id.action_TestOptions_to_Test, bundle);
         }
         if (v.getId() == buttonTestToPolish.getId()) {
             Log.d(DEBUG_TAG, "To Polish");
-            bundle.putInt("mode", TestFragment.TEST_MODE_TO_POLISH);
+            bundle.putInt("mode", Test.TEST_MODE_TO_POLISH);
             NavHostFragment.findNavController(TestOptionsFragment.this)
                     .navigate(R.id.action_TestOptions_to_Test, bundle);
         }
         if (v.getId() == buttonTestToBoth.getId()) {
             Log.d(DEBUG_TAG, "To Both");
-            bundle.putInt("mode", TestFragment.TEST_MODE_TO_BOTH);
+            bundle.putInt("mode", Test.TEST_MODE_TO_BOTH);
             NavHostFragment.findNavController(TestOptionsFragment.this)
                     .navigate(R.id.action_TestOptions_to_Test, bundle);
         }

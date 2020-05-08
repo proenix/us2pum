@@ -254,15 +254,20 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return words;
     }
 
-    List<Word> getWordsByLanguageAndLearnableAndLearnState(int language, int learnable, int learnState, @Nullable String learnStateOperator) {
+    List<Word> getWordsByLanguageAndLearnableAndLearnState(int language, int learnable, int learnState, @Nullable String learnStateOperator, @Nullable Integer limit) {
         if (learnStateOperator == null) {
             learnStateOperator = "=";
         }
+
         List<Word> words = new ArrayList<Word>();
         String wordsQuery = "SELECT * FROM " + TABLE_WORDS
                 + " WHERE " + KEY_LANG + " = " + language
                 + " AND " + KEY_LEARNABLE + " = " + learnable
-                + " AND " + KEY_LEARN_STATE + " " + learnStateOperator + " " + learnState;
+                + " AND " + KEY_LEARN_STATE + " " + learnStateOperator + " " + learnState
+                + " ORDER BY " + KEY_LEARN_STATE + " ASC "; // get least learned words first
+        if (limit != null) {
+            wordsQuery += " LIMIT " + limit;
+        }
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(wordsQuery, null);
 
@@ -309,7 +314,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         return 0;
     }
 
-    public List<Word> getRelatedWordsByIdAndLanguage(int id, int oppositeLanguage) {
+    public List<Word> getRelatedWordsByIdAndLanguage(int id, int language) {
         List<Word> wordList = new ArrayList<Word>();
         String wordRelationQuery = "SELECT  * FROM " + TABLE_WORDS_RELATION
                 + " WHERE " + KEY_ID_WORD_1 + " = " + id;
@@ -318,9 +323,40 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         if (cursor != null) {
             while (cursor.moveToNext()) {
-                wordList.add(this.getWordById(Integer.parseInt(cursor.getString(2))));
+                Word w = this.getWordByIdAndLanguage(Integer.parseInt(cursor.getString(2)), language);
+                if (w != null ) {
+                    wordList.add(w);
+                }
             };
         }
         return wordList;
+    }
+
+    @Nullable
+    private Word getWordByIdAndLanguage(int id, int language) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT " + KEY_ID + ", " + KEY_NAME + ", " + KEY_LANG + ", "
+                + KEY_LEARNABLE + ", " + KEY_LEARN_STATE + " FROM " + TABLE_WORDS
+                + " WHERE " + KEY_ID + " = " + id
+                + " AND " + KEY_LANG + " = " + language;
+        Cursor cursor = db.rawQuery(query, null);
+//                TABLE_WORDS,
+//                new String[] { KEY_ID, KEY_NAME, KEY_LANG, KEY_LEARNABLE, KEY_LEARN_STATE },
+//                KEY_ID + "=?",
+//                new String[] { String.valueOf(id) },
+//                null, null, null, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                return new Word(
+                        Integer.parseInt(cursor.getString(0)),
+                        cursor.getString(1),
+                        Integer.parseInt(cursor.getString(2)),
+                        Integer.parseInt(cursor.getString(3)),
+                        Integer.parseInt(cursor.getString(4))
+                );
+            }
+        }
+        return null;
     }
 }

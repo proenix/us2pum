@@ -3,6 +3,7 @@ package pl.proenix.android.us2pum.lab6lang;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -139,6 +140,10 @@ public class Word {
      * @return List of Word objects.
      */
     public List<Word> getRelatedWordsSameLanguage() {
+//        List<Word> relatedSameLanguage = new ArrayList<Word>();
+//        relatedSameLanguage.add(this);
+//        return relatedSameLanguage;
+//        // TODO: 08/05/2020 Add support to synonyms in same la
         if (this._relatedSameLanguage == null) {
             this._relatedSameLanguage = MainActivity.db.getRelatedWordsByIdAndLanguage(this._id, this._language);
         }
