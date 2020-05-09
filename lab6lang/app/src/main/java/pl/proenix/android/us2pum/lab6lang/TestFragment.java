@@ -4,7 +4,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -124,6 +126,31 @@ public class TestFragment extends Fragment implements View.OnClickListener {
         textViewAnswerLeft = view.findViewById(R.id.textViewAsnswersLeft);
         linearLayoutAnswers = view.findViewById(R.id.linearLayoutAnswers);
 
+        // Add callback for return button pressed.
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                // Handle the back button event
+                dialogBuilder.setMessage("Do you really want to finish test?").
+                        setPositiveButton(R.string.yes, onExitDialogClickListener).
+                        setNegativeButton("No, continue", onExitDialogClickListener).show();
+            }
+        };
+        dialogBuilder = new AlertDialog.Builder(view.getContext());
+        onExitDialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        goToSummary();
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
+
         // Proceed to displaying and asking answers until end moving already answered question out of loop.
         displayNextTest();
     }
@@ -181,11 +208,7 @@ public class TestFragment extends Fragment implements View.OnClickListener {
         if (testsToDo.size() == 0) {
             Log.d("AndroidLang", "Tests done going to summary.");
 
-            Bundle bundle = new Bundle();
-            bundle.putParcelableArrayList("TestSummary", (ArrayList<? extends Parcelable>) testsCompleted);
-
-            NavHostFragment.findNavController(TestFragment.this)
-                    .navigate(R.id.action_Test_to_TestSummary, bundle);
+            goToSummary();
             return;
         }
         // Get first word from testToDo list and display to user.
@@ -204,6 +227,17 @@ public class TestFragment extends Fragment implements View.OnClickListener {
 
         // Clear answers.
         linearLayoutAnswers.removeAllViews();
+    }
+
+    /**
+     * Prepare Bundle and navigate to Summary Fragment.
+     */
+    private void goToSummary() {
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("TestSummary", (ArrayList<? extends Parcelable>) testsCompleted);
+
+        NavHostFragment.findNavController(TestFragment.this)
+                .navigate(R.id.action_Test_to_TestSummary, bundle);
     }
 
     @Override
