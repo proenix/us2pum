@@ -1,17 +1,19 @@
 package pl.proenix.android.us2pum.lab6lang;
 
-
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Helper object for managing testing of words.
+ * Object is parcelable so it can be send via Bundle.
  */
 public class Test implements Parcelable {
     private Word _word; // Should be always English word version.
@@ -47,6 +49,14 @@ public class Test implements Parcelable {
         return this._result;
     }
 
+    public int getTries() {
+        return this._tries;
+    }
+
+    public Word getWord() {
+        return this._word;
+    }
+
     /**
      * Check if item leveled up.
      * @return True if item was answered correctly on first try.
@@ -55,10 +65,9 @@ public class Test implements Parcelable {
         return this._tries == 1 && this._result == RESULT_PASSED;
     }
 
-    public Word getWord() {
-        return this._word;
-    }
-
+    /**
+     * Set test as passed if test was never taken or flag to retry was set and increment tries counter.
+     */
     private void setResultPassed() {
         this._tries += 1;
         if (this._result == RESULT_NOT_TESTED || this._result == RESULT_TRY_AGAIN) {
@@ -70,11 +79,17 @@ public class Test implements Parcelable {
         }
     }
 
+    /**
+     * Set test as not passed and increment tries counter.
+     */
     private void setResultNotPassed() {
         this._tries += 1;
         this._result = RESULT_FAILED;
     }
 
+    /**
+     * Set test as not passed to retry without incrementing tries counter.
+     */
     private void setResultTryAgain() {
         this._result = RESULT_TRY_AGAIN;
     }
@@ -90,6 +105,13 @@ public class Test implements Parcelable {
 
     /**
      * Validate answer and decide if provided string is similar enough to answers.
+     *
+     * For MODE_TO_POLISH check every word for similarity - allowing small typos.
+     * For MODE_TO_ENGLISH enforce that user provide exactly string that is requested.
+     * If user provide alternative english word sets flag to retry that word.
+     *
+     * For comparison all words are transformed to lower case.
+     *
      * Uses Levenshtein Distance algorithm to detect strings similarities.
      * @param userAnswer User provided string.
      * @return True if answer is accepted.
@@ -102,16 +124,16 @@ public class Test implements Parcelable {
             wordsToCheck = this._word.getRelatedWordsOtherLanguage();
             for (Word acceptableAnswer : wordsToCheck) {
                 // Calculate Levenshtein distance for word pair.
-                int distance = LevenshteinDistance.getDefaultInstance().apply(acceptableAnswer.getName(), userAnswer);
+                int distance = LevenshteinDistance.getDefaultInstance().apply(acceptableAnswer.getName().toLowerCase(), userAnswer.toLowerCase());
 
                 // Calculate acceptable error for word pair.
                 int acceptedErrorThreshold = (int) Math.floor(Math.sqrt(acceptableAnswer.getName().length()) - 1.0);
 
-                Log.d("AndroidLang", "ComparingToPOLISH: {"
-                        + "userAnswer: " + userAnswer + "; "
-                        + "acceptableAnswer: " + acceptableAnswer.getName() + "; "
-                        + "calculatedDistance: " + String.valueOf(distance) + "; "
-                        + "acceptableDistance: " + String.valueOf(acceptedErrorThreshold));
+//                Log.d("AndroidLang", "ComparingToPOLISH: {"
+//                        + "userAnswer: " + userAnswer + "; "
+//                        + "acceptableAnswer: " + acceptableAnswer.getName() + "; "
+//                        + "calculatedDistance: " + String.valueOf(distance) + "; "
+//                        + "acceptableDistance: " + String.valueOf(acceptedErrorThreshold));
 
                 if (distance == 0) {
                     this._minDistance = 0;
@@ -127,7 +149,7 @@ public class Test implements Parcelable {
             }
         }
         if (this._mode == TEST_MODE_TO_ENGLISH) {
-            if (userAnswer.equals(this._word.getName())) {
+            if (userAnswer.toLowerCase().equals(this._word.getName().toLowerCase())) {
                 this._minDistance = 0;
                 this._probableAnswer = this._word.getName();
                 this.setResultPassed();
@@ -137,16 +159,16 @@ public class Test implements Parcelable {
                 wordsToCheck = this._word.getRelatedWordsSameLanguage();
                 for (Word acceptableAnswer : wordsToCheck) {
                     // Calculate Levenshtein distance for word pair.
-                    int distance = LevenshteinDistance.getDefaultInstance().apply(acceptableAnswer.getName(), userAnswer);
+                    int distance = LevenshteinDistance.getDefaultInstance().apply(acceptableAnswer.getName().toLowerCase(), userAnswer.toLowerCase());
 
                     // Calculate acceptable error for word pair.
                     int acceptedErrorThreshold = (int) Math.floor(Math.sqrt(acceptableAnswer.getName().length()) - 1.0);
 
-                    Log.d("AndroidLang", "ComparingToENGLISH: {"
-                            + "userAnswer: " + userAnswer + "; "
-                            + "acceptableAnswer: " + acceptableAnswer.getName() + "; "
-                            + "calculatedDistance: " + String.valueOf(distance) + "; "
-                            + "acceptableDistance: " + String.valueOf(acceptedErrorThreshold));
+//                    Log.d("AndroidLang", "ComparingToENGLISH: {"
+//                            + "userAnswer: " + userAnswer + "; "
+//                            + "acceptableAnswer: " + acceptableAnswer.getName() + "; "
+//                            + "calculatedDistance: " + String.valueOf(distance) + "; "
+//                            + "acceptableDistance: " + String.valueOf(acceptedErrorThreshold));
 
                     if (distance <= acceptedErrorThreshold) {
                         this._minDistance = distance;
@@ -157,47 +179,6 @@ public class Test implements Parcelable {
                 }
             }
         }
-        // check all related
-
-        // For TO_ENGLISH
-        // check original
-        // if is original (no error marin) mark OK
-        // if not original check related
-        //      if in related not mark as bad send message
-        //      if in not in related mark as bad
-
-
-//        if (this._mode == TEST_MODE_TO_POLISH) {
-//            wordsToCheck = this._word.getRelatedWordsOtherLanguage();
-//        } else {
-//            // TODO: 08/05/2020 Check for self and related words. For related words return info that its not counted as bad but not what looked for and try again.
-//            wordsToCheck = this._word.getRelatedWordsSameLanguage();
-//        }
-//        for (Word acceptableAnswer : wordsToCheck) {
-//            // Calculate Levenshtein distance for word pair.
-//            int distance = LevenshteinDistance.getDefaultInstance().apply(acceptableAnswer.getName(), userAnswer);
-//
-//            // Calculate acceptable error for word pair.
-//            int acceptedErrorThreshold = (int) Math.floor( Math.sqrt(acceptableAnswer.getName().length()) - 1.0 );
-//
-//            Log.d("AndroidLang", "Comparing: {"
-//                    + "userAnswer: " + userAnswer + "; "
-//                    + "acceptableAnswer: " + acceptableAnswer.getName() + "; "
-//                    + "calculatedDistance: " + String.valueOf(distance) + "; "
-//                    + "acceptableDistance: " + String.valueOf(acceptedErrorThreshold));
-//
-//            if (distance == 0) {
-//                this._minDistance = 0;
-//                this._probableAnswer = this._word.getName();
-//                this.setResultPassed();
-//                return true;
-//            } else if (distance <= acceptedErrorThreshold) {
-//                this._minDistance = distance;
-//                this._probableAnswer = acceptableAnswer.getName();
-//                this.setResultPassed();
-//                return true;
-//            }
-//        }
         this.setResultNotPassed();
         return false;
     }
@@ -285,7 +266,9 @@ public class Test implements Parcelable {
         }
     };
 
-    public int getTries() {
-        return this._tries;
+    @NonNull
+    @Override
+    public String toString() {
+        return "Test: {_word: " + _word.getName() + ", mode: "+ _mode +", tries: " + _tries + ";}";
     }
 }

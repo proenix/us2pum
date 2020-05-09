@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 
@@ -27,13 +26,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_ID_WORD_1 = "id_word_1";
     private static final String KEY_ID_WORD_2 = "id_word_2";
 
+    private SQLiteDatabase _db;
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         //3rd argument to be passed is CursorFactory instance
     }
 
-    // Creating Tables
+    /**
+     * Create tables for application.
+     * @param db
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_WORD_TABLE = "CREATE TABLE " + TABLE_WORDS + "("
@@ -53,21 +56,81 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + "FOREIGN KEY(" + KEY_ID_WORD_2 + ") REFERENCES " + TABLE_WORDS + "(" + KEY_ID + ")"
                 + ")";
         db.execSQL(CREATE_WORD_RELATION_TABLE);
+
+        // TODO: 09/05/2020 Write importer to import from file.
+        this._db = db;
+        this.addWord(new Word("car", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0), 1);
+        this.addWord(new Word("samochód", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0), 2);
+        this.addWord(new Word("auto", Word.WORD_LANGUAGE_POLISH, Word.WORD_NOT_LEARNABLE,0), 3);
+        this.addWordsRelation(new WordRelation(1,2), 1);
+        this.addWordsRelation(new WordRelation(1,3), 2);
+
+        // Add second English Word.
+        this.addWord(new Word("vehicle", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0), 4);
+        this.addWord(new Word("pojazd", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0), 5);
+        this.addWordsRelation(new WordRelation(4,5), 3);
+
+        this.addWord(new Word("automobile", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0), 6);
+        this.addWordsRelation(new WordRelation(6,2), 4);
+        this.addWordsRelation(new WordRelation(6,3), 5);
+
+        this.addWordsRelation(new WordRelation(6,1), 6);
+        this.addWordsRelation(new WordRelation(1,6), 7);
+
+        this.addWord(new Word("city", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0), 7);
+        this.addWord(new Word("miasto", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0), 8);
+        this.addWordsRelation(new WordRelation(7,8), 8);
+
+        this.addWord(new Word("computer", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0),9);
+        this.addWord(new Word("komputer", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0),10);
+        this.addWord(new Word("PC", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0),11);
+        this.addWord(new Word("PC", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0),12);
+        this.addWordsRelation(new WordRelation(9,10), 9);
+        this.addWordsRelation(new WordRelation(9,12), 10);
+
+        this.addWordsRelation(new WordRelation(11,10), 11);
+        this.addWordsRelation(new WordRelation(11,12), 12);
+
+        this.addWordsRelation(new WordRelation(9,11), 13);
+        this.addWordsRelation(new WordRelation(11,9), 14);
+        this.addWordsRelation(new WordRelation(10,12), 15);
+        this.addWordsRelation(new WordRelation(12,10), 16);
+
+        this.addWord(new Word("parsley", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0), 13);
+        this.addWord(new Word("pietruszka", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0),14);
+        this.addWordsRelation(new WordRelation(13,14), 17);
+
+        this.addWord(new Word("year", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0), 15);
+        this.addWord(new Word("rok", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0),16);
+        this.addWordsRelation(new WordRelation(15,16), 18);
+
+        this.addWord(new Word("today", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0), 17);
+        this.addWord(new Word("dziś", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0),18);
+        this.addWordsRelation(new WordRelation(17,18), 19);
+
+        this.addWord(new Word("tommorow", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0), 19);
+        this.addWord(new Word("jutro", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0),20);
+        this.addWordsRelation(new WordRelation(19,20), 20);
+
+        this.addWord(new Word("yesterday", Word.WORD_LANGUAGE_ENGLISH, Word.WORD_LEARNABLE,0), 21);
+        this.addWord(new Word("wczoraj", Word.WORD_LANGUAGE_POLISH, Word.WORD_LEARNABLE,0),22);
+        this.addWordsRelation(new WordRelation(21,22), 21);
     }
 
-    // Upgrading database
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Drop older table if existed
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORDS);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_WORDS_RELATION);
-
-        // Create tables again
-        onCreate(db);
+        if (oldVersion < 2) {
+            // Future releases
+            // upgradeToVersion2(db);
+        }
+        if (oldVersion < 3) {
+            // Future releases
+            // upgradeToVersion3(db);
+        }
     }
 
     /**
-     * Reset DB to orginal state for development purposes.
+     * Reset DB to original state for development purposes.
      */
     void resetDatabase() {
         SQLiteDatabase db = this.getWritableDatabase();
@@ -94,11 +157,29 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Inserting Row
         long id = db.insert(TABLE_WORDS, null, values);
-
-        //2nd argument is String containing nullColumnHack
         db.close(); // Closing database connection
 
         return (int)id;
+    }
+
+    /**
+     * Add new Word. For migrations only.
+     * @param word Word object.
+     * @param id Int ID of object.
+     */
+    private void addWord(Word word, int id) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID, id); // ID
+        values.put(KEY_NAME, word.getName()); // Word
+        values.put(KEY_LANG, word.getLanguage()); // Lang
+        values.put(KEY_LEARNABLE, word.getLearnable()); // Learnable
+        values.put(KEY_LEARN_STATE, word.getLearnState());
+
+        // Inserting Row
+        _db.insert(TABLE_WORDS, null, values);
+//        db.close(); // Closing database connection
     }
 
     /**
@@ -115,10 +196,27 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Inserting Row
         long id = db.insert(TABLE_WORDS_RELATION, null, values);
-        //2nd argument is String containing nullColumnHack
-        db.close(); // Closing database connection
+        db.close();
 
         return (int)id;
+    }
+
+    /**
+     * Add new Word relation. For migrations only.
+     * @param wordsRelation WordRelation object.
+     * @param id int ID of inserted row.
+     */
+    void addWordsRelation(WordRelation wordsRelation, int id) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_ID, id);
+        values.put(KEY_ID_WORD_1, wordsRelation.getWord1ID());
+        values.put(KEY_ID_WORD_2, wordsRelation.getWord2ID());
+
+        // Inserting Row
+        _db.insert(TABLE_WORDS_RELATION, null, values);
+//        db.close();
     }
 
     /**
@@ -135,8 +233,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         // Inserting Row
         long id = db.insert(TABLE_WORDS_RELATION, null, values);
-        //2nd argument is String containing nullColumnHack
-        db.close(); // Closing database connection
+        db.close();
     }
 
     /**
@@ -147,21 +244,22 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     Word getWordById(int id) {
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.query(
+        try (Cursor cursor = db.query(
                 TABLE_WORDS,
-                new String[] { KEY_ID, KEY_NAME, KEY_LANG, KEY_LEARNABLE, KEY_LEARN_STATE },
+                new String[]{KEY_ID, KEY_NAME, KEY_LANG, KEY_LEARNABLE, KEY_LEARN_STATE},
                 KEY_ID + "=?",
-                new String[] { String.valueOf(id) },
-                null, null, null, null);
-        if (cursor != null) {
-            cursor.moveToFirst();
-            return new Word(
-                    Integer.parseInt(cursor.getString(0)),
-                    cursor.getString(1),
-                    Integer.parseInt(cursor.getString(2)),
-                    Integer.parseInt(cursor.getString(3)),
-                    Integer.parseInt(cursor.getString(4))
-            );
+                new String[]{String.valueOf(id)},
+                null, null, null, null)) {
+            if (cursor != null) {
+                cursor.moveToFirst();
+                return new Word(
+                        Integer.parseInt(cursor.getString(0)),
+                        cursor.getString(1),
+                        Integer.parseInt(cursor.getString(2)),
+                        Integer.parseInt(cursor.getString(3)),
+                        Integer.parseInt(cursor.getString(4))
+                );
+            }
         }
         return new Word();
     }
@@ -171,7 +269,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * @return Integer number of words in all languages.
      */
     int getWordsCount() {
-        String countQuery = "SELECT  * FROM " + TABLE_WORDS;
+        String countQuery = "SELECT * FROM " + TABLE_WORDS;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         if (cursor != null) {
@@ -183,7 +281,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     int getWordsCountByLanguage(int language) {
-        String countQuery = "SELECT  * FROM " + TABLE_WORDS + " WHERE " + KEY_LANG + " = " + language;
+        String countQuery = "SELECT * FROM " + TABLE_WORDS + " WHERE " + KEY_LANG + " = " + language;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);
         if (cursor != null) {
@@ -241,15 +339,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                     Integer.parseInt(cursor.getString(2)),
                     Integer.parseInt(cursor.getString(3)),
                     Integer.parseInt(cursor.getString(4)));
-                Log.d("AndroidLang",
-                        "ID: " + String.valueOf(word.getID()) + "\n"+
-                                "Name: " + word.getName() +"\n"+
-                                "Lang: " + String.valueOf(word.getLanguage()) +"\n"+
-                                "Learnable: " + String.valueOf(word.getLearnable()) +"\n"+
-                                "LearnState: " + String.valueOf(word.getLearnState())
-                );
                 words.add(word);
             }
+            cursor.close();
         }
         return words;
     }
@@ -279,20 +371,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         Integer.parseInt(cursor.getString(2)),
                         Integer.parseInt(cursor.getString(3)),
                         Integer.parseInt(cursor.getString(4)));
-//                Log.d("AndroidLang",
-//                        "ID: " + String.valueOf(word.getID()) + "\n"+
-//                                "Name: " + word.getName() +"\n"+
-//                                "Lang: " + String.valueOf(word.getLanguage()) +"\n"+
-//                                "Learnable: " + String.valueOf(word.getLearnable()) +"\n"+
-//                                "LearnState: " + String.valueOf(word.getLearnState())
-//                );
                 words.add(word);
             };
+            cursor.close();
         }
         return words;
     }
 
-    public int updateWord(Word word) {
+    public void updateWord(Word word) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -304,14 +390,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // updating row
         db.update(TABLE_WORDS, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(word.getID()) });
-//        Log.d("AndroidLang",
-//                "ID: " + String.valueOf(word.getID()) + "\n"+
-//                        "Name: " + word.getName() +"\n"+
-//                        "Lang: " + String.valueOf(word.getLanguage()) +"\n"+
-//                        "Learnable: " + String.valueOf(word.getLearnable()) +"\n"+
-//                        "LearnState: " + String.valueOf(word.getLearnState())
-//        );
-        return 0;
     }
 
     public List<Word> getRelatedWordsByIdAndLanguage(int id, int language) {
@@ -341,11 +419,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + " WHERE " + KEY_ID + " = " + id
                 + " AND " + KEY_LANG + " = " + language;
         Cursor cursor = db.rawQuery(query, null);
-//                TABLE_WORDS,
-//                new String[] { KEY_ID, KEY_NAME, KEY_LANG, KEY_LEARNABLE, KEY_LEARN_STATE },
-//                KEY_ID + "=?",
-//                new String[] { String.valueOf(id) },
-//                null, null, null, null);
         if (cursor != null) {
             while (cursor.moveToNext()) {
                 return new Word(

@@ -10,6 +10,7 @@ import java.util.List;
 
 /**
  * Class wrap Word objects.
+ * Object is parcelable so it can be send via Bundle.
  */
 public class Word implements Parcelable {
     public static final int WORD_LANGUAGE_ENGLISH = 0;
@@ -127,6 +128,22 @@ public class Word implements Parcelable {
     };
 
     /**
+     * Add progress to word learning.
+     */
+    public void levelUp() {
+        this._learnState += 1;
+        this.save();
+    }
+
+    /**
+     * Remove progress from word learning.
+     */
+    public void levelDown() {
+        this._learnState -= 1;
+        this.save();
+    }
+
+    /**
      * Get related Words for this Word. Only opposite language.
      * @return List of Word objects.
      */
@@ -142,10 +159,6 @@ public class Word implements Parcelable {
      * @return List of Word objects.
      */
     public List<Word> getRelatedWordsSameLanguage() {
-//        List<Word> relatedSameLanguage = new ArrayList<Word>();
-//        relatedSameLanguage.add(this);
-//        return relatedSameLanguage;
-//        // TODO: 08/05/2020 Add support to synonyms in same la
         if (this._relatedSameLanguage == null) {
             this._relatedSameLanguage = MainActivity.db.getRelatedWordsByIdAndLanguage(this._id, this._language);
         }
@@ -210,20 +223,4 @@ public class Word implements Parcelable {
             return new Word[size];
         }
     };
-
-    /**
-     * Add progress to word learning.
-     */
-    public void levelUp() {
-        this._learnState += 1;
-        this.save();
-    }
-
-    /**
-     * Remove progress from word learning.
-     */
-    public void levelDown() {
-        this._learnState -= 1;
-        this.save();
-    }
 }
