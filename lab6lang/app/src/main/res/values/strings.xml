@@ -3,17 +3,11 @@
     <string name="action_settings">Settings</string>
 
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
     <string name="next">Next</string>
     <string name="previous">Previous</string>
-
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
     <string name="About">About</string>
     <string name="app_about">About Application</string>
-    <string name="app_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum efficitur tincidunt.\nInteger suscipit leo eu suscipit rutrum. Ut at rutrum mauris. Maecenas nec dapibus urna, id egestas nisl. </string>
+    <string name="app_description" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum efficitur tincidunt.\nInteger suscipit leo eu suscipit rutrum. Ut at rutrum mauris. Maecenas nec dapibus urna, id egestas nisl. </string>
     <string name="app_author">Author: Piotr Trzepacz</string>
     <string name="app_version">Version: 0.0.1</string>
     <string name="choose_mode">Choose learning mode</string>
@@ -25,7 +19,7 @@
     <string name="learn_set_unlearn">Unlearn Word</string>
     <string name="yes">Yes</string>
     <string name="no_go_back">No, go back.</string>
-    <string name="do_you_really_want_to_unlearn_word">Do you really want to unlearn %s word?</string>
+    <string name="do_you_really_want_to_unlearn_word">Do you really want to unlearn %1$s word?</string>
     <string name="word_learned">Word learned!</string>
     <string name="word_unlearned">Word unlearned!</string>
     <string name="all_words_learned">All words learned! Congratulations</string>
@@ -41,4 +35,9 @@
     <string name="correct_answers">Correct answers: %1$d of %2$d</string>
     <string name="test_mode">Test Mode</string>
     <string name="result">Result</string>
+    <string name="please_learn_some_words_first">Please learn some words first!</string>
+    <string name="your_answer_was_incorrect">Your answer was incorrect.</string>
+    <string name="your_answer_was_not_what_we_wanted">Your answer was not what we wanted. Please try other word.</string>
+    <string name="answer_ok">Answer OK!</string>
+    <string name="your_answer_was_a_bit_off">Your answer \"%1$s\" was a little bit off. Closes answer was \"%2$s\".</string>
 </resources>

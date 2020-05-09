@@ -162,7 +162,7 @@ public class LearningFragment extends Fragment implements View.OnClickListener {
                 displayWord();
             } else {
                 // ASK is user is sure to reset word.
-                dialogBuilder.setMessage(String.format(getString(R.string.do_you_really_want_to_unlearn_word), word.getName())).
+                dialogBuilder.setMessage(getString(R.string.do_you_really_want_to_unlearn_word, word.getName())).
                         setPositiveButton(R.string.yes, unlearnDialogClickListener).
                         setNegativeButton(R.string.no_go_back, unlearnDialogClickListener).show();
             }

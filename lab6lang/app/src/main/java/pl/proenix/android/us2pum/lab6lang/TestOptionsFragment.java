@@ -60,7 +60,7 @@ public class TestOptionsFragment extends Fragment implements View.OnClickListene
             buttonTestToEnglish.setEnabled(false);
             buttonTestToBoth.setEnabled(false);
 
-            Toast.makeText(view.getContext(), "Please learn some words first!", Toast.LENGTH_LONG).show();
+            Toast.makeText(view.getContext(), R.string.please_learn_some_words_first, Toast.LENGTH_LONG).show();
             return;
         } else {
             seekBarTestElements.setMax(max-1); // set max to max elements counted from 0

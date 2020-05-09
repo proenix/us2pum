@@ -183,15 +183,15 @@ public class TestFragment extends Fragment implements View.OnClickListener {
             testsToDo.remove(0);
             if (test.getMinDistance() > 0) {
                 // Display that answer was a little bit off.
-                Toast.makeText(view.getContext(), String.format("Your answer \"%s\" was a little bit off. Closes answer was %s", userInputtedAnswer, test.getProbableAnswer()), Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(), getString(R.string.your_answer_was_a_bit_off, userInputtedAnswer, test.getProbableAnswer()), Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(view.getContext(), "Answer OK!", Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(), R.string.answer_ok, Toast.LENGTH_LONG).show();
             }
         } else {
             if (test.isResultTryAgain()) {
-                Toast.makeText(view.getContext(), "Your answer was not what what we wanted. Please try other word.", Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(), R.string.your_answer_was_not_what_we_wanted, Toast.LENGTH_LONG).show();
             } else {
-                Toast.makeText(view.getContext(), "Your answer was incorrect.", Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(), R.string.your_answer_was_incorrect, Toast.LENGTH_LONG).show();
                 Collections.shuffle(testsToDo);
             }
         }
