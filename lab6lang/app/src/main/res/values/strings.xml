@@ -36,5 +36,7 @@
     <string name="number_of_test_elements">(Optional) Number of test elements:</string>
     <string name="input_polish_meaning">Polish meaning</string>
     <string name="input_english_writing">English writing</string>
-    <string name="word_not">Not: %1$s"</string>
+    <string name="word_not">Not: %1$s</string>
+    <string name="summary_row_progress">Tries: %1$d \nProgress: %2$d</string>
+    <string name="correct_answers">Correct answers: %1$d of %2$d</string>
 </resources>

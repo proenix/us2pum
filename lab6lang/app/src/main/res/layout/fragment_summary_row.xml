@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:padding="3dip"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:orientation="vertical"
+        android:layout_width="0dip">
+
+        <TextView
+            android:id="@+id/textViewSummaryRowTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:padding="3dip"
+            android:text="WORD TESTED"
+            android:textStyle="bold" />
+
+        <ImageView
+            android:id="@+id/imageViewSummaryRowMode"
+            android:layout_width="match_parent"
+            android:layout_height="10dip"
+            android:layout_weight="2"
+            app:srcCompat="@drawable/en_to_pl" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewSummaryRowProgress"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="Tries: 10\nProgress: 20"
+        android:textSize="12sp" />
+
+    <ImageView
+        android:id="@+id/imageViewSummaryRowResult"
+        android:layout_height="30dip"
+        android:layout_gravity="center"
+        android:layout_weight="0.5"
+        app:srcCompat="@drawable/up"
+        android:layout_width="0dip" />
+
+</LinearLayout>

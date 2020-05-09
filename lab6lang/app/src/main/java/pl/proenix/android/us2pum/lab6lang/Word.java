@@ -210,4 +210,20 @@ public class Word implements Parcelable {
             return new Word[size];
         }
     };
+
+    /**
+     * Add progress to word learning.
+     */
+    public void levelUp() {
+        this._learnState += 1;
+        this.save();
+    }
+
+    /**
+     * Remove progress from word learning.
+     */
+    public void levelDown() {
+        this._learnState -= 1;
+        this.save();
+    }
 }

@@ -18,6 +18,16 @@
             android:text="Test summary"
             android:textStyle="bold" />
 
+        <TextView
+            android:id="@+id/textViewTestSummaryTotal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Correct answers: 10 of 20 " />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dip" />
+
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">

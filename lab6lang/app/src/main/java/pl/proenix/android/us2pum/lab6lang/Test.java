@@ -52,7 +52,7 @@ public class Test implements Parcelable {
      * @return True if item was answered correctly on first try.
      */
     public boolean isAdvanced() {
-        return this._tries == 0 && this._result == RESULT_PASSED;
+        return this._tries == 1 && this._result == RESULT_PASSED;
     }
 
     public Word getWord() {
@@ -61,10 +61,12 @@ public class Test implements Parcelable {
 
     private void setResultPassed() {
         this._tries += 1;
-        if (this._result == RESULT_NOT_TESTED) {
+        if (this._result == RESULT_NOT_TESTED || this._result == RESULT_TRY_AGAIN) {
             this._result = RESULT_PASSED;
+            this._word.levelUp();
         } else {
-            this._result = RESULT_PASSED;
+            this._result = RESULT_FAILED;
+            this._word.levelDown();
         }
     }
 
@@ -282,4 +284,8 @@ public class Test implements Parcelable {
             return new Test[size];
         }
     };
+
+    public int getTries() {
+        return this._tries;
+    }
 }
