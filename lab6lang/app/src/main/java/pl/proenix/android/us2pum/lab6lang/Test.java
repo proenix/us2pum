@@ -65,7 +65,7 @@ public class Test implements Parcelable {
             this._result = RESULT_PASSED;
             this._word.levelUp();
         } else {
-            this._result = RESULT_FAILED;
+            this._result = RESULT_PASSED;
             this._word.levelDown();
         }
     }

@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,8 +20,6 @@ import android.widget.Toast;
  * // TODO: 06/05/2020 Add Option to go to wait after correct answer. 
  */
 public class TestOptionsFragment extends Fragment implements View.OnClickListener {
-
-    private static final String DEBUG_TAG = "AndroidLang";
 
     private View view;
     private Button buttonTestToEnglish;
@@ -44,7 +41,6 @@ public class TestOptionsFragment extends Fragment implements View.OnClickListene
 
         // Learned elements Count
         final int max = MainActivity.db.getWordsCountByLanguageAndLearnState(Word.WORD_LANGUAGE_ENGLISH, Word.WORD_TO_LEARN, ">");
-        Log.d(DEBUG_TAG, "Total Testable Count: "+ String.valueOf(max));
 
         // Map controls
         final TextView textViewNumberOfElementsSummary = view.findViewById(R.id.textViewNumberOfElementsSummary);
@@ -101,19 +97,16 @@ public class TestOptionsFragment extends Fragment implements View.OnClickListene
         Bundle bundle = new Bundle();
         bundle.putInt("numberOfTests", seekBarTestElements.getProgress() + 1);
         if (v.getId() == buttonTestToEnglish.getId()) {
-            Log.d(DEBUG_TAG, "To English");
             bundle.putInt("mode", Test.TEST_MODE_TO_ENGLISH);
             NavHostFragment.findNavController(TestOptionsFragment.this)
                     .navigate(R.id.action_TestOptions_to_Test, bundle);
         }
         if (v.getId() == buttonTestToPolish.getId()) {
-            Log.d(DEBUG_TAG, "To Polish");
             bundle.putInt("mode", Test.TEST_MODE_TO_POLISH);
             NavHostFragment.findNavController(TestOptionsFragment.this)
                     .navigate(R.id.action_TestOptions_to_Test, bundle);
         }
         if (v.getId() == buttonTestToBoth.getId()) {
-            Log.d(DEBUG_TAG, "To Both");
             bundle.putInt("mode", Test.TEST_MODE_TO_BOTH);
             NavHostFragment.findNavController(TestOptionsFragment.this)
                     .navigate(R.id.action_TestOptions_to_Test, bundle);

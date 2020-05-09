@@ -1,7 +1,5 @@
 package pl.proenix.android.us2pum.lab6lang;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
@@ -19,9 +17,6 @@ import android.widget.TextView;
 import java.util.List;
 
 public class TestSummaryFragment extends Fragment {
-
-    private AlertDialog.Builder dialogBuilder;
-    private DialogInterface.OnClickListener onExitDialogClickListener;
 
     private List<Test> testsDone;
 

@@ -48,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
 //        DatabaseHandler db = new DatabaseHandler(this);
         db.resetDatabase();
 
-        int eng_word = -1;
-        int eng_word_2 = -1;
-        int pol_word_1 = -1;
-        int pol_word_2 = -1;
+        int eng_word;
+        int eng_word_2;
+        int pol_word_1;
+        int pol_word_2;
         Log.d(DEBUG_TAG, "Reset table state and insert sample data.");
 
         // Add first English Word.
@@ -84,15 +84,6 @@ public class MainActivity extends AppCompatActivity {
         Log.d(DEBUG_TAG, "Total Words Count: "+ String.valueOf(db.getWordsCount()));
         Log.d(DEBUG_TAG, "English Words Count: "+ String.valueOf(db.getWordsCountByLanguage(Word.WORD_LANGUAGE_ENGLISH)));
 
-
-//        FloatingActionButton fab = findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
 
         // TODO: 06/05/2020 Create migration routine - data imported once for application lifecycle. Preferably to write something in DatabaseHandler.
 
@@ -137,23 +128,28 @@ public class MainActivity extends AppCompatActivity {
     private void openPopupAboutApp() {
         // Show About App.
         LayoutInflater inflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        View popupView = inflater.inflate(R.layout.popup_about_app, null);
+        View popupView = null;
+        if (inflater != null) {
+            popupView = inflater.inflate(R.layout.popup_about_app, null);
+        }
 
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true;
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
 
         popupWindow.setElevation(20);
         popupWindow.showAtLocation(findViewById(R.id.mainActivity), Gravity.CENTER, 0,0 );
         popupWindow.setBackgroundDrawable(new ColorDrawable(Color.WHITE));
 
-        popupView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                popupWindow.dismiss();
-                return false;
-            }
-        });
+        if (popupView != null) {
+            popupView.setOnTouchListener(new View.OnTouchListener() {
+                @SuppressLint("ClickableViewAccessibility")
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    popupWindow.dismiss();
+                    return false;
+                }
+            });
+        }
     }
 }

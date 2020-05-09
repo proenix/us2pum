@@ -6,7 +6,6 @@ import android.os.Bundle;
 
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -32,13 +31,10 @@ import java.util.List;
  */
 public class TestFragment extends Fragment implements View.OnClickListener {
 
-    private static final String DEBUG_TAG = "AndroidLang";
-
     private static final int TEST_MODE_TO_ENGLISH = Test.TEST_MODE_TO_ENGLISH;
     private static final int TEST_MODE_TO_POLISH = Test.TEST_MODE_TO_POLISH;
     private static final int TEST_MODE_TO_BOTH = Test.TEST_MODE_TO_BOTH;
 
-    private Bundle bundle;
     private View view;
     private int mode;
 
@@ -46,7 +42,6 @@ public class TestFragment extends Fragment implements View.OnClickListener {
     private int numberOfTests;
 
     private Button buttonSubmitAnswer;
-    private boolean stateSubmitted;
 
     private TextView textViewInputBarIndicator;
     private TextView textViewAnswerLeft;
@@ -70,7 +65,7 @@ public class TestFragment extends Fragment implements View.OnClickListener {
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
 
-        bundle = getArguments();
+        Bundle bundle = getArguments();
         try {
             mode = bundle != null ? bundle.getInt("mode") : TEST_MODE_TO_BOTH;
             numberOfTests = bundle != null ? bundle.getInt("numberOfTests") : 0;
@@ -112,7 +107,6 @@ public class TestFragment extends Fragment implements View.OnClickListener {
                 testsToDo.add(new Test(word, Test.TEST_MODE_TO_POLISH));
             }
         }
-        Log.d("AndroidLang", "Number of test in tests List: "+String.valueOf(testsToDo.size()));
 
         // Randomize order of tests
         Collections.shuffle(testsToDo);
@@ -206,8 +200,6 @@ public class TestFragment extends Fragment implements View.OnClickListener {
     private void displayNextTest() {
         // Check if any test is left
         if (testsToDo.size() == 0) {
-            Log.d("AndroidLang", "Tests done going to summary.");
-
             goToSummary();
             return;
         }

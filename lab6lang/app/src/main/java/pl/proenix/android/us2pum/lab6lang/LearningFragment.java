@@ -3,7 +3,6 @@ package pl.proenix.android.us2pum.lab6lang;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,9 +23,6 @@ import java.util.List;
 // TODO: 03/05/2020 Remove button on bottom to exit?
 public class LearningFragment extends Fragment implements View.OnClickListener {
 
-    private static final String DEBUG_TAG = "AndroidLang";
-
-    //private int wordsLearned = 0;
     private int currentWordIndex = 0;
     private View view;
     private List<Word> words;
@@ -148,7 +144,7 @@ public class LearningFragment extends Fragment implements View.OnClickListener {
             textViewWordMeaning.setGravity(Gravity.CENTER);
 
             linearLayoutWordMeaning.addView(textViewWordMeaning);
-        };
+        }
     }
 
     @Override
