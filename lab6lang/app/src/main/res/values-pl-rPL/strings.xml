@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Lang</string>
+    <string name="action_settings">Ustawienia</string>
+    <string name="next">Następne</string>
+    <string name="previous">Poprzednie</string>
+    <string name="app_about">O aplikacji</string>
+    <string name="app_author">Autor: Piotr Trzepacz</string>
+    <string name="app_version">Versja: 0.0.1</string>
+    <string name="choose_mode">Wybierz tryb nauki</string>
+    <string name="mode_name_learning">Nauka</string>
+    <string name="mode_name_test">Test</string>
+    <string name="end_learning">Zakończ naukę</string>
+    <string name="learn_set_learned">Ustaw jako nauczone</string>
+    <string name="submit_answer">Zatwierdź</string>
+    <string name="learn_set_unlearn">Ustaw jako nie nauczone</string>
+    <string name="yes">Tak</string>
+    <string name="no_go_back">Nie, wróć</string>
+    <string name="do_you_really_want_to_unlearn_word">Czy na pewno chcesz oznaczyć słowo %1$s jako nie nauczone?</string>
+    <string name="word_learned">Słowo oznaczone jako nauczone!</string>
+    <string name="word_unlearned">Słowo oznaczone jako nie nauczone!</string>
+    <string name="all_words_learned">Wszystkie słowa są nauczone! Gratulacje!</string>
+    <string name="choose_test_mode">Wybierz tryb testu</string>
+    <string name="polish_to_english">Polskie na Angielskie</string>
+    <string name="english_to_polish">Angielskie na Polskie</string>
+    <string name="mixed">Oba</string>
+    <string name="number_of_test_elements">(Opcjonalnie) Liczba słów do przetestowania:</string>
+    <string name="input_polish_meaning">Polskie Znaczenie</string>
+    <string name="input_english_writing">Angielskie Pisownia</string>
+    <string name="word_not">Nie: %1$s</string>
+    <string name="summary_row_progress">Prób: %1$d \nPostęp: %2$d</string>
+    <string name="correct_answers">Prawidłowych odpowiedzi: %1$d z %2$d</string>
+    <string name="result">Wynik</string>
+    <string name="test_mode">Tryb Testu</string>
+    <string name="About">O aplikacji</string>
+    <string name="please_learn_some_words_first">Na początek naucz się kilku słów.</string>
+    <string name="your_answer_was_incorrect">Odpowiedź nieprawidłowa.</string>
+    <string name="your_answer_was_not_what_we_wanted">Spodziewaliśmy się innej odpowiedzi. Spróbuj innego słowa.</string>
+    <string name="answer_ok">Odpowiedź prawidłowa!</string>
+    <string name="your_answer_was_a_bit_off">Twoja odpowiedź \"%1$s\" była lekko niepoprawna. Najbliższa odpowiedź to \"%2$s\".</string>
+</resources>

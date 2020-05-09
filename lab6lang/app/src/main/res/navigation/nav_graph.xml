@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/MainActivity">
+
+    <fragment
+        android:id="@+id/MainActivity"
+        android:name="pl.proenix.android.us2pum.lab6lang.ChooseModeFragment"
+        tools:layout="@layout/fragment_choose_mode">
+
+        <action
+            android:id="@+id/action_MainActivity_to_LearningMode"
+            app:destination="@id/LearningMode" />
+        <action
+            android:id="@+id/action_MainActivity_to_TestOptions"
+            app:destination="@id/TestOptions" />
+    </fragment>
+    <fragment
+        android:id="@+id/LearningMode"
+        android:name="pl.proenix.android.us2pum.lab6lang.LearningFragment"
+        tools:layout="@layout/fragment_learning" />
+    <fragment
+        android:id="@+id/TestOptions"
+        android:name="pl.proenix.android.us2pum.lab6lang.TestOptionsFragment"
+        tools:layout="@layout/fragment_test_options">
+        <action
+            android:id="@+id/action_TestOptions_to_Test"
+            app:destination="@id/Test" />
+    </fragment>
+    <fragment
+        android:id="@+id/Test"
+        android:name="pl.proenix.android.us2pum.lab6lang.TestFragment"
+        tools:layout="@layout/fragment_test">
+        <action
+            android:id="@+id/action_Test_to_TestSummary"
+            app:destination="@id/TestSummary" />
+    </fragment>
+    <fragment
+        android:id="@+id/TestSummary"
+        android:name="pl.proenix.android.us2pum.lab6lang.TestSummaryFragment"
+        tools:layout="@layout/fragment_test_summary" >
+        <action
+            android:id="@+id/action_TestSummary_to_MainActivity"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popUpTo="@id/MainActivity" />
+    </fragment>
+</navigation>

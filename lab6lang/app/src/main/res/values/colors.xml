@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimaryEnglish">#26C6DA</color>
+    <color name="colorPrimaryPolish">#26C6DA</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorRed">#D32F2F</color>
+    <color name="colorBackgroundToEnglish">#151515</color>
+    <color name="colorBackgroundToPolish">#F1F0F0</color>
+    <color name="colorTextToPolish">#151515</color>
+    <color name="colorTextToEnglish">#FDFDFD</color>
+</resources>

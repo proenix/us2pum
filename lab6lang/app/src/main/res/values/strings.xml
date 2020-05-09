@@ -1,0 +1,43 @@
+<resources>
+    <string name="app_name">Lang</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- Strings used for fragments for navigation -->
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="About">About</string>
+    <string name="app_about">About Application</string>
+    <string name="app_description" translatable="false">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum efficitur tincidunt.\nInteger suscipit leo eu suscipit rutrum. Ut at rutrum mauris. Maecenas nec dapibus urna, id egestas nisl. </string>
+    <string name="app_author">Author: Piotr Trzepacz</string>
+    <string name="app_version">Version: 0.0.1</string>
+    <string name="choose_mode">Choose learning mode</string>
+    <string name="mode_name_learning">Learning</string>
+    <string name="mode_name_test">Test</string>
+    <string name="end_learning">Exit Learning</string>
+    <string name="learn_set_learned">Set as Learned</string>
+    <string name="submit_answer">Submit</string>
+    <string name="learn_set_unlearn">Unlearn Word</string>
+    <string name="yes">Yes</string>
+    <string name="no_go_back">No, go back.</string>
+    <string name="do_you_really_want_to_unlearn_word">Do you really want to unlearn %1$s word?</string>
+    <string name="word_learned">Word learned!</string>
+    <string name="word_unlearned">Word unlearned!</string>
+    <string name="all_words_learned">All words learned! Congratulations</string>
+    <string name="choose_test_mode">Choose Test mode</string>
+    <string name="polish_to_english">Polish to English</string>
+    <string name="english_to_polish">English to Polish</string>
+    <string name="mixed">Mixed</string>
+    <string name="number_of_test_elements">(Optional) Number of test elements:</string>
+    <string name="input_polish_meaning">Polish meaning</string>
+    <string name="input_english_writing">English writing</string>
+    <string name="word_not">Not: %1$s</string>
+    <string name="summary_row_progress">Tries: %1$d \nProgress: %2$d</string>
+    <string name="correct_answers">Correct answers: %1$d of %2$d</string>
+    <string name="test_mode">Test Mode</string>
+    <string name="result">Result</string>
+    <string name="please_learn_some_words_first">Please learn some words first!</string>
+    <string name="your_answer_was_incorrect">Your answer was incorrect.</string>
+    <string name="your_answer_was_not_what_we_wanted">Your answer was not what we wanted. Please try other word.</string>
+    <string name="answer_ok">Answer OK!</string>
+    <string name="your_answer_was_a_bit_off">Your answer \"%1$s\" was a little bit off. Closes answer was \"%2$s\".</string>
+</resources>
