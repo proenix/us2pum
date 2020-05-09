@@ -6,10 +6,10 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,8 +72,6 @@ public class TestFragment extends Fragment implements View.OnClickListener {
         try {
             mode = bundle != null ? bundle.getInt("mode") : TEST_MODE_TO_BOTH;
             numberOfTests = bundle != null ? bundle.getInt("numberOfTests") : 0;
-//            Log.d("AndroidLang", "mode: "+String.valueOf(mode));
-//            Log.d("AndroidLang", "numberOfTests: "+String.valueOf(numberOfTests));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -179,16 +177,18 @@ public class TestFragment extends Fragment implements View.OnClickListener {
      *
      */
     private void displayNextTest() {
-        // Get first word from testToDo list and display to user.
+        // Check if any test is left
         if (testsToDo.size() == 0) {
             Log.d("AndroidLang", "Tests done going to summary.");
 
-            // TODO: 08/05/2020 Prepare bundle with summary.
             Bundle bundle = new Bundle();
+            bundle.putParcelableArrayList("TestSummary", (ArrayList<? extends Parcelable>) testsCompleted);
+
             NavHostFragment.findNavController(TestFragment.this)
                     .navigate(R.id.action_Test_to_TestSummary, bundle);
             return;
         }
+        // Get first word from testToDo list and display to user.
         test = testsToDo.get(0);
 
         // Set indicator bar color

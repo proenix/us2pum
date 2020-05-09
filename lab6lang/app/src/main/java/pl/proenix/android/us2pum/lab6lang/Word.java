@@ -1,5 +1,7 @@
 package pl.proenix.android.us2pum.lab6lang;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.widget.ArrayAdapter;
 
@@ -9,7 +11,7 @@ import java.util.List;
 /**
  * Class wrap Word objects.
  */
-public class Word {
+public class Word implements Parcelable {
     public static final int WORD_LANGUAGE_ENGLISH = 0;
     public static final int WORD_LANGUAGE_POLISH = 1;
 
@@ -150,4 +152,62 @@ public class Word {
         return this._relatedSameLanguage;
     }
 
+    protected Word(Parcel in) {
+        _id = in.readInt();
+        _name = in.readString();
+        _language = in.readInt();
+        _learnable = in.readInt();
+        _learnState = in.readInt();
+        if (in.readByte() == 0x01) {
+            _relatedSameLanguage = new ArrayList<Word>();
+            in.readList(_relatedSameLanguage, Word.class.getClassLoader());
+        } else {
+            _relatedSameLanguage = null;
+        }
+        if (in.readByte() == 0x01) {
+            _relatedOppositeLanguage = new ArrayList<Word>();
+            in.readList(_relatedOppositeLanguage, Word.class.getClassLoader());
+        } else {
+            _relatedOppositeLanguage = null;
+        }
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(_id);
+        dest.writeString(_name);
+        dest.writeInt(_language);
+        dest.writeInt(_learnable);
+        dest.writeInt(_learnState);
+        if (_relatedSameLanguage == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(_relatedSameLanguage);
+        }
+        if (_relatedOppositeLanguage == null) {
+            dest.writeByte((byte) (0x00));
+        } else {
+            dest.writeByte((byte) (0x01));
+            dest.writeList(_relatedOppositeLanguage);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Word> CREATOR = new Parcelable.Creator<Word>() {
+        @Override
+        public Word createFromParcel(Parcel in) {
+            return new Word(in);
+        }
+
+        @Override
+        public Word[] newArray(int size) {
+            return new Word[size];
+        }
+    };
 }

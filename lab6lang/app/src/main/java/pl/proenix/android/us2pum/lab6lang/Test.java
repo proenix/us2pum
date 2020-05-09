@@ -1,6 +1,8 @@
 package pl.proenix.android.us2pum.lab6lang;
 
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
@@ -11,7 +13,7 @@ import java.util.Random;
 /**
  * Helper object for managing testing of words.
  */
-public class Test {
+public class Test implements Parcelable {
     private Word _word; // Should be always English word version.
     private int _mode;
 
@@ -242,4 +244,42 @@ public class Test {
             return this._word.getRelatedWordsOtherLanguage().get(0).getName();
         }
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(_word);
+        dest.writeInt(_mode);
+        dest.writeInt(_tries);
+        dest.writeInt(_result);
+        dest.writeInt(_minDistance);
+        dest.writeString(_probableAnswer);
+    }
+
+
+    protected Test(Parcel in) {
+        _word = (Word) in.readValue(Word.class.getClassLoader());
+        _mode = in.readInt();
+        _tries = in.readInt();
+        _result = in.readInt();
+        _minDistance = in.readInt();
+        _probableAnswer = in.readString();
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<Test> CREATOR = new Parcelable.Creator<Test>() {
+        @Override
+        public Test createFromParcel(Parcel in) {
+            return new Test(in);
+        }
+
+        @Override
+        public Test[] newArray(int size) {
+            return new Test[size];
+        }
+    };
 }
