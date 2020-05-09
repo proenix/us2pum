@@ -9,7 +9,6 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,27 +20,20 @@ import java.util.List;
 
 public class TestSummaryFragment extends Fragment {
 
-    Bundle bundle;
     private AlertDialog.Builder dialogBuilder;
     private DialogInterface.OnClickListener onExitDialogClickListener;
-    private View view;
 
-    List<Test> testsDone;
+    private List<Test> testsDone;
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-        bundle = getArguments();
-
-        testsDone = bundle.getParcelableArrayList("TestSummary");
-        for (Test test : testsDone) {
-            Log.d("AndroidLang", String.valueOf(test.getResult()));
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            testsDone = bundle.getParcelableArrayList("TestSummary");
         }
-        Log.d("AndroidLang", "Test Results Size: " + String.valueOf(testsDone.size()));
-
-        view = inflater.inflate(R.layout.fragment_test_summary, container, false);
-        return view;
+        return inflater.inflate(R.layout.fragment_test_summary, container, false);
     }
 
     @Override
