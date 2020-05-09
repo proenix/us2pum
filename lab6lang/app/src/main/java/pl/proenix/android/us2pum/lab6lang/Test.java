@@ -2,9 +2,6 @@ package pl.proenix.android.us2pum.lab6lang;
 
 
 import android.util.Log;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.text.similarity.LevenshteinDetailedDistance;
 import org.apache.commons.text.similarity.LevenshteinDistance;
 
 import java.util.ArrayList;
@@ -15,7 +12,7 @@ import java.util.Random;
  * Helper object for managing testing of words.
  */
 public class Test {
-    private Word _word; // Should be always English version.
+    private Word _word; // Should be always English word version.
     private int _mode;
 
     public static final int TEST_MODE_TO_ENGLISH = 10;
@@ -26,6 +23,7 @@ public class Test {
     private int _result = -1;
 
     private static final int RESULT_NOT_TESTED = -1;
+    private static final int RESULT_TRY_AGAIN = 0;
     private static final int RESULT_PASSED = 10;
     private static final int RESULT_FAILED = 20;
 
@@ -73,6 +71,19 @@ public class Test {
         this._result = RESULT_FAILED;
     }
 
+    private void setResultTryAgain() {
+        this._result = RESULT_TRY_AGAIN;
+    }
+
+    /**
+     * Check whether test should be retried without penalty due to user inputted different writing of word with same meaning.
+     * Eg. user input for word "samochód" is "car" but wanted word was "automobile".
+     * @return True if test should be retried.
+     */
+    public boolean isResultTryAgain() {
+        return (this._result == RESULT_TRY_AGAIN);
+    }
+
     /**
      * Validate answer and decide if provided string is similar enough to answers.
      * Uses Levenshtein Distance algorithm to detect strings similarities.
@@ -81,37 +92,108 @@ public class Test {
      */
     public boolean checkAnswer(String userAnswer) {
         List<Word> wordsToCheck = new ArrayList<Word>();
+
+        // For TO_POLISH check all related words and allow typo in word.
         if (this._mode == TEST_MODE_TO_POLISH) {
             wordsToCheck = this._word.getRelatedWordsOtherLanguage();
-        } else {
-            // TODO: 08/05/2020 Check for self and related words. For related words return info that its not counted as bad but not what looked for and try again.
-            wordsToCheck = this._word.getRelatedWordsSameLanguage();
+            for (Word acceptableAnswer : wordsToCheck) {
+                // Calculate Levenshtein distance for word pair.
+                int distance = LevenshteinDistance.getDefaultInstance().apply(acceptableAnswer.getName(), userAnswer);
+
+                // Calculate acceptable error for word pair.
+                int acceptedErrorThreshold = (int) Math.floor(Math.sqrt(acceptableAnswer.getName().length()) - 1.0);
+
+                Log.d("AndroidLang", "ComparingToPOLISH: {"
+                        + "userAnswer: " + userAnswer + "; "
+                        + "acceptableAnswer: " + acceptableAnswer.getName() + "; "
+                        + "calculatedDistance: " + String.valueOf(distance) + "; "
+                        + "acceptableDistance: " + String.valueOf(acceptedErrorThreshold));
+
+                if (distance == 0) {
+                    this._minDistance = 0;
+                    this._probableAnswer = this._word.getName();
+                    this.setResultPassed();
+                    return true;
+                } else if (distance <= acceptedErrorThreshold) {
+                    this._minDistance = distance;
+                    this._probableAnswer = acceptableAnswer.getName();
+                    this.setResultPassed();
+                    return true;
+                }
+            }
         }
-        for (Word acceptableAnswer : wordsToCheck) {
-            // Calculate Levenshtein distance for word pair.
-            int distance = LevenshteinDistance.getDefaultInstance().apply(acceptableAnswer.getName(), userAnswer);
-
-            // Calculate acceptable error for word pair.
-            int acceptedErrorThreshold = (int) Math.floor( Math.sqrt(acceptableAnswer.getName().length()) - 1.0 );
-
-            Log.d("AndroidLang", "Comparing: {"
-                    + "userAnswer: " + userAnswer + "; "
-                    + "acceptableAnswer: " + acceptableAnswer.getName() + "; "
-                    + "calculatedDistance: " + String.valueOf(distance) + "; "
-                    + "acceptableDistance: " + String.valueOf(acceptedErrorThreshold));
-
-            if (distance == 0) {
+        if (this._mode == TEST_MODE_TO_ENGLISH) {
+            if (userAnswer.equals(this._word.getName())) {
                 this._minDistance = 0;
                 this._probableAnswer = this._word.getName();
                 this.setResultPassed();
                 return true;
-            } else if (distance <= acceptedErrorThreshold) {
-                this._minDistance = distance;
-                this._probableAnswer = acceptableAnswer.getName();
-                this.setResultPassed();
-                return true;
+            } else {
+                // Check for words with same meaning.
+                wordsToCheck = this._word.getRelatedWordsSameLanguage();
+                for (Word acceptableAnswer : wordsToCheck) {
+                    // Calculate Levenshtein distance for word pair.
+                    int distance = LevenshteinDistance.getDefaultInstance().apply(acceptableAnswer.getName(), userAnswer);
+
+                    // Calculate acceptable error for word pair.
+                    int acceptedErrorThreshold = (int) Math.floor(Math.sqrt(acceptableAnswer.getName().length()) - 1.0);
+
+                    Log.d("AndroidLang", "ComparingToENGLISH: {"
+                            + "userAnswer: " + userAnswer + "; "
+                            + "acceptableAnswer: " + acceptableAnswer.getName() + "; "
+                            + "calculatedDistance: " + String.valueOf(distance) + "; "
+                            + "acceptableDistance: " + String.valueOf(acceptedErrorThreshold));
+
+                    if (distance <= acceptedErrorThreshold) {
+                        this._minDistance = distance;
+                        this._probableAnswer = acceptableAnswer.getName();
+                        this.setResultTryAgain();
+                        return false;
+                    }
+                }
             }
         }
+        // check all related
+
+        // For TO_ENGLISH
+        // check original
+        // if is original (no error marin) mark OK
+        // if not original check related
+        //      if in related not mark as bad send message
+        //      if in not in related mark as bad
+
+
+//        if (this._mode == TEST_MODE_TO_POLISH) {
+//            wordsToCheck = this._word.getRelatedWordsOtherLanguage();
+//        } else {
+//            // TODO: 08/05/2020 Check for self and related words. For related words return info that its not counted as bad but not what looked for and try again.
+//            wordsToCheck = this._word.getRelatedWordsSameLanguage();
+//        }
+//        for (Word acceptableAnswer : wordsToCheck) {
+//            // Calculate Levenshtein distance for word pair.
+//            int distance = LevenshteinDistance.getDefaultInstance().apply(acceptableAnswer.getName(), userAnswer);
+//
+//            // Calculate acceptable error for word pair.
+//            int acceptedErrorThreshold = (int) Math.floor( Math.sqrt(acceptableAnswer.getName().length()) - 1.0 );
+//
+//            Log.d("AndroidLang", "Comparing: {"
+//                    + "userAnswer: " + userAnswer + "; "
+//                    + "acceptableAnswer: " + acceptableAnswer.getName() + "; "
+//                    + "calculatedDistance: " + String.valueOf(distance) + "; "
+//                    + "acceptableDistance: " + String.valueOf(acceptedErrorThreshold));
+//
+//            if (distance == 0) {
+//                this._minDistance = 0;
+//                this._probableAnswer = this._word.getName();
+//                this.setResultPassed();
+//                return true;
+//            } else if (distance <= acceptedErrorThreshold) {
+//                this._minDistance = distance;
+//                this._probableAnswer = acceptableAnswer.getName();
+//                this.setResultPassed();
+//                return true;
+//            }
+//        }
         this.setResultNotPassed();
         return false;
     }
@@ -139,26 +221,25 @@ public class Test {
     }
 
     /**
+     * Return hint what was not accepted if user can try again.
+     * @return String Answer that was not accepted.
+     */
+    public String getRetryHint() {
+        if (this._result == RESULT_TRY_AGAIN) {
+            return this._probableAnswer;
+        }
+        return "";
+    }
+
+    /**
      * Word getter for displaying.
      * @return String word to display to user interface.
      */
     public String getWordToShow() {
-        if (this._word.getLanguage() == Word.WORD_LANGUAGE_ENGLISH) {
-            if (this._mode == TEST_MODE_TO_POLISH) {
-                return this._word.getName();
-            } else {
-                // Get first opposite related word.
-                // TODO: 08/05/2020 Randomize displayed words.
-                return this._word.getRelatedWordsOtherLanguage().get(0).getName();
-            }
+        if (this._mode == TEST_MODE_TO_POLISH) {
+            return this._word.getName();
         } else {
-            if (this._mode == TEST_MODE_TO_POLISH) {
-                // Get first opposite related word.
-                // TODO: 08/05/2020 Randomize displayed words.
-                return this._word.getRelatedWordsOtherLanguage().get(0).getName();
-            } else {
-                return this._word.getName();
-            }
+            return this._word.getRelatedWordsOtherLanguage().get(0).getName();
         }
     }
 }

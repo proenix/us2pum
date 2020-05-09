@@ -44,6 +44,13 @@
                 android:textSize="30sp"
                 android:textStyle="bold" />
 
+            <TextView
+                android:id="@+id/textViewNotWord"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/colorWhite" />
+
             <Button
                 android:id="@+id/buttonSubmitAnswer"
                 style="@style/Widget.AppCompat.Button.Borderless"

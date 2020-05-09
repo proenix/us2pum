@@ -8,7 +8,7 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorRed">#D32F2F</color>
     <color name="colorBackgroundToEnglish">#151515</color>
-    <color name="colorBackgroundToPolish">#FDFDFD</color>
+    <color name="colorBackgroundToPolish">#F1F0F0</color>
     <color name="colorTextToPolish">#151515</color>
     <color name="colorTextToEnglish">#FDFDFD</color>
 </resources>
