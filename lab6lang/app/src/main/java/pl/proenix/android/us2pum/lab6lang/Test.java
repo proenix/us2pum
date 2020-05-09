@@ -265,10 +265,4 @@ public class Test implements Parcelable {
             return new Test[size];
         }
     };
-
-    @NonNull
-    @Override
-    public String toString() {
-        return "Test: {_word: " + _word.getName() + ", mode: "+ _mode +", tries: " + _tries + ";}";
-    }
 }
