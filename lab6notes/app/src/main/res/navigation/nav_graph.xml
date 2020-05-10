@@ -12,13 +12,18 @@
         <action
             android:id="@+id/action_notesListFragment_to_noteReadFragment"
             app:destination="@id/noteReadFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
         <action
             android:id="@+id/action_notesListFragment_to_noteCreateUpdateFragment"
             app:destination="@id/noteCreateUpdateFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/notesListFragment" />
     </fragment>
     <fragment
         android:id="@+id/noteCreateUpdateFragment"
@@ -33,7 +38,9 @@
         <action
             android:id="@+id/action_noteReadFragment_to_noteCreateUpdateFragment"
             app:destination="@id/noteCreateUpdateFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right" />
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
     </fragment>
 </navigation>

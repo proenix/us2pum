@@ -4,6 +4,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,15 +12,17 @@ import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
+
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 /**
  * Fragment for displaying list of all notes.
  * 
  * // TODO: 10/05/2020 Read notes from database.
- * // TODO: 10/05/2020 Attach notes to scrollview. 
- * // TODO: 10/05/2020 Create additional fragment for displaying note row. 
+ * // TODO: 10/05/2020 Attach notes to scrollview.
  * // TODO: 10/05/2020 Color notes based on category.
- * // TODO: 10/05/2020 Add float button to add new note. 
  * // TODO: 10/05/2020 Add navigation on click to each note to go to fragment_note_read.
  * 
  * // TODO: 10/05/2020 Add option to set note as done. 
@@ -39,6 +42,20 @@ public class NotesListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO: 10/05/2020 Go to new note
+                try {
+                    NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment);
+                } catch (Exception e) {
+                    Log.d("AndroidNotes", "Crasherro.");
+                }
+
+            }
+        });
+
         // TODO: 10/05/2020 Implement popup on sort filter clicks.
         LinearLayout linearLayoutNotesList = view.findViewById(R.id.linearLayoutNotesList);
 
@@ -54,6 +71,12 @@ public class NotesListFragment extends Fragment {
                 // TODO: 10/05/2020 Add on click.
 
                 singleNoteRow.findViewById(R.id.noteElement).setBackground(bg);
+                singleNoteRow.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteReadFragment);
+                    }
+                });
             } catch (NullPointerException ignored) { }
 
             linearLayoutNotesList.addView(singleNoteRow);

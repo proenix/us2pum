@@ -40,7 +40,8 @@ public class TestSummaryFragment extends Fragment {
             @Override
             public void handleOnBackPressed() {
                 // Handle the back button event
-                NavHostFragment.findNavController(TestSummaryFragment.this).navigate(R.id.action_TestSummary_to_MainActivity);
+
+                NavHostFragment.findNavController(view, TestSummaryFragment.this).navigate(R.id.action_TestSummary_to_MainActivity);
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), callback);
