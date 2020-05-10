@@ -17,11 +17,19 @@ import android.view.ViewGroup;
  * // TODO: 10/05/2020 Add button to go to edit. 
  */
 public class NoteReadFragment extends Fragment {
+
+    private long noteID = -1L;
+
     @Override
     public View onCreateView(
             LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
+
+        Bundle bundle = getArguments();
+        if (bundle != null) {
+            noteID = bundle.getLong("noteID");
+        }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_note_read, container, false);
     }

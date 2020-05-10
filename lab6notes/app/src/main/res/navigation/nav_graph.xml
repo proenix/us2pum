@@ -29,7 +29,16 @@
         android:id="@+id/noteCreateUpdateFragment"
         android:name="pl.proenix.android.us2pum.lab6notes.NoteCreateUpdateFragment"
         android:label="fragment_note_create_update"
-        tools:layout="@layout/fragment_note_create_update" />
+        tools:layout="@layout/fragment_note_create_update" >
+        <argument
+            android:name="noteID"
+            app:argType="long"
+            android:defaultValue="-1L" />
+        <argument
+            android:name="mode"
+            app:argType="pl.proenix.android.us2pum.lab6notes.NoteCreateUpdateFragment$NoteEditMode"
+            android:defaultValue="NOTE_NEW" />
+    </fragment>
     <fragment
         android:id="@+id/noteReadFragment"
         android:name="pl.proenix.android.us2pum.lab6notes.NoteReadFragment"
@@ -42,5 +51,9 @@
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
             app:popExitAnim="@anim/fragment_close_exit" />
+        <argument
+            android:name="noteID"
+            app:argType="long"
+            android:defaultValue="-1L" />
     </fragment>
 </navigation>

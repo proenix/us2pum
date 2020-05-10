@@ -46,13 +46,9 @@ public class NotesListFragment extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // TODO: 10/05/2020 Go to new note
-                try {
-                    NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment);
-                } catch (Exception e) {
-                    Log.d("AndroidNotes", "Crasherro.");
-                }
-
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("mode", NoteCreateUpdateFragment.NoteEditMode.NOTE_NEW);
+                NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment, bundle);
             }
         });
 
@@ -63,22 +59,22 @@ public class NotesListFragment extends Fragment {
             View singleNoteRow = View.inflate(view.getContext(), R.layout.fragment_note_row, null);
 
             // Get background shape and color it depending on category
-            // TODO: 10/05/2020 Color on category.
             try {
+                // TODO: 10/05/2020 Color on category.
                 Drawable bg = getContext().getDrawable(R.drawable.layout_note_row_bg);
                 bg.setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC));
-
-                // TODO: 10/05/2020 Add on click.
-
                 singleNoteRow.findViewById(R.id.noteElement).setBackground(bg);
-                singleNoteRow.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteReadFragment);
-                    }
-                });
             } catch (NullPointerException ignored) { }
 
+            // TODO: 10/05/2020 Add on click.
+            singleNoteRow.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Bundle bundle = new Bundle();
+                    bundle.putLong("noteID", -1); // TODO: 10/05/2020 Get Clicked Note ID. 
+                    NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteReadFragment, bundle);
+                }
+            });
             linearLayoutNotesList.addView(singleNoteRow);
         }
 
