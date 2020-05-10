@@ -33,32 +33,42 @@
                 android:layout_height="wrap_content"
                 android:background="@null"
                 android:ems="10"
-                android:hint="Title"
+                android:hint="@string/title"
                 android:inputType="textPersonName"
                 android:paddingBottom="10dip"
-                android:textColor="#FFFFFF"
+                android:textColor="@color/colorCategoryDefaultText"
                 android:textColorHighlight="#FFFFFF"
                 android:textColorHint="?android:attr/textColorHintInverse"
                 android:textColorLink="#FFFFFF"
-                android:textCursorDrawable="@drawable/text_cursor_drawable_custom" />
+                android:textCursorDrawable="@drawable/text_cursor_drawable_custom"
+                android:autofillHints="" />
+
+            <TextView
+                android:id="@+id/textViewCategoryHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/category"
+                android:textColor="@color/colorCategoryDefaultText" />
 
             <Spinner
                 android:id="@+id/spinnerCategory"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/design_default_color_surface" />
 
             <EditText
                 android:id="@+id/editTextNoteContent"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:autofillHints=""
                 android:background="@null"
                 android:ems="10"
-                android:hint="Note"
+                android:hint="@string/note"
+                android:inputType="text"
                 android:minLines="1"
                 android:paddingBottom="10dip"
                 android:singleLine="false"
-                android:textColor="#FFFFFF"
-                android:textColorHighlight="#FFFFFF"
+                android:textColor="@color/colorCategoryDefaultText"
                 android:textColorHint="?android:attr/textColorHintInverse"
                 android:textColorLink="@android:color/transparent"
                 android:textCursorDrawable="@drawable/text_cursor_drawable_custom" />

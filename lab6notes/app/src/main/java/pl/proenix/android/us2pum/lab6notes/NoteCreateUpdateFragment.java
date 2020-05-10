@@ -67,6 +67,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         // Color spinner for categories
         spinnerCategory = view.findViewById(R.id.spinnerCategory);
         categoryItems = Note.getCategoriesColors();
+
         ArrayAdapter<Map.Entry<Integer, Integer>> adapter = new ArrayAdapter<Map.Entry<Integer, Integer>>(view.getContext(), R.layout.spinner_item, categoryItems) {
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {

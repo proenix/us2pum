@@ -4,4 +4,7 @@
     <!-- Strings used for fragments for navigation -->
     <string name="next">Next</string>
     <string name="previous">Previous</string>
+    <string name="category">Category:</string>
+    <string name="title">Title</string>
+    <string name="note">Note</string>
 </resources>
