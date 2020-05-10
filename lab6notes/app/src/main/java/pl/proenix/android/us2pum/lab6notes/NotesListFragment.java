@@ -8,7 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
@@ -17,6 +19,8 @@ import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import java.util.List;
 
 /**
  * Fragment for displaying list of all notes.
@@ -53,17 +57,44 @@ public class NotesListFragment extends Fragment {
             }
         });
 
-        // TODO: 10/05/2020 Implement popup on sort filter clicks.
+        // TODO: 10/05/2020 Implement popup on sort clicks.
         LinearLayout linearLayoutNotesList = view.findViewById(R.id.linearLayoutNotesList);
 
-        for (int i = 0; i < 10; i++) {
+        List<Note> notes = MainActivity.db.findAllNotes();
+        for (Note note : notes) {
             View singleNoteRow = View.inflate(view.getContext(), R.layout.fragment_note_row, null);
+            
+            CheckBox checkBoxNoteDone = singleNoteRow.findViewById(R.id.checkBoxNoteDone);
+            TextView textViewNoteTitle = singleNoteRow.findViewById(R.id.textViewNoteTitle);
+            TextView textViewNoteDueDate = singleNoteRow.findViewById(R.id.textViewNoteDueDate);
+            
+            if (note.isDone()) {
+                checkBoxNoteDone.setChecked(true);
+            }
+            // Implement on check Change listener
+            //checkBoxNoteDone.setOnCheckedChangeListener(this);
+            
+            textViewNoteTitle.setText(note.getTitle());
+            textViewNoteTitle.setTextColor(note.getTextColor());
+            
+            if (note.hasDueDate()) {
+                if (note.isAfterDue()) {
+                    textViewNoteDueDate.setTextColor(note.getAfterDueColor());
+                } else {
+                    textViewNoteDueDate.setTextColor(note.getTextColor());
+                }
+            } else {
+                textViewNoteDueDate.setVisibility(View.GONE);
+            }
+            
 
             // Get background shape and color it depending on category
             try {
                 // TODO: 10/05/2020 Color on category.
                 Drawable bg = getContext().getDrawable(R.drawable.layout_note_row_bg);
-                bg.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(view.getContext(), R.color.colorPrimary), PorterDuff.Mode.SRC));
+                bg.setColorFilter(
+                        new PorterDuffColorFilter(note.getBackgroundColor(), PorterDuff.Mode.SRC)
+                );
                 singleNoteRow.findViewById(R.id.noteElement).setBackground(bg);
             } catch (NullPointerException ignored) { }
 
@@ -78,14 +109,5 @@ public class NotesListFragment extends Fragment {
             });
             linearLayoutNotesList.addView(singleNoteRow);
         }
-
-
-//        view.findViewById(R.id.button_first).setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                NavHostFragment.findNavController(NotesListFragment.this)
-//                        .navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment);
-//            }
-//        });
     }
 }

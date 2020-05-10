@@ -1,5 +1,6 @@
 package pl.proenix.android.us2pum.lab6notes;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     public static DatabaseHandler db;
+    public static Context appContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +27,16 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        appContext = getApplicationContext();
+
         db = new DatabaseHandler(this);
+        // Reset DB for testing.
+        db.resetDatabase();
+        db.addNote(new Note(1L, "Testowa notatka 1.", "Tresc testowej notatki ktora powinna miec jakas tam dlugosc zeby bylo widac co sie dzieje.", Note.CATEGORY_HOME, Note.STATUS_IN_PROGRESS, Note.PRIORITY_DEFAULT, null));
+        db.addNote(new Note(2L, "Testowa notatka 2.", "Tresc testowej notatki ktora powinna miec jakas tam dlugosc zeby bylo widac co sie dzieje.", Note.CATEGORY_FINANCE, Note.STATUS_IN_PROGRESS, Note.PRIORITY_DEFAULT, null));
+        db.addNote(new Note(3L, "Testowa notatka 3.", "Tresc testowej notatki ktora powinna miec jakas tam dlugosc zeby bylo widac co sie dzieje.", Note.CATEGORY_WORK, Note.STATUS_IN_PROGRESS, Note.PRIORITY_DEFAULT, null));
+        db.addNote(new Note(4L, "Testowa notatka 4.", "Tresc testowej notatki ktora powinna miec jakas tam dlugosc zeby bylo widac co sie dzieje.", Note.CATEGORY_VACATION, Note.STATUS_IN_PROGRESS, Note.PRIORITY_DEFAULT, null));
+        db.addNote(new Note(4L, "Testowa notatka 5.", "Tresc testowej notatki ktora powinna miec jakas tam dlugosc zeby bylo widac co sie dzieje.", Note.CATEGORY_SCHOOL, Note.STATUS_IN_PROGRESS, Note.PRIORITY_DEFAULT, null));
 
 //        // Check if device has camera
 //        PackageManager packageManager = getApplicationContext().getPackageManager();

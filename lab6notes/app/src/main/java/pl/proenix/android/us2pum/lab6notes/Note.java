@@ -1,27 +1,18 @@
 package pl.proenix.android.us2pum.lab6notes;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
+import java.time.LocalDateTime;
 
 /**
  * Note representation.
  */
 class Note {
 
-    /**
-     * Default Priority set for Notes without explicitly declared priority.
-     */
-    public static final int PRIORITY_DEFAULT = 1000;
-
-    /**
-     * Categories types.
-     * // TODO: 10/05/2020 Create dedicated table to store categories and allow user to create custom categories.
-     */
-    public static final int CATEGORY_HOME = 2001;
-    public static final int CATEGORY_FINANCE = 2002;
-    public static final int CATEGORY_WORK = 2003;
-    public static final int CATEGORY_VACATION = 2004;
-    public static final int CATEGORY_SCHOOL = 2005;
 
     /**
      * ID in database.
@@ -34,10 +25,30 @@ class Note {
      */
     private Integer _category;
     /**
+     * Categories types.
+     * // TODO: 10/05/2020 Create dedicated table to store categories and allow user to create custom categories.
+     */
+    public static final int CATEGORY_HOME = 2001;
+    public static final int CATEGORY_FINANCE = 2002;
+    public static final int CATEGORY_WORK = 2003;
+    public static final int CATEGORY_VACATION = 2004;
+    public static final int CATEGORY_SCHOOL = 2005;
+    /**
      * Status representation as integer.
      */
     private Integer _status;
+    public static final int STATUS_IN_PROGRESS = 3001;
+    public static final int STATUS_DONE = 3002;
+
+    /**
+     * Priority of notes.
+     */
     private Integer _priority;
+    /**
+     * Default Priority set for Notes without explicitly declared priority.
+     */
+    public static final int PRIORITY_DEFAULT = 1000;
+
     /**
      * Due Date representation as seconds from epoch.
      */
@@ -135,5 +146,83 @@ class Note {
 
     public Long getID() {
         return this._id;
+    }
+
+    public boolean isDone() {
+        return this._status == STATUS_DONE;
+    }
+
+    public String getTitle() {
+        return this._name;
+    }
+    public void setTitle(String title) {
+        this._name = title;
+    }
+
+    public boolean hasDueDate() {
+        return (this._dueDate != -1);
+    }
+
+    public boolean isAfterDue() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            int currentTimeInSeconds = LocalDateTime.now().getSecond();
+            Log.d("AndroidNotes", "Checking time in Oreo++");
+            return (this._dueDate <= (long) currentTimeInSeconds);
+        } else {
+            Log.d("AndroidNotes", "Checking time in Oreo--");
+            long timestamp = System.currentTimeMillis() / 1000;
+            return (this._dueDate <= timestamp);
+        }
+    }
+
+    public int getTextColor() {
+        switch (this._category) {
+            case CATEGORY_HOME:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryHomeText);
+            case CATEGORY_FINANCE:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryFinanceText);
+            case CATEGORY_WORK:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryWorkText);
+            case CATEGORY_VACATION:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryVacationText);
+            case CATEGORY_SCHOOL:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategorySchoolText);
+            default:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryDefaultText);
+        }
+    }
+
+    public int getAfterDueColor() {
+        switch (this._category) {
+            case CATEGORY_HOME:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryHomeAfterDue);
+            case CATEGORY_FINANCE:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryFinanceAfterDue);
+            case CATEGORY_WORK:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryWorkAfterDue);
+            case CATEGORY_VACATION:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryVacationAfterDue);
+            case CATEGORY_SCHOOL:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategorySchoolAfterDue);
+            default:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryDefaultText);
+        }
+    }
+
+    public int getBackgroundColor() {
+        switch (this._category) {
+            case CATEGORY_HOME:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryHomeBackground);
+            case CATEGORY_FINANCE:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryFinanceBackground);
+            case CATEGORY_WORK:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryWorkBackground);
+            case CATEGORY_VACATION:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryVacationBackground);
+            case CATEGORY_SCHOOL:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategorySchoolBackground);
+            default:
+                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryDefaultBackground);
+        }
     }
 }

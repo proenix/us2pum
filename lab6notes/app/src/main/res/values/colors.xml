@@ -3,4 +3,26 @@
     <color name="colorPrimary">#6200EE</color>
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
+    <color name="colorAfterDueDate">#B71C1C</color>
+
+    <color name="colorCategoryHomeBackground">#1E88E5</color>
+    <color name="colorCategoryFinanceBackground">#00897B</color>
+    <color name="colorCategoryWorkBackground">#FDD835</color>
+    <color name="colorCategoryVacationBackground">#00BCD4</color>
+    <color name="colorCategorySchoolBackground">#C0CA33</color>
+    <color name="colorCategoryDefaultBackground">#8E24AA</color>
+
+    <color name="colorCategoryHomeText">#FFFFFF</color>
+    <color name="colorCategoryFinanceText">#FFFFFF</color>
+    <color name="colorCategoryWorkText">#FFFFFF</color>
+    <color name="colorCategoryVacationText">#FFFFFF</color>
+    <color name="colorCategorySchoolText">#FFFFFF</color>
+    <color name="colorCategoryDefaultText">#FFFFFF</color>
+
+    <color name="colorCategoryHomeAfterDue">#DC0C0C</color>
+    <color name="colorCategoryFinanceAfterDue">#DC0C0C</color>
+    <color name="colorCategoryWorkAfterDue">#DC0C0C</color>
+    <color name="colorCategoryVacationAfterDue">#DC0C0C</color>
+    <color name="colorCategorySchoolAfterDue">#DC0C0C</color>
+    <color name="colorCategoryDefaultDue">#DC0C0C</color>
 </resources>

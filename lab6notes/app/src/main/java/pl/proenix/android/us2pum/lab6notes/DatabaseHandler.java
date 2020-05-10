@@ -8,6 +8,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DatabaseHandler extends SQLiteOpenHelper {
 
     private static final int DATABASE_VERSION = 1;
@@ -46,6 +49,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             // Future releases
             // upgradeToVersion2(db);
         }
+    }
+
+    /**
+     * Reset DB to original state for development purposes.
+     */
+    void resetDatabase() {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
+
+        onCreate(db);
     }
 
     /**
@@ -122,5 +136,33 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             }
         }
         return null;
+    }
+
+    /**
+     * Find all notes.
+     * @return List of Note objects.
+     */
+    public List<Note> findAllNotes() {
+        List<Note> notes = new ArrayList<Note>();
+        String notesQuery = "SELECT * FROM " + TABLE_NOTES;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(notesQuery, null);
+
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Note note = new Note(
+                        Long.parseLong(cursor.getString(0)),
+                        cursor.getString(1),
+                        cursor.getString(2),
+                        cursor.getInt(3),
+                        cursor.getInt(4),
+                        cursor.getInt(5),
+                        cursor.getLong(6)
+                );
+                notes.add(note);
+            }
+            cursor.close();
+        }
+        return notes;
     }
 }
