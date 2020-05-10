@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
@@ -62,7 +63,7 @@ public class NotesListFragment extends Fragment {
             try {
                 // TODO: 10/05/2020 Color on category.
                 Drawable bg = getContext().getDrawable(R.drawable.layout_note_row_bg);
-                bg.setColorFilter(new PorterDuffColorFilter(getResources().getColor(R.color.colorPrimary), PorterDuff.Mode.SRC));
+                bg.setColorFilter(new PorterDuffColorFilter(ContextCompat.getColor(view.getContext(), R.color.colorPrimary), PorterDuff.Mode.SRC));
                 singleNoteRow.findViewById(R.id.noteElement).setBackground(bg);
             } catch (NullPointerException ignored) { }
 
