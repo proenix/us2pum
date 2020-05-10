@@ -3,26 +3,37 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/FirstFragment">
-
+    app:startDestination="@id/notesListFragment">
     <fragment
-        android:id="@+id/FirstFragment"
-        android:name="pl.proenix.android.us2pum.lab6notes.FirstFragment"
-        android:label="@string/first_fragment_label"
-        tools:layout="@layout/fragment_first">
-
+        android:id="@+id/notesListFragment"
+        android:name="pl.proenix.android.us2pum.lab6notes.NotesListFragment"
+        android:label="fragment_notes_list"
+        tools:layout="@layout/fragment_notes_list" >
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
-            app:destination="@id/SecondFragment" />
+            android:id="@+id/action_notesListFragment_to_noteReadFragment"
+            app:destination="@id/noteReadFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_notesListFragment_to_noteCreateUpdateFragment"
+            app:destination="@id/noteCreateUpdateFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="pl.proenix.android.us2pum.lab6notes.SecondFragment"
-        android:label="@string/second_fragment_label"
-        tools:layout="@layout/fragment_second">
-
+        android:id="@+id/noteCreateUpdateFragment"
+        android:name="pl.proenix.android.us2pum.lab6notes.NoteCreateUpdateFragment"
+        android:label="fragment_note_create_update"
+        tools:layout="@layout/fragment_note_create_update" />
+    <fragment
+        android:id="@+id/noteReadFragment"
+        android:name="pl.proenix.android.us2pum.lab6notes.NoteReadFragment"
+        android:label="fragment_note_read"
+        tools:layout="@layout/fragment_note_read" >
         <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/FirstFragment" />
+            android:id="@+id/action_noteReadFragment_to_noteCreateUpdateFragment"
+            app:destination="@id/noteCreateUpdateFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right" />
     </fragment>
 </navigation>
