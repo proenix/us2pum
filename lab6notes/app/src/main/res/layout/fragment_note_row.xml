@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayout3"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="10dip">
+
+    <LinearLayout
+        android:id="@+id/noteElement"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dip"
+        android:background="#B31212"
+        android:paddingLeft="4dip"
+        android:paddingTop="10dip"
+        android:paddingRight="4dip"
+        android:paddingBottom="10dip"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <CheckBox
+            android:id="@+id/checkBoxNoteDone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:buttonTint="#FFFFFF" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="5dip"
+            android:layout_marginEnd="10dip"
+            android:orientation="vertical"
+            android:paddingTop="4dip"
+            android:paddingBottom="4dip">
+
+            <TextView
+                android:id="@+id/textViewNoteTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="To jest przykladowa notatka numer jeden z dosc dlugim tytulem, ktory powinien sie jakos tutaj zmiescic jesli nie to mamy spory problem."
+                android:textColor="#FFFFFF" />
+
+            <TextView
+                android:id="@+id/textViewNoteDueDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:gravity="end"
+                android:text="Due: 20.20.2020 20:20"
+                android:textColor="#FFFFFF"
+                android:textSize="12sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
