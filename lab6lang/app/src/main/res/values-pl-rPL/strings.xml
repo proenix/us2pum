@@ -38,4 +38,5 @@
     <string name="your_answer_was_not_what_we_wanted">Spodziewaliśmy się innej odpowiedzi. Spróbuj innego słowa.</string>
     <string name="answer_ok">Odpowiedź prawidłowa!</string>
     <string name="your_answer_was_a_bit_off">Twoja odpowiedź \"%1$s\" była lekko niepoprawna. Najbliższa odpowiedź to \"%2$s\".</string>
+    <string name="no_continue">Nie, kontynuuj</string>
 </resources>

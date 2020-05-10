@@ -127,7 +127,7 @@ public class TestFragment extends Fragment implements View.OnClickListener {
                 // Handle the back button event
                 dialogBuilder.setMessage("Do you really want to finish test?").
                         setPositiveButton(R.string.yes, onExitDialogClickListener).
-                        setNegativeButton("No, continue", onExitDialogClickListener).show();
+                        setNegativeButton(R.string.no_continue, onExitDialogClickListener).show();
             }
         };
         dialogBuilder = new AlertDialog.Builder(view.getContext());

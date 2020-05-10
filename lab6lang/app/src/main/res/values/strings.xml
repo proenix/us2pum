@@ -40,4 +40,5 @@
     <string name="your_answer_was_not_what_we_wanted">Your answer was not what we wanted. Please try other word.</string>
     <string name="answer_ok">Answer OK!</string>
     <string name="your_answer_was_a_bit_off">Your answer \"%1$s\" was a little bit off. Closes answer was \"%2$s\".</string>
+    <string name="no_continue">No, continue</string>
 </resources>
