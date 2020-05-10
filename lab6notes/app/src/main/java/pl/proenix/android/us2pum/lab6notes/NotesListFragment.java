@@ -90,7 +90,6 @@ public class NotesListFragment extends Fragment {
 
             // Get background shape and color it depending on category
             try {
-                // TODO: 10/05/2020 Color on category.
                 Drawable bg = getContext().getDrawable(R.drawable.layout_note_row_bg);
                 bg.setColorFilter(
                         new PorterDuffColorFilter(note.getBackgroundColor(), PorterDuff.Mode.SRC)

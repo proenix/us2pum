@@ -7,6 +7,10 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import java.time.LocalDateTime;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Note representation.
@@ -127,6 +131,9 @@ class Note {
         return this._category;
     }
 
+    public void setCategory(Integer categoryID) {
+        this._category = categoryID;
+    }
 
     public Integer getStatus() {
         return this._status;
@@ -224,5 +231,33 @@ class Note {
             default:
                 return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryDefaultBackground);
         }
+    }
+
+    public static List<Map.Entry<Integer, Integer>> getCategoriesColors() {
+        List<Map.Entry<Integer, Integer>> categoriesColors = new ArrayList<>();
+        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_HOME, ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryHomeBackground)));
+        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_FINANCE, ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryFinanceBackground)));
+        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_WORK, ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryWorkBackground)));
+        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_VACATION, ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryVacationBackground)));
+        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_SCHOOL, ContextCompat.getColor(MainActivity.appContext, R.color.colorCategorySchoolBackground)));
+        return categoriesColors;
+    }
+
+    public static String getCategoryNameByInt(int categoryId) {
+        switch (categoryId) {
+            case CATEGORY_HOME:
+                return "Home";
+            case CATEGORY_FINANCE:
+                return "Finance";
+            case CATEGORY_WORK:
+                return "Work";
+            case CATEGORY_VACATION:
+                return "Vacation";
+            case CATEGORY_SCHOOL:
+                return "School";
+            default:
+                return "Other";
+        }
+
     }
 }
