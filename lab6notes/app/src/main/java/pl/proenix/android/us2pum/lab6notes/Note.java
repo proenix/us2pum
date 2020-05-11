@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import java.time.LocalDateTime;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -145,6 +146,14 @@ class Note {
 
     public Long getDueDateAsLong() {
         return this._dueDate;
+    }
+
+    /**
+     * Set Due Date from provided Calendar object.
+     * @param dueDate Calendar object with date time set.
+     */
+    public void setDueDate(Calendar dueDate) {
+        this._dueDate = dueDate.getTimeInMillis() / 1000;
     }
 
     public void setID(long id) {

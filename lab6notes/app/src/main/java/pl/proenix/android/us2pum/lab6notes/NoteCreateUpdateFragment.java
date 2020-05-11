@@ -1,34 +1,48 @@
 package pl.proenix.android.us2pum.lab6notes;
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.TimeZone;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
 
-public class NoteCreateUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener {
+public class NoteCreateUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+
+    private View view;
 
     private long noteID = -1L;
     private NoteEditMode mode;
     private EditText editTextNoteTitle;
     private EditText editTextNoteContent;
+    private TextView textViewDueDate;
+    private TextView textViewDueTime;
+
+    private Calendar dueDate = null;
 
     enum NoteEditMode {
         NOTE_NEW,
@@ -55,7 +69,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         }
 
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_note_create_update, container, false);
+        view = inflater.inflate(R.layout.fragment_note_create_update, container, false);
         return view;
     }
 
@@ -63,7 +77,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        note = new Note(4L, "Testowa notatka 5.", "Tresc testowej notatki ktora powinna miec jakas tam dlugosc zeby bylo widac co sie dzieje.", Note.CATEGORY_SCHOOL, Note.STATUS_IN_PROGRESS, Note.PRIORITY_DEFAULT, null);
+        note = new Note("Testowa notatka 5.", "Tresc testowej notatki ktora powinna miec jakas tam dlugosc zeby bylo widac co sie dzieje.", Note.CATEGORY_SCHOOL, Note.STATUS_IN_PROGRESS, Note.PRIORITY_DEFAULT, null);
 
         scrollViewNote = view.findViewById(R.id.scrollViewNote);
         scrollViewNote.setBackgroundColor(note.getBackgroundColor());
@@ -96,6 +110,18 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         editTextNoteContent = view.findViewById(R.id.editTextNoteContent);
         editTextNoteContent.setText(note.getContent());
         editTextNoteContent.setTextColor(note.getTextColor());
+
+        textViewDueDate = view.findViewById(R.id.textViewDueDate);
+        textViewDueTime = view.findViewById(R.id.textViewDueTime);
+        textViewDueDate.setOnClickListener(this);
+        textViewDueTime.setOnClickListener(this);
+
+        // Initialize Calendar object for date time storing in Fragment.
+        dueDate = Calendar.getInstance();
+        if (note.hasDueDate()) {
+            dueDate.setTimeInMillis(note.getDueDateAsLong()*1000);
+        }
+        loadDateTime(dueDate);
     }
 
     @Override
@@ -120,5 +146,80 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == textViewDueDate.getId()) {
+            DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(),
+                new DatePickerDialog.OnDateSetListener() {
+                    @Override
+                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                        dueDate.set(year, month, dayOfMonth, dueDate.get(Calendar.HOUR_OF_DAY), dueDate.get(Calendar.MINUTE));
+                        note.setDueDate(dueDate);
+                        loadDateTime(dueDate);
+                    }
+                }, dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH));
+            datePickerDialog.show();
+        }
+        if (v.getId() == textViewDueTime.getId()) {
+            TimePickerDialog timePickerDialog = new TimePickerDialog(view.getContext(),
+                new TimePickerDialog.OnTimeSetListener() {
+                    @Override
+                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                        dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH), hourOfDay, minute);
+                        note.setDueDate(dueDate);
+                        loadDateTime(dueDate);
+                    }
+                }, dueDate.get(Calendar.HOUR_OF_DAY), dueDate.get(Calendar.MINUTE), true);
+            timePickerDialog.show();
+        }
+    }
+
+    /**
+     * Load date and time after change.
+     * @param cal
+     */
+    private void loadDateTime(Calendar cal) {
+        if (note.hasDueDate()) {
+            textViewDueDate.setText(formatDate(cal));
+            textViewDueTime.setText(formatTime(cal));
+
+        } else {
+            textViewDueDate.setText("set date");
+            textViewDueTime.setText("set time");
+        }
+    }
+
+    /**
+     * Format date in standardized way.
+     * @param cal Calendar object with datetime set.
+     * @return String Formatted date string.
+     */
+    private String formatDate(Calendar cal) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            SimpleDateFormat dateFormat = null;
+            dateFormat = new SimpleDateFormat("E, dd-MMM-YYYY");
+            dateFormat.setTimeZone(TimeZone.getDefault());
+            return dateFormat.format(cal.getTime());
+        } else {
+            return cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH);
+        }
+    }
+
+    /**
+     * Format time in standardized way.
+     * @param cal Calendar object with datetime set.
+     * @return String Formatted time string.
+     */
+    private String formatTime(Calendar cal) {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            SimpleDateFormat dateFormat = null;
+            dateFormat = new SimpleDateFormat("HH:mm");
+            dateFormat.setTimeZone(TimeZone.getDefault());
+            return dateFormat.format(cal.getTime());
+        } else {
+            return cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE);
+        }
     }
 }
