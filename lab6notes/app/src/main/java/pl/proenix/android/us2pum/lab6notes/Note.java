@@ -145,6 +145,10 @@ class Note {
         return this._content;
     }
 
+    public void setContent(String content) {
+        this._content = content;
+    }
+
     public Integer getCategoryAsInt() {
         return this._category;
     }
@@ -188,6 +192,7 @@ class Note {
     public String getTitle() {
         return this._name;
     }
+
     public void setTitle(String title) {
         this._name = title;
     }

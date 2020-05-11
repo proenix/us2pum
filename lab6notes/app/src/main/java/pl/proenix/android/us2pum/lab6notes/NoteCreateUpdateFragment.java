@@ -8,6 +8,10 @@ import android.graphics.drawable.Drawable;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.TimeZone;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,6 +26,7 @@ import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -33,8 +38,7 @@ import java.util.List;
 import java.util.Map;
 
 
-// TODO: 11/05/2020 Append on exit behaviour to save note. 
-// TODO: 11/05/2020 On text inputted listener to save text inputted.
+// TODO: 11/05/2020 Append on exit behaviour to save note.
 public class NoteCreateUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private View view;
@@ -77,21 +81,19 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         return view;
     }
 
-
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        if (mode == NoteEditMode.NOTE_NEW) {
-            note = new Note();
-        }
+        // NOTE_NEW
         if (mode == NoteEditMode.NOTE_UPDATE) {
             note = Note.findById(noteID);
+        } else {
+            note = new Note();
         }
-
         scrollViewNote = view.findViewById(R.id.scrollViewNote);
         scrollViewNote.setBackgroundColor(note.getBackgroundColor());
 
-        // Color spinner for categories
+        // Note categories handling. Color spinner for categories
         spinnerCategory = view.findViewById(R.id.spinnerCategory);
         categoryItems = Note.getCategoriesColors();
         ArrayAdapter<Map.Entry<Integer, Integer>> adapter = new ArrayAdapter<Map.Entry<Integer, Integer>>(view.getContext(), R.layout.spinner_item, categoryItems) {
@@ -99,45 +101,67 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
-                ((TextView) view).setText(Note.getCategoryNameByInt(categoryItems.get(position).getKey()));
-                ((TextView) view).setTextColor(ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryDefaultText));
+                tv.setText(Note.getCategoryNameByInt(categoryItems.get(position).getKey()));
+                tv.setTextColor(ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryDefaultText));
                 view.setBackgroundColor(categoryItems.get(position).getValue());
                 return view;
             }
         };
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(adapter);
-        // Set Spinner BG as set for current note
         spinnerCategory.setBackgroundColor(note.getBackgroundColor());
         spinnerCategory.setOnItemSelectedListener(this);
 
-        // Populate text fields with note data.
+        // Note title handling
         editTextNoteTitle = view.findViewById(R.id.editTextNoteTitle);
         editTextNoteTitle.setText(note.getTitle());
         editTextNoteTitle.setTextColor(note.getTextColor());
+        final Handler handler = new Handler(Looper.getMainLooper() /*UI thread*/);
+        final Runnable[] workRunnable = {null, null};
+        editTextNoteTitle.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                handler.removeCallbacks(workRunnable[0]);
+                workRunnable[0] = () -> setNoteTitle(s.toString());
+                handler.postDelayed(workRunnable[0], 4000);
+            }
+        });
+
+        // Note content handling
         editTextNoteContent = view.findViewById(R.id.editTextNoteContent);
         editTextNoteContent.setText(note.getContent());
         editTextNoteContent.setTextColor(note.getTextColor());
+        editTextNoteContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                handler.removeCallbacks(workRunnable[1]);
+                workRunnable[1] = () -> setNoteContent(s.toString());
+                handler.postDelayed(workRunnable[1], 4000);
+
+            }
+        });
+
+        // Note due date handling
         textViewDueDate = view.findViewById(R.id.textViewDueDate);
         textViewDueTime = view.findViewById(R.id.textViewDueTime);
         textViewDueDate.setOnClickListener(this);
         textViewDueTime.setOnClickListener(this);
-
-        CheckBox checkBoxNoteDone = view.findViewById(R.id.checkBoxNoteDone);
-        checkBoxNoteDone.setChecked(note.isDone());
-        checkBoxNoteDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    note.setStatusDone();
-                } else {
-                    note.setStatusInProgress();
-                }
-            }
-        });
-
         // Initialize Calendar object for date time storing in Fragment.
         dueDate = Calendar.getInstance();
         if (note.hasDueDate()) {
@@ -145,17 +169,46 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         }
         loadDateTime(dueDate);
         // TODO: 11/05/2020 Add way to clear due date.
+
+        // Note done handling
+        CheckBox checkBoxNoteDone = view.findViewById(R.id.checkBoxNoteDone);
+        checkBoxNoteDone.setChecked(note.isDone());
+        checkBoxNoteDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    note.setStatusDone();
+                    note.save();
+                } else {
+                    note.setStatusInProgress();
+                    note.save();
+                }
+            }
+        });
+    }
+
+    private void setNoteContent(String content) {
+        note.setContent(content);
+        note.save();
+        Toast.makeText(view.getContext(), "Note saved.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void setNoteTitle(String title) {
+        note.setTitle(title);
+        note.save();
+        Toast.makeText(view.getContext(), "Note saved.", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         note.setCategory(categoryItems.get(position).getKey());
+        note.save();
 
         ((TextView) view).setText(Note.getCategoryNameByInt(note.getCategoryAsInt()));
         ((TextView) view).setTextColor(note.getTextColor()); // Text color of spinner visible part
         view.setBackgroundColor(note.getBackgroundColor()); // Visible part of Spinner
         try {
-            Drawable bg = getContext().getDrawable(R.drawable.layout_note_row_bg);
+            Drawable bg = view.getContext().getDrawable(R.drawable.layout_note_row_bg);
             bg.setColorFilter(
                     new PorterDuffColorFilter(note.getBackgroundColor(), PorterDuff.Mode.SRC)
             );
@@ -175,33 +228,29 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
     public void onClick(View v) {
         if (v.getId() == textViewDueDate.getId()) {
             DatePickerDialog datePickerDialog = new DatePickerDialog(view.getContext(),
-                new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+                    (view, year, month, dayOfMonth) -> {
                         dueDate.set(year, month, dayOfMonth, dueDate.get(Calendar.HOUR_OF_DAY), dueDate.get(Calendar.MINUTE));
                         note.setDueDate(dueDate);
+                        note.save();
                         loadDateTime(dueDate);
-                    }
-                }, dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH));
+                    }, dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH));
             datePickerDialog.show();
         }
         if (v.getId() == textViewDueTime.getId()) {
             TimePickerDialog timePickerDialog = new TimePickerDialog(view.getContext(),
-                new TimePickerDialog.OnTimeSetListener() {
-                    @Override
-                    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                    (view, hourOfDay, minute) -> {
                         dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH), hourOfDay, minute);
                         note.setDueDate(dueDate);
+                        note.save();
                         loadDateTime(dueDate);
-                    }
-                }, dueDate.get(Calendar.HOUR_OF_DAY), dueDate.get(Calendar.MINUTE), true);
+                    }, dueDate.get(Calendar.HOUR_OF_DAY), dueDate.get(Calendar.MINUTE), true);
             timePickerDialog.show();
         }
     }
 
     /**
      * Load date and time after change.
-     * @param cal
+     * @param cal Calendar note due date time.
      */
     private void loadDateTime(Calendar cal) {
         if (note.hasDueDate()) {
