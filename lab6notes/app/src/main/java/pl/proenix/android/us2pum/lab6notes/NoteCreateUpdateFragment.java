@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ScrollView;
@@ -122,6 +124,19 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         textViewDueTime = view.findViewById(R.id.textViewDueTime);
         textViewDueDate.setOnClickListener(this);
         textViewDueTime.setOnClickListener(this);
+
+        CheckBox checkBoxNoteDone = view.findViewById(R.id.checkBoxNoteDone);
+        checkBoxNoteDone.setChecked(note.isDone());
+        checkBoxNoteDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    note.setStatusDone();
+                } else {
+                    note.setStatusInProgress();
+                }
+            }
+        });
 
         // Initialize Calendar object for date time storing in Fragment.
         dueDate = Calendar.getInstance();

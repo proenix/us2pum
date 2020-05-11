@@ -297,4 +297,11 @@ class Note {
             MainActivity.db.updateNote(this);
         }
     }
+
+    public void setStatusInProgress() {
+        this._status = STATUS_IN_PROGRESS;
+    }
+    public void setStatusDone() {
+        this._status = STATUS_DONE;
+    }
 }
