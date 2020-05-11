@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -26,6 +27,8 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
 
     private long noteID = -1L;
     private NoteEditMode mode;
+    private EditText editTextNoteTitle;
+    private EditText editTextNoteContent;
 
     enum NoteEditMode {
         NOTE_NEW,
@@ -64,10 +67,10 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
 
         scrollViewNote = view.findViewById(R.id.scrollViewNote);
         scrollViewNote.setBackgroundColor(note.getBackgroundColor());
+
         // Color spinner for categories
         spinnerCategory = view.findViewById(R.id.spinnerCategory);
         categoryItems = Note.getCategoriesColors();
-
         ArrayAdapter<Map.Entry<Integer, Integer>> adapter = new ArrayAdapter<Map.Entry<Integer, Integer>>(view.getContext(), R.layout.spinner_item, categoryItems) {
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
@@ -81,10 +84,18 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         };
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(adapter);
-        // Set Spinner BG as in current note
+        // Set Spinner BG as set for current note
         spinnerCategory.setBackgroundColor(note.getBackgroundColor());
         spinnerCategory.setOnItemSelectedListener(this);
 
+        // Populate text fields with note data.
+        editTextNoteTitle = view.findViewById(R.id.editTextNoteTitle);
+        editTextNoteTitle.setText(note.getTitle());
+        editTextNoteTitle.setTextColor(note.getTextColor());
+
+        editTextNoteContent = view.findViewById(R.id.editTextNoteContent);
+        editTextNoteContent.setText(note.getContent());
+        editTextNoteContent.setTextColor(note.getTextColor());
     }
 
     @Override
@@ -92,14 +103,17 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         note.setCategory(categoryItems.get(position).getKey());
 
         ((TextView) view).setText(Note.getCategoryNameByInt(note.getCategoryAsInt()));
-        ((TextView) view).setTextColor(note.getTextColor());
-        ((TextView) view).setBackgroundColor(note.getBackgroundColor());
+        ((TextView) view).setTextColor(note.getTextColor()); // Text color of spinner visible part
+        view.setBackgroundColor(note.getBackgroundColor()); // Visible part of Spinner
         try {
             Drawable bg = getContext().getDrawable(R.drawable.layout_note_row_bg);
             bg.setColorFilter(
                     new PorterDuffColorFilter(note.getBackgroundColor(), PorterDuff.Mode.SRC)
             );
+            // Set color for note shape.
             scrollViewNote.setBackground(bg);
+            editTextNoteContent.setTextColor(note.getTextColor());
+            editTextNoteTitle.setTextColor(note.getTextColor());
         } catch (NullPointerException ignored) { }
     }
 
