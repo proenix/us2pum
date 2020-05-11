@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 
 
+// TODO: 11/05/2020 Append on exit behaviour to save note. 
+// TODO: 11/05/2020 On text inputted listener to save text inputted.
 public class NoteCreateUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private View view;
@@ -77,7 +79,12 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
     public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        note = new Note("Testowa notatka 5.", "Tresc testowej notatki ktora powinna miec jakas tam dlugosc zeby bylo widac co sie dzieje.", Note.CATEGORY_SCHOOL, Note.STATUS_IN_PROGRESS, Note.PRIORITY_DEFAULT, null);
+        if (mode == NoteEditMode.NOTE_NEW) {
+            note = new Note();
+        }
+        if (mode == NoteEditMode.NOTE_UPDATE) {
+            note = Note.findById(noteID);
+        }
 
         scrollViewNote = view.findViewById(R.id.scrollViewNote);
         scrollViewNote.setBackgroundColor(note.getBackgroundColor());
@@ -122,6 +129,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
             dueDate.setTimeInMillis(note.getDueDateAsLong()*1000);
         }
         loadDateTime(dueDate);
+        // TODO: 11/05/2020 Add way to clear due date.
     }
 
     @Override
@@ -182,6 +190,8 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
      */
     private void loadDateTime(Calendar cal) {
         if (note.hasDueDate()) {
+            textViewDueDate.setTextColor(note.getTextColor());
+            textViewDueTime.setTextColor(note.getTextColor());
             textViewDueDate.setText(formatDate(cal));
             textViewDueTime.setText(formatTime(cal));
 

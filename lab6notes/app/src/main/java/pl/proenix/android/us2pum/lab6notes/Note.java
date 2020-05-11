@@ -59,7 +59,15 @@ class Note {
      */
     private Long _dueDate;
 
-    public Note() {}
+    public Note() {
+        this._name = "";
+        this._content = "";
+        this._category = CATEGORY_HOME;
+        this._status = STATUS_IN_PROGRESS;
+        this._priority = PRIORITY_DEFAULT;
+        this._dueDate = (long) -1;
+
+    }
 
     /**
      * Recreate Note object and populate with data. (from database)
@@ -105,6 +113,15 @@ class Note {
         } else {
             this._dueDate = dueDate;
         }
+    }
+
+    /**
+     * Find note by ID.
+     * @param noteID
+     * @return
+     */
+    public static Note findById(long noteID) {
+        return MainActivity.db.findNoteById(noteID);
     }
 
     @NonNull
@@ -268,5 +285,16 @@ class Note {
                 return "Other";
         }
 
+    }
+
+    /**
+     * Save Note to database. If note has no ID save it in db as new note.
+     */
+    public void save() {
+        if (this._id == null) {
+            MainActivity.db.addNote(this);
+        } else {
+            MainActivity.db.updateNote(this);
+        }
     }
 }
