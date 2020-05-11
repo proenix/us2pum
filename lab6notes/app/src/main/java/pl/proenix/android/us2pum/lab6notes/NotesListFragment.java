@@ -48,18 +48,15 @@ public class NotesListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         FloatingActionButton fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("mode", NoteCreateUpdateFragment.NoteEditMode.NOTE_NEW);
-                NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment, bundle);
-            }
+        fab.setOnClickListener(view1 -> {
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("mode", NoteCreateUpdateFragment.NoteEditMode.NOTE_NEW);
+            NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment, bundle);
         });
 
         // TODO: 10/05/2020 Implement popup on sort clicks.
-        LinearLayout linearLayoutNotesList = view.findViewById(R.id.linearLayoutNotesList);
 
+        LinearLayout linearLayoutNotesList = view.findViewById(R.id.linearLayoutNotesList);
         List<Note> notes = MainActivity.db.findAllNotes();
         for (Note note : notes) {
             View singleNoteRow = View.inflate(view.getContext(), R.layout.fragment_note_row, null);
@@ -86,25 +83,22 @@ public class NotesListFragment extends Fragment {
             } else {
                 textViewNoteDueDate.setVisibility(View.GONE);
             }
-            
 
             // Get background shape and color it depending on category
             try {
-                Drawable bg = getContext().getDrawable(R.drawable.layout_note_row_bg);
+                Drawable bg = view.getContext().getDrawable(R.drawable.layout_note_row_bg);
                 bg.setColorFilter(
                         new PorterDuffColorFilter(note.getBackgroundColor(), PorterDuff.Mode.SRC)
                 );
                 singleNoteRow.findViewById(R.id.noteElement).setBackground(bg);
             } catch (NullPointerException ignored) { }
 
-            // TODO: 10/05/2020 Add on click.
-            singleNoteRow.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Bundle bundle = new Bundle();
-                    bundle.putLong("noteID", -1); // TODO: 10/05/2020 Get Clicked Note ID. 
-                    NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteReadFragment, bundle);
-                }
+            singleNoteRow.setTag(R.id.TAG_NOTE_ID, note.getID());
+            singleNoteRow.setOnClickListener(v -> {
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("mode", NoteCreateUpdateFragment.NoteEditMode.NOTE_UPDATE);
+                bundle.putLong("noteID", (Long) v.getTag(R.id.TAG_NOTE_ID));
+                NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment, bundle);
             });
             linearLayoutNotesList.addView(singleNoteRow);
         }
