@@ -49,19 +49,18 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
     private EditText editTextNoteContent;
     private TextView textViewDueDate;
     private TextView textViewDueTime;
+    private ScrollView scrollViewNote;
 
     private Calendar dueDate = null;
 
     enum NoteEditMode {
         NOTE_NEW,
         NOTE_UPDATE,
-    }
 
+        }
     Note note;
 
-    Spinner spinnerCategory;
     List<Map.Entry<Integer, Integer>> categoryItems;
-    ScrollView scrollViewNote;
 
     public NoteCreateUpdateFragment() {}
 
@@ -94,7 +93,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         scrollViewNote.setBackgroundColor(note.getBackgroundColor());
 
         // Note categories handling. Color spinner for categories
-        spinnerCategory = view.findViewById(R.id.spinnerCategory);
+        Spinner spinnerCategory = view.findViewById(R.id.spinnerCategory);
         categoryItems = Note.getCategoriesColors();
         ArrayAdapter<Map.Entry<Integer, Integer>> adapter = new ArrayAdapter<Map.Entry<Integer, Integer>>(view.getContext(), R.layout.spinner_item, categoryItems) {
             @Override
