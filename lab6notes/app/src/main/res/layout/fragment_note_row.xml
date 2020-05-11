@@ -23,11 +23,12 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <CheckBox
-            android:id="@+id/checkBoxNoteDone"
+            android:id="@+id/checkBoxListNoteDone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:buttonTint="#FFFFFF" />
+            android:buttonTint="#FFFFFF"
+            android:checked="true" />
 
         <LinearLayout
             android:layout_width="match_parent"

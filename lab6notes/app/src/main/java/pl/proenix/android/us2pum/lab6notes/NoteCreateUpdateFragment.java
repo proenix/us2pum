@@ -186,11 +186,10 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     note.setStatusDone();
-                    note.save();
                 } else {
                     note.setStatusInProgress();
-                    note.save();
                 }
+                note.save();
             }
         });
     }

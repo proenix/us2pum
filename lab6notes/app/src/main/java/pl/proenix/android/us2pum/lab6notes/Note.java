@@ -208,10 +208,8 @@ class Note {
     public boolean isAfterDue() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             int currentTimeInSeconds = LocalDateTime.now().getSecond();
-            Log.d("AndroidNotes", "Checking time in Oreo++");
             return (this._dueDate <= (long) currentTimeInSeconds);
         } else {
-            Log.d("AndroidNotes", "Checking time in Oreo--");
             long timestamp = System.currentTimeMillis() / 1000;
             return (this._dueDate <= timestamp);
         }
@@ -304,6 +302,7 @@ class Note {
         } else {
             MainActivity.db.updateNote(this);
         }
+        Log.d("AndroidNotes", "Saving: "+this.toString());
     }
 
     public void setStatusInProgress() {

@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -24,8 +25,8 @@ import java.util.List;
 
 /**
  * Fragment for displaying list of all notes.
- * 
- * // TODO: 10/05/2020 Add option to set note as done. 
+ *
+ * // TODO: 10/05/2020 Add option to set note as done.
  * // TODO: 10/05/2020 Add sorting options.
  */
 public class NotesListFragment extends Fragment {
@@ -51,22 +52,36 @@ public class NotesListFragment extends Fragment {
 
         LinearLayout linearLayoutNotesList = view.findViewById(R.id.linearLayoutNotesList);
         List<Note> notes = MainActivity.db.findAllNotes();
+
         for (Note note : notes) {
+            Log.d("AndroidNotes", note.toString());
             View singleNoteRow = View.inflate(view.getContext(), R.layout.fragment_note_row, null);
-            
-            CheckBox checkBoxNoteDone = singleNoteRow.findViewById(R.id.checkBoxNoteDone);
+
+            CheckBox checkBoxNoteDone = singleNoteRow.findViewById(R.id.checkBoxListNoteDone);
             TextView textViewNoteTitle = singleNoteRow.findViewById(R.id.textViewNoteTitle);
             TextView textViewNoteDueDate = singleNoteRow.findViewById(R.id.textViewNoteDueDate);
-            
-            if (note.isDone()) {
-                checkBoxNoteDone.setChecked(true);
-            }
-            // todo Implement on check Change listener
-            //checkBoxNoteDone.setOnCheckedChangeListener(this);
-            
+
+            checkBoxNoteDone.setTag(R.id.TAG_NOTE_ID, note.getID());
+            // TODO: 11/05/2020 Fix Checkbox!
+            checkBoxNoteDone.setChecked(note.isDone());
+//            checkBoxNoteDone.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Log.d("AndroidNotes", "CLICKED");
+//                    if (v instanceof CheckBox) {
+//                        Note note = Note.findById((long) v.getTag(R.id.TAG_NOTE_ID));
+//                        if (((CheckBox) v).isChecked()) {
+//                            note.setStatusDone();
+//                        } else {
+//                            note.setStatusInProgress();
+//                        }
+//                        note.save();
+//                    }
+//                }
+//            });
             textViewNoteTitle.setText(note.getTitle());
             textViewNoteTitle.setTextColor(note.getTextColor());
-            
+
             if (note.hasDueDate()) {
                 if (note.isAfterDue()) {
                     textViewNoteDueDate.setTextColor(note.getAfterDueColor());
