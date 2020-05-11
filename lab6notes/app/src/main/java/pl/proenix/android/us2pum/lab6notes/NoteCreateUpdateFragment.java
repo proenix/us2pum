@@ -22,6 +22,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -50,6 +51,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
     private TextView textViewDueDate;
     private TextView textViewDueTime;
     private ScrollView scrollViewNote;
+    private ImageButton imageButtonDueDelete;
 
     private Calendar dueDate = null;
 
@@ -172,8 +174,9 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         if (note.hasDueDate()) {
             dueDate.setTimeInMillis(note.getDueDateAsLong()*1000);
         }
+        imageButtonDueDelete = view.findViewById(R.id.imageButtonDueDelete);
+        imageButtonDueDelete.setOnClickListener(this);
         loadDateTime(dueDate);
-        // TODO: 11/05/2020 Add way to clear due date.
 
         // Note done handling
         CheckBox checkBoxNoteDone = view.findViewById(R.id.checkBoxNoteDone);
@@ -251,6 +254,11 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
                     }, dueDate.get(Calendar.HOUR_OF_DAY), dueDate.get(Calendar.MINUTE), true);
             timePickerDialog.show();
         }
+        if (v.getId() == imageButtonDueDelete.getId()) {
+            note.removeDueDate();
+            note.save();
+            loadDateTime(dueDate);
+        }
     }
 
     /**
@@ -263,10 +271,13 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
             textViewDueTime.setTextColor(note.getTextColor());
             textViewDueDate.setText(formatDate(cal));
             textViewDueTime.setText(formatTime(cal));
-
+            imageButtonDueDelete.setVisibility(View.VISIBLE);
+            imageButtonDueDelete.setEnabled(true);
         } else {
             textViewDueDate.setText("set date");
             textViewDueTime.setText("set time");
+            imageButtonDueDelete.setVisibility(View.INVISIBLE);
+            imageButtonDueDelete.setEnabled(false);
         }
     }
 

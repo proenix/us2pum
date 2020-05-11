@@ -177,6 +177,10 @@ class Note {
         this._dueDate = dueDate.getTimeInMillis() / 1000;
     }
 
+    public void removeDueDate() {
+        this._dueDate = (long) -1;
+    }
+
     public void setID(long id) {
         this._id = id;
     }
