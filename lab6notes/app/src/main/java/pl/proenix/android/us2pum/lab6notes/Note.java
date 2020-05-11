@@ -289,7 +289,6 @@ class Note {
             default:
                 return "Other";
         }
-
     }
 
     /**

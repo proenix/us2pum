@@ -25,11 +25,6 @@ import java.util.List;
 /**
  * Fragment for displaying list of all notes.
  * 
- * // TODO: 10/05/2020 Read notes from database.
- * // TODO: 10/05/2020 Attach notes to scrollview.
- * // TODO: 10/05/2020 Color notes based on category.
- * // TODO: 10/05/2020 Add navigation on click to each note to go to fragment_note_read.
- * 
  * // TODO: 10/05/2020 Add option to set note as done. 
  * // TODO: 10/05/2020 Add sorting options.
  */
@@ -54,8 +49,6 @@ public class NotesListFragment extends Fragment {
             NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment, bundle);
         });
 
-        // TODO: 10/05/2020 Implement popup on sort clicks.
-
         LinearLayout linearLayoutNotesList = view.findViewById(R.id.linearLayoutNotesList);
         List<Note> notes = MainActivity.db.findAllNotes();
         for (Note note : notes) {
@@ -68,7 +61,7 @@ public class NotesListFragment extends Fragment {
             if (note.isDone()) {
                 checkBoxNoteDone.setChecked(true);
             }
-            // Implement on check Change listener
+            // todo Implement on check Change listener
             //checkBoxNoteDone.setOnCheckedChangeListener(this);
             
             textViewNoteTitle.setText(note.getTitle());

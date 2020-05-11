@@ -110,6 +110,12 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         spinnerCategory.setAdapter(adapter);
         spinnerCategory.setBackgroundColor(note.getBackgroundColor());
         spinnerCategory.setOnItemSelectedListener(this);
+        // Set current category as selected.
+        for (Map.Entry<Integer, Integer> item : categoryItems) {
+            if (item.getKey().equals(note.getCategoryAsInt())) {
+                spinnerCategory.setSelection(categoryItems.indexOf(item));
+            }
+        }
 
         // Note title handling
         editTextNoteTitle = view.findViewById(R.id.editTextNoteTitle);
