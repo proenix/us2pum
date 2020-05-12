@@ -13,4 +13,5 @@
     <string name="note_status_done">Done.</string>
     <string name="note_saved">Note saved.</string>
     <string name="note_status_in_progress">In progress.</string>
+    <string name="do_you_really_want_to_delete_notes">Do you really want to delete selected notes? Operation is irreversible!</string>
 </resources>

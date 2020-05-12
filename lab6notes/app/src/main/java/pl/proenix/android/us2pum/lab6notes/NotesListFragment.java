@@ -1,24 +1,25 @@
 package pl.proenix.android.us2pum.lab6notes;
 
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffColorFilter;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -30,13 +31,16 @@ import java.util.List;
  * Fragment for displaying list of all notes.
  *
  * // TODO: 10/05/2020 Add sorting options.
- * // TODO: 12/05/2020 Add options to delete/share to menu when at least one note is selected in selectedNote List. 
- * // TODO: 12/05/2020 Option to share selected note via SMS/EMAIL.
  * // TODO: 12/05/2020 Add content preview. Limited to ~100 chars.
  */
 public class NotesListFragment extends Fragment {
 
     private List<Long> selectedNotes = new ArrayList<Long>();
+    private View view;
+    private MenuItem menuItemShare;
+    private MenuItem menuItemDelete;
+
+    private DialogInterface.OnClickListener onDeleteDialogClickListener;
 
     @Override
     public View onCreateView(
@@ -44,7 +48,9 @@ public class NotesListFragment extends Fragment {
             Bundle savedInstanceState
     ) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notes_list, container, false);
+        view =  inflater.inflate(R.layout.fragment_notes_list, container, false);
+        setHasOptionsMenu(true);
+        return view;
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
@@ -59,6 +65,23 @@ public class NotesListFragment extends Fragment {
 
         LinearLayout linearLayoutNotesList = view.findViewById(R.id.linearLayoutNotesList);
         List<Note> notes = MainActivity.db.findAllNotes();
+
+        // Delete notes dialog.
+        onDeleteDialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    // Delete selected notes after confirmation.
+                    for (long noteId : selectedNotes) {
+                        Note note = Note.findById(noteId);
+                        if (note != null) {
+                            note.delete();
+                        }
+                    }
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
+            }
+        };
 
         for (Note note : notes) {
             View singleNoteRow = View.inflate(view.getContext(), R.layout.fragment_note_row, null);
@@ -110,16 +133,15 @@ public class NotesListFragment extends Fragment {
             });
             singleNoteRow.setOnLongClickListener((View.OnLongClickListener) v -> {
                 if (v.isSelected()) {
-                    showHideMenuForSelection();
                     selectedNotes.remove((Long) v.getTag(R.id.TAG_NOTE_ID));
                     v.setSelected(false);
                     v.findViewById(R.id.noteElement).setBackground(getBackground(note.getBackgroundColor(), note.getBackgroundColor()));
                 } else {
-                    showHideMenuForSelection();
                     selectedNotes.add( (Long) v.getTag(R.id.TAG_NOTE_ID));
                     v.setSelected(true);
                     v.findViewById(R.id.noteElement).setBackground(getBackground(note.getBackgroundColor(), note.getTextColor()));
                 }
+                showHideMenuForSelection();
                 return true;
             });
             linearLayoutNotesList.addView(singleNoteRow);
@@ -144,4 +166,48 @@ public class NotesListFragment extends Fragment {
         bg.setDrawableByLayerId(1, strokeGD);
         return bg;
     }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_create_update_note, menu);
+        menuItemShare = menu.findItem(R.id.menu_item_share);
+        menuItemDelete = menu.findItem(R.id.menu_item_delete);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_share:
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setTypeAndNormalize("text/*");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Shared notes");
+                StringBuilder sb = new StringBuilder();
+                for (long noteId : selectedNotes) {
+                    Note note = Note.findById(noteId);
+                    if (note != null) {
+                        sb.append(note.getSharableContent()).append('\n');
+                    }
+                }
+                shareIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
+                startActivity(Intent.createChooser(shareIntent, "Share notes"));
+                return true;
+            case R.id.menu_item_delete:
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(view.getContext());
+                dialogBuilder.setMessage(R.string.do_you_really_want_to_delete_notes).
+                        setNegativeButton(R.string.no, onDeleteDialogClickListener).
+                        setPositiveButton(R.string.yes, onDeleteDialogClickListener).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Show/Hide menu if some items are selected.
+     */
+    private void showHideMenuForSelection() {
+        menuItemDelete.setVisible(selectedNotes.size() > 0);
+        menuItemShare.setVisible(selectedNotes.size() > 0);
+    };
 }
