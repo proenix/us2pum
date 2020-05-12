@@ -20,13 +20,11 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -38,8 +36,13 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
-
-// TODO: 11/05/2020 Append on exit behaviour to save note.
+/**
+ * Fragment for displaying single note read and edit mode.
+ * // TODO: 11/05/2020 Append on exit behaviour to save note.
+ * // TODO: 12/05/2020 Add delete button with confirmation and navigation. 
+ * // TODO: 12/05/2020 Add intention to share note via sms/email. 
+ * // TODO: 12/05/2020 Add option to attach taken photo.
+ */
 public class NoteCreateUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private View view;
@@ -58,11 +61,10 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
     enum NoteEditMode {
         NOTE_NEW,
         NOTE_UPDATE,
-
         }
-    Note note;
+    private Note note;
 
-    List<Map.Entry<Integer, Integer>> categoryItems;
+    private List<Map.Entry<Integer, Integer>> categoryItems;
 
     public NoteCreateUpdateFragment() {}
 
@@ -82,7 +84,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         return view;
     }
 
-    public void onViewCreated(@NonNull final View view, Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         // NOTE_NEW

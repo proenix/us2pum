@@ -28,6 +28,9 @@ import java.util.List;
  *
  * // TODO: 10/05/2020 Add option to set note as done.
  * // TODO: 10/05/2020 Add sorting options.
+ * // TODO: 12/05/2020 Option to select and delete note. SnackBar maybe?
+ * // TODO: 12/05/2020 Option to share selected note via SMS/EMAIL.
+ * // TODO: 12/05/2020 Add content preview. Limited to ~100 chars.
  */
 public class NotesListFragment extends Fragment {
 
@@ -62,18 +65,15 @@ public class NotesListFragment extends Fragment {
             checkBoxNoteDone.setId(View.generateViewId());
             checkBoxNoteDone.setTag(R.id.TAG_NOTE_ID, note.getID());
             checkBoxNoteDone.setChecked(note.isDone());
-            checkBoxNoteDone.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (v instanceof CheckBox) {
-                        Note note = Note.findById((long) v.getTag(R.id.TAG_NOTE_ID));
-                        if (((CheckBox) v).isChecked()) {
-                            note.setStatusDone();
-                        } else {
-                            note.setStatusInProgress();
-                        }
-                        note.save();
+            checkBoxNoteDone.setOnClickListener(v -> {
+                if (v instanceof CheckBox) {
+                    Note note1 = Note.findById((long) v.getTag(R.id.TAG_NOTE_ID));
+                    if (((CheckBox) v).isChecked()) {
+                        note1.setStatusDone();
+                    } else {
+                        note1.setStatusInProgress();
                     }
+                    note1.save();
                 }
             });
             // Populate title with data
