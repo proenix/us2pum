@@ -365,4 +365,13 @@ class Note {
         }
         return this._dueDateCalendar;
     }
+
+    /**
+     * Delete note from existence (from database).
+     */
+    public void delete() {
+        if (this._id != null) {
+            MainActivity.db.removeNote(this);
+        }
+    }
 }

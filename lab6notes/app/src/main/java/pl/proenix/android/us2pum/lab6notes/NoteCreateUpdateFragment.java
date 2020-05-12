@@ -1,7 +1,9 @@
 package pl.proenix.android.us2pum.lab6notes;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -14,6 +16,9 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -30,6 +35,8 @@ import android.widget.Toast;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -59,6 +66,8 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
     private Calendar dueDate = null;
     private Note note;
     private List<Map.Entry<Integer, Integer>> categoryItems;
+    private DialogInterface.OnClickListener onDeleteDialogClickListener;
+
     enum NoteEditMode {
         NOTE_NEW,
         NOTE_UPDATE,
@@ -80,8 +89,10 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
 
         // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_note_create_update, container, false);
+        setHasOptionsMenu(true);
         return view;
     }
+
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -199,17 +210,53 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
                 setNoteTitle(editTextNoteTitle.getText().toString());
                 handler.removeCallbacks(workRunnable[1]);
                 setNoteContent(editTextNoteContent.getText().toString());
-                note.save();
                 NavHostFragment.findNavController(NoteCreateUpdateFragment.this).popBackStack();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backPressedCallback);
+
+
+        onDeleteDialogClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case DialogInterface.BUTTON_POSITIVE:
+                        note.delete();
+                        NavHostFragment.findNavController(NoteCreateUpdateFragment.this).popBackStack();
+                        break;
+                    case DialogInterface.BUTTON_NEGATIVE:
+                        break;
+                }
+            }
+        };
 
         // Display back button in toolbar.
         try {
             ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         } catch (NullPointerException ignored) {}
 
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_create_update_note, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_item_share:
+                break;
+            case R.id.menu_item_delete:
+                AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(view.getContext());
+                dialogBuilder.setMessage(R.string.do_you_really_want_to_delete_note).
+                        setNegativeButton(R.string.no, onDeleteDialogClickListener).
+                        setPositiveButton(R.string.yes, onDeleteDialogClickListener).show();
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void setNoteContent(String content) {

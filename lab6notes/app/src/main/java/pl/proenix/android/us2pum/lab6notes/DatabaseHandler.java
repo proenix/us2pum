@@ -165,4 +165,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         return notes;
     }
+
+    /**
+     * Remove note from DB.
+     * @param note Note object.
+     * @return True if note found and deleted.
+     */
+    public boolean removeNote(Note note) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_NOTES, KEY_ID + "=?", new String[]{String.valueOf(note.getID())}) > 0;
+    }
 }
