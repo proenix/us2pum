@@ -204,6 +204,12 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backPressedCallback);
+
+        // Display back button in toolbar.
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        } catch (NullPointerException ignored) {}
+
     }
 
     private void setNoteContent(String content) {

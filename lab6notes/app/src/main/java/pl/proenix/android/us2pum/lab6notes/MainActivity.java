@@ -64,4 +64,15 @@ public class MainActivity extends AppCompatActivity {
 
         return super.onOptionsItemSelected(item);
     }
+
+    /**
+     * On back navigate up.
+     * Catches event on back navigation button in toolbar pressed from CreateUpdate Fragment.
+     * @return true
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 }
