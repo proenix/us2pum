@@ -65,17 +65,16 @@ public class NotesListFragment extends Fragment {
             checkBoxNoteDone.setId(View.generateViewId());
             checkBoxNoteDone.setTag(R.id.TAG_NOTE_ID, note.getID());
             checkBoxNoteDone.setChecked(note.isDone());
-            checkBoxNoteDone.setOnClickListener(v -> {
-                if (v instanceof CheckBox) {
-                    Note note1 = Note.findById((long) v.getTag(R.id.TAG_NOTE_ID));
-                    if (((CheckBox) v).isChecked()) {
-                        note1.setStatusDone();
-                    } else {
-                        note1.setStatusInProgress();
-                    }
-                    note1.save();
+            checkBoxNoteDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                Note note1 = Note.findById((long) buttonView.getTag(R.id.TAG_NOTE_ID));
+                if (isChecked) {
+                    note1.setStatusDone();
+                } else {
+                    note1.setStatusInProgress();
                 }
+                note1.save();
             });
+
             // Populate title with data
             TextView textViewNoteTitle = singleNoteRow.findViewById(R.id.textViewNoteTitle);
             textViewNoteTitle.setText(note.getTitle());
