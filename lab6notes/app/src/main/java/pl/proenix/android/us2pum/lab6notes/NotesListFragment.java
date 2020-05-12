@@ -57,31 +57,32 @@ public class NotesListFragment extends Fragment {
             Log.d("AndroidNotes", note.toString());
             View singleNoteRow = View.inflate(view.getContext(), R.layout.fragment_note_row, null);
 
+            // Populate checkbox with state
             CheckBox checkBoxNoteDone = singleNoteRow.findViewById(R.id.checkBoxListNoteDone);
-            TextView textViewNoteTitle = singleNoteRow.findViewById(R.id.textViewNoteTitle);
-            TextView textViewNoteDueDate = singleNoteRow.findViewById(R.id.textViewNoteDueDate);
-
+            // Set Unique Id for checkbox without this setting checked state pointed to all previous buttons with that id.
+            checkBoxNoteDone.setId(View.generateViewId());
             checkBoxNoteDone.setTag(R.id.TAG_NOTE_ID, note.getID());
-            // TODO: 11/05/2020 Fix Checkbox!
             checkBoxNoteDone.setChecked(note.isDone());
-//            checkBoxNoteDone.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    Log.d("AndroidNotes", "CLICKED");
-//                    if (v instanceof CheckBox) {
-//                        Note note = Note.findById((long) v.getTag(R.id.TAG_NOTE_ID));
-//                        if (((CheckBox) v).isChecked()) {
-//                            note.setStatusDone();
-//                        } else {
-//                            note.setStatusInProgress();
-//                        }
-//                        note.save();
-//                    }
-//                }
-//            });
+            checkBoxNoteDone.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (v instanceof CheckBox) {
+                        Note note = Note.findById((long) v.getTag(R.id.TAG_NOTE_ID));
+                        if (((CheckBox) v).isChecked()) {
+                            note.setStatusDone();
+                        } else {
+                            note.setStatusInProgress();
+                        }
+                        note.save();
+                    }
+                }
+            });
+            // Populate title with data
+            TextView textViewNoteTitle = singleNoteRow.findViewById(R.id.textViewNoteTitle);
             textViewNoteTitle.setText(note.getTitle());
+            // Populate due date.
+            TextView textViewNoteDueDate = singleNoteRow.findViewById(R.id.textViewNoteDueDate);
             textViewNoteTitle.setTextColor(note.getTextColor());
-
             if (note.hasDueDate()) {
                 if (note.isAfterDue()) {
                     textViewNoteDueDate.setTextColor(note.getAfterDueColor());
