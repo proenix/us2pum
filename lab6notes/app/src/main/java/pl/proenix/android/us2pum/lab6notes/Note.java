@@ -227,61 +227,61 @@ class Note {
     public int getTextColor() {
         switch (this._category) {
             case CATEGORY_HOME:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryHomeText);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryHomeText);
             case CATEGORY_FINANCE:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryFinanceText);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryFinanceText);
             case CATEGORY_WORK:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryWorkText);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryWorkText);
             case CATEGORY_VACATION:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryVacationText);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryVacationText);
             case CATEGORY_SCHOOL:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategorySchoolText);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategorySchoolText);
             default:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryDefaultText);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryDefaultText);
         }
     }
 
     public int getAfterDueColor() {
         switch (this._category) {
             case CATEGORY_HOME:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryHomeAfterDue);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryHomeAfterDue);
             case CATEGORY_FINANCE:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryFinanceAfterDue);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryFinanceAfterDue);
             case CATEGORY_WORK:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryWorkAfterDue);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryWorkAfterDue);
             case CATEGORY_VACATION:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryVacationAfterDue);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryVacationAfterDue);
             case CATEGORY_SCHOOL:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategorySchoolAfterDue);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategorySchoolAfterDue);
             default:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryDefaultText);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryDefaultText);
         }
     }
 
     public int getBackgroundColor() {
         switch (this._category) {
             case CATEGORY_HOME:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryHomeBackground);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryHomeBackground);
             case CATEGORY_FINANCE:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryFinanceBackground);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryFinanceBackground);
             case CATEGORY_WORK:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryWorkBackground);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryWorkBackground);
             case CATEGORY_VACATION:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryVacationBackground);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryVacationBackground);
             case CATEGORY_SCHOOL:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategorySchoolBackground);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategorySchoolBackground);
             default:
-                return ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryDefaultBackground);
+                return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryDefaultBackground);
         }
     }
 
     public static List<Map.Entry<Integer, Integer>> getCategoriesColors() {
         List<Map.Entry<Integer, Integer>> categoriesColors = new ArrayList<>();
-        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_HOME, ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryHomeBackground)));
-        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_FINANCE, ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryFinanceBackground)));
-        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_WORK, ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryWorkBackground)));
-        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_VACATION, ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryVacationBackground)));
-        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_SCHOOL, ContextCompat.getColor(MainActivity.appContext, R.color.colorCategorySchoolBackground)));
+        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_HOME, ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryHomeBackground)));
+        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_FINANCE, ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryFinanceBackground)));
+        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_WORK, ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryWorkBackground)));
+        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_VACATION, ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryVacationBackground)));
+        categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_SCHOOL, ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategorySchoolBackground)));
         return categoriesColors;
     }
 
@@ -373,5 +373,41 @@ class Note {
         if (this._id != null) {
             MainActivity.db.removeNote(this);
         }
+    }
+
+    /**
+     * Get pretty formatted all note fields.
+     * @return String pretty formatted note
+     */
+    public String getSharableContent() {
+        StringBuilder sharedContent = new StringBuilder();
+        sharedContent.append("Title: ").append(this.getTitle()).append('\n');
+        sharedContent.append("Status: ").append(this.getStatusName()).append('\n');
+        //sharedContent.append("Priority: ").append(this.getPriorityName()).append('\n');
+        sharedContent.append("Category: ").append(this.getCategoryName()).append('\n');
+        if (hasDueDate()) {
+            sharedContent.append("Due date: ").append(this.getFormattedDate()).append(" ").append(this.getFormattedTime()).append('\n');
+        }
+        sharedContent.append("Content: ").append(this.getContent()).append('\n');
+        return sharedContent.toString();
+    }
+
+    /**
+     * Get Category in human readable form.
+     * @return String category name.
+     */
+    private String getCategoryName() {
+        return getCategoryNameByInt(this.getCategoryAsInt());
+    }
+
+    /**
+     * Get status in readable form.
+     * @return String status name.
+     */
+    private String getStatusName() {
+        if (this._status == STATUS_DONE) {
+            return MainActivity.getAppContext().getString(R.string.note_status_done);
+        }
+        return MainActivity.getAppContext().getString(R.string.note_status_in_progress);
     }
 }

@@ -18,7 +18,7 @@ import android.view.MenuItem;
 public class MainActivity extends AppCompatActivity {
 
     public static DatabaseHandler db;
-    public static Context appContext;
+    private static Context appContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
 //        // Check if device has camera
 //        PackageManager packageManager = getApplicationContext().getPackageManager();
 //        packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+    }
+
+    public static Context getAppContext() {
+        return appContext;
     }
 
     @Override

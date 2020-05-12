@@ -4,11 +4,10 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
-import android.icu.text.SimpleDateFormat;
-import android.icu.util.TimeZone;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -36,7 +35,6 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
@@ -47,7 +45,6 @@ import java.util.Map;
 
 /**
  * Fragment for displaying single note read and edit mode.
- * // TODO: 12/05/2020 Add delete button with confirmation and navigation. 
  * // TODO: 12/05/2020 Add intention to share note via sms/email. 
  * // TODO: 12/05/2020 Add option to attach taken photo.
  */
@@ -70,9 +67,8 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
 
     enum NoteEditMode {
         NOTE_NEW,
-        NOTE_UPDATE,
-
-        }
+        NOTE_UPDATE
+    }
 
     public NoteCreateUpdateFragment() {}
 
@@ -115,7 +111,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
                 View view = super.getDropDownView(position, convertView, parent);
                 TextView tv = (TextView) view;
                 tv.setText(Note.getCategoryNameByInt(categoryItems.get(position).getKey()));
-                tv.setTextColor(ContextCompat.getColor(MainActivity.appContext, R.color.colorCategoryDefaultText));
+                tv.setTextColor(ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryDefaultText));
                 view.setBackgroundColor(categoryItems.get(position).getValue());
                 return view;
             }
@@ -241,6 +237,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         menu.clear();
         inflater.inflate(R.menu.menu_create_update_note, menu);
+
         super.onCreateOptionsMenu(menu, inflater);
     }
 
@@ -248,27 +245,33 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_item_share:
-                break;
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntent.setTypeAndNormalize("text/*");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, note.getSharableContent());
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, note.getTitle());
+                startActivity(Intent.createChooser(shareIntent, null));
+                return true;
             case R.id.menu_item_delete:
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(view.getContext());
                 dialogBuilder.setMessage(R.string.do_you_really_want_to_delete_note).
                         setNegativeButton(R.string.no, onDeleteDialogClickListener).
                         setPositiveButton(R.string.yes, onDeleteDialogClickListener).show();
-                break;
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     private void setNoteContent(String content) {
         note.setContent(content);
         note.save();
-        Toast.makeText(view.getContext(), "Note saved.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(view.getContext(), R.string.note_saved, Toast.LENGTH_SHORT).show();
     }
 
     private void setNoteTitle(String title) {
         note.setTitle(title);
         note.save();
-        Toast.makeText(view.getContext(), "Note saved.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(view.getContext(), R.string.note_saved, Toast.LENGTH_SHORT).show();
     }
 
     @Override

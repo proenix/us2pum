@@ -10,4 +10,7 @@
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="do_you_really_want_to_delete_note">Do you really want to delete this note? Operation is irreversible.</string>
+    <string name="note_status_done">Done.</string>
+    <string name="note_saved">Note saved.</string>
+    <string name="note_status_in_progress">In progress.</string>
 </resources>
