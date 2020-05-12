@@ -105,17 +105,17 @@
                     android:id="@+id/textViewDueDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="set date"
                     android:padding="4dip"
-                    android:text="set date"
-                    android:textColor="?android:attr/textColorHintInverse" />
+                    android:textColorHint="?android:attr/textColorHintInverse" />
 
                 <TextView
                     android:id="@+id/textViewDueTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:hint="set time"
                     android:padding="4dip"
-                    android:text="set time"
-                    android:textColor="?android:attr/textColorHintInverse" />
+                    android:textColorHint="?android:attr/textColorHintInverse" />
 
                 <ImageButton
                     android:id="@+id/imageButtonDueDelete"

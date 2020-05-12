@@ -170,13 +170,10 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         textViewDueDate.setOnClickListener(this);
         textViewDueTime.setOnClickListener(this);
         // Initialize Calendar object for date time storing in Fragment.
-        dueDate = Calendar.getInstance();
-        if (note.hasDueDate()) {
-            dueDate.setTimeInMillis(note.getDueDateAsLong()*1000);
-        }
+        dueDate = note.getDueDateAsCalendar();
         imageButtonDueDelete = view.findViewById(R.id.imageButtonDueDelete);
         imageButtonDueDelete.setOnClickListener(this);
-        loadDateTime(dueDate);
+        loadDateTime();
 
         // Note done handling
         CheckBox checkBoxNoteDone = view.findViewById(R.id.checkBoxNoteDone);
@@ -239,7 +236,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
                         dueDate.set(year, month, dayOfMonth, dueDate.get(Calendar.HOUR_OF_DAY), dueDate.get(Calendar.MINUTE));
                         note.setDueDate(dueDate);
                         note.save();
-                        loadDateTime(dueDate);
+                        loadDateTime();
                     }, dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH));
             datePickerDialog.show();
         }
@@ -249,66 +246,41 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
                         dueDate.set(dueDate.get(Calendar.YEAR), dueDate.get(Calendar.MONTH), dueDate.get(Calendar.DAY_OF_MONTH), hourOfDay, minute);
                         note.setDueDate(dueDate);
                         note.save();
-                        loadDateTime(dueDate);
+                        loadDateTime();
                     }, dueDate.get(Calendar.HOUR_OF_DAY), dueDate.get(Calendar.MINUTE), true);
             timePickerDialog.show();
         }
         if (v.getId() == imageButtonDueDelete.getId()) {
             note.removeDueDate();
             note.save();
-            loadDateTime(dueDate);
+            loadDateTime();
         }
     }
 
     /**
      * Load date and time after change.
-     * @param cal Calendar note due date time.
      */
-    private void loadDateTime(Calendar cal) {
+    private void loadDateTime() {
         if (note.hasDueDate()) {
-            textViewDueDate.setTextColor(note.getTextColor());
-            textViewDueTime.setTextColor(note.getTextColor());
-            textViewDueDate.setText(formatDate(cal));
-            textViewDueTime.setText(formatTime(cal));
+            if (note.isAfterDue()) {
+                textViewDueDate.setTextColor(note.getAfterDueColor());
+                textViewDueTime.setTextColor(note.getAfterDueColor());
+            } else {
+                textViewDueDate.setTextColor(note.getTextColor());
+                textViewDueTime.setTextColor(note.getTextColor());
+            }
+            textViewDueDate.setText(note.getFormattedDate());
+            textViewDueTime.setText(note.getFormattedTime());
             imageButtonDueDelete.setVisibility(View.VISIBLE);
             imageButtonDueDelete.setEnabled(true);
         } else {
-            textViewDueDate.setText("set date");
-            textViewDueTime.setText("set time");
+            textViewDueDate.setText("");
+            textViewDueTime.setText("");
+            textViewDueTime.setTextColor(note.getTextColor());
             imageButtonDueDelete.setVisibility(View.INVISIBLE);
             imageButtonDueDelete.setEnabled(false);
         }
     }
 
-    /**
-     * Format date in standardized way.
-     * @param cal Calendar object with datetime set.
-     * @return String Formatted date string.
-     */
-    private String formatDate(Calendar cal) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            SimpleDateFormat dateFormat = null;
-            dateFormat = new SimpleDateFormat("E, dd-MMM-YYYY");
-            dateFormat.setTimeZone(TimeZone.getDefault());
-            return dateFormat.format(cal.getTime());
-        } else {
-            return cal.get(Calendar.YEAR) + "-" + (cal.get(Calendar.MONTH) + 1) + "-" + cal.get(Calendar.DAY_OF_MONTH);
-        }
-    }
 
-    /**
-     * Format time in standardized way.
-     * @param cal Calendar object with datetime set.
-     * @return String Formatted time string.
-     */
-    private String formatTime(Calendar cal) {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            SimpleDateFormat dateFormat = null;
-            dateFormat = new SimpleDateFormat("HH:mm");
-            dateFormat.setTimeZone(TimeZone.getDefault());
-            return dateFormat.format(cal.getTime());
-        } else {
-            return cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE);
-        }
-    }
 }

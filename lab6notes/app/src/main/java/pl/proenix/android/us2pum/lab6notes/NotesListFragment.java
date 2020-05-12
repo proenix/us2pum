@@ -54,7 +54,6 @@ public class NotesListFragment extends Fragment {
         List<Note> notes = MainActivity.db.findAllNotes();
 
         for (Note note : notes) {
-            Log.d("AndroidNotes", note.toString());
             View singleNoteRow = View.inflate(view.getContext(), R.layout.fragment_note_row, null);
 
             // Populate checkbox with state
@@ -84,6 +83,7 @@ public class NotesListFragment extends Fragment {
             TextView textViewNoteDueDate = singleNoteRow.findViewById(R.id.textViewNoteDueDate);
             textViewNoteTitle.setTextColor(note.getTextColor());
             if (note.hasDueDate()) {
+                textViewNoteDueDate.setText(String.format("%s %s", note.getFormattedDate(), note.getFormattedTime()));
                 if (note.isAfterDue()) {
                     textViewNoteDueDate.setTextColor(note.getAfterDueColor());
                 } else {

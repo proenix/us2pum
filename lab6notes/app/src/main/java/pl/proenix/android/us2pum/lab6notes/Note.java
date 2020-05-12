@@ -1,5 +1,7 @@
 package pl.proenix.android.us2pum.lab6notes;
 
+import android.icu.text.SimpleDateFormat;
+import android.icu.util.TimeZone;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -58,6 +60,7 @@ class Note {
      * Due Date representation as seconds from epoch.
      */
     private Long _dueDate;
+    private Calendar _dueDateCalendar;
 
     public Note() {
         this._name = "";
@@ -86,7 +89,11 @@ class Note {
         this._category = category;
         this._status = status;
         this._priority = priority;
-        this._dueDate = dueDate;
+        if (dueDate == null) {
+            this._dueDate = (long) -1;
+        } else {
+            this._dueDate = dueDate;
+        }
     }
 
     /**
@@ -129,12 +136,12 @@ class Note {
     public String toString() {
         return "Note: {" +
         "id: " + this._id +
-        "name: " + this._name +
-        "content: " + this._content +
-        "category:" + this._category +
-        "status: " + this._status +
-        "priority: " + this._priority +
-        "dueDate: " + this._dueDate + "}";
+        "; name: " + this._name +
+        "; content: " + this._content +
+        "; category:" + this._category +
+        "; status: " + this._status +
+        "; priority: " + this._priority +
+        "; dueDate: " + this._dueDate + "}";
     }
 
     public String getName() {
@@ -175,6 +182,7 @@ class Note {
      */
     public void setDueDate(Calendar dueDate) {
         this._dueDate = dueDate.getTimeInMillis() / 1000;
+        this._dueDateCalendar = dueDate;
     }
 
     public void removeDueDate() {
@@ -205,14 +213,15 @@ class Note {
         return (this._dueDate != -1);
     }
 
+    /**
+     * Check if due date is older than now.
+     * @return boolean true if after due.
+     */
     public boolean isAfterDue() {
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            int currentTimeInSeconds = LocalDateTime.now().getSecond();
-            return (this._dueDate <= (long) currentTimeInSeconds);
-        } else {
-            long timestamp = System.currentTimeMillis() / 1000;
-            return (this._dueDate <= timestamp);
+        if (this.getDueDateAsCalendar().compareTo(Calendar.getInstance()) < 1) {
+            return true;
         }
+        return false;
     }
 
     public int getTextColor() {
@@ -310,5 +319,50 @@ class Note {
     }
     public void setStatusDone() {
         this._status = STATUS_DONE;
+    }
+
+    /**
+     * Format date in standardized way.
+     * @return String Formatted date string.
+     */
+    public String getFormattedDate() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            SimpleDateFormat dateFormat = null;
+            dateFormat = new SimpleDateFormat("E, dd-MMM-YYYY");
+            dateFormat.setTimeZone(TimeZone.getDefault());
+            return dateFormat.format(this.getDueDateAsCalendar().getTime());
+        } else {
+            return this.getDueDateAsCalendar().get(Calendar.YEAR) + "-" + (this.getDueDateAsCalendar().get(Calendar.MONTH) + 1) + "-" + this.getDueDateAsCalendar().get(Calendar.DAY_OF_MONTH);
+        }
+    }
+
+    /**
+     * Format time in standardized way.
+     * @return String Formatted time string.
+     */
+    public String getFormattedTime() {
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            SimpleDateFormat dateFormat = null;
+            dateFormat = new SimpleDateFormat("HH:mm");
+            dateFormat.setTimeZone(TimeZone.getDefault());
+            return dateFormat.format(this.getDueDateAsCalendar().getTime());
+        } else {
+            return this.getDueDateAsCalendar().get(Calendar.HOUR_OF_DAY) + ":" + this.getDueDateAsCalendar().get(Calendar.MINUTE);
+        }
+    }
+
+    /**
+     * Get Calendar type object representing due date.
+     * If due date is not set for note returns current time.
+     * @return Calendar object representing due date.
+     */
+    public Calendar getDueDateAsCalendar() {
+        if (this._dueDateCalendar == null) {
+            this._dueDateCalendar = Calendar.getInstance();
+            if (this.hasDueDate()) {
+             this._dueDateCalendar.setTimeInMillis(this.getDueDateAsLong()*1000);
+            }
+        }
+        return this._dueDateCalendar;
     }
 }
