@@ -26,7 +26,6 @@ import java.util.List;
 /**
  * Fragment for displaying list of all notes.
  *
- * // TODO: 10/05/2020 Add option to set note as done.
  * // TODO: 10/05/2020 Add sorting options.
  * // TODO: 12/05/2020 Option to select and delete note. SnackBar maybe?
  * // TODO: 12/05/2020 Option to share selected note via SMS/EMAIL.

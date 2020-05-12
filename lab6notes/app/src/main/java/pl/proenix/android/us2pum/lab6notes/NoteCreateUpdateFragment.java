@@ -27,10 +27,12 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 
 import java.util.Calendar;
 import java.util.List;
@@ -38,7 +40,6 @@ import java.util.Map;
 
 /**
  * Fragment for displaying single note read and edit mode.
- * // TODO: 11/05/2020 Append on exit behaviour to save note.
  * // TODO: 12/05/2020 Add delete button with confirmation and navigation. 
  * // TODO: 12/05/2020 Add intention to share note via sms/email. 
  * // TODO: 12/05/2020 Add option to attach taken photo.
@@ -55,16 +56,14 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
     private TextView textViewDueTime;
     private ScrollView scrollViewNote;
     private ImageButton imageButtonDueDelete;
-
     private Calendar dueDate = null;
-
+    private Note note;
+    private List<Map.Entry<Integer, Integer>> categoryItems;
     enum NoteEditMode {
         NOTE_NEW,
         NOTE_UPDATE,
-        }
-    private Note note;
 
-    private List<Map.Entry<Integer, Integer>> categoryItems;
+        }
 
     public NoteCreateUpdateFragment() {}
 
@@ -191,6 +190,20 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
                 note.save();
             }
         });
+
+        // Add on back pressed callback.
+        OnBackPressedCallback backPressedCallback = new OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                handler.removeCallbacks(workRunnable[0]);
+                setNoteTitle(editTextNoteTitle.getText().toString());
+                handler.removeCallbacks(workRunnable[1]);
+                setNoteContent(editTextNoteContent.getText().toString());
+                note.save();
+                NavHostFragment.findNavController(NoteCreateUpdateFragment.this).popBackStack();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backPressedCallback);
     }
 
     private void setNoteContent(String content) {
