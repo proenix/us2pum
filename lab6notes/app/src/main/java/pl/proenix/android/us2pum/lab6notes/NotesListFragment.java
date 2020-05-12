@@ -3,6 +3,8 @@ package pl.proenix.android.us2pum.lab6notes;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,17 +23,20 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Fragment for displaying list of all notes.
  *
  * // TODO: 10/05/2020 Add sorting options.
- * // TODO: 12/05/2020 Option to select and delete note. SnackBar maybe?
+ * // TODO: 12/05/2020 Add options to delete/share to menu when at least one note is selected in selectedNote List. 
  * // TODO: 12/05/2020 Option to share selected note via SMS/EMAIL.
  * // TODO: 12/05/2020 Add content preview. Limited to ~100 chars.
  */
 public class NotesListFragment extends Fragment {
+
+    private List<Long> selectedNotes = new ArrayList<Long>();
 
     @Override
     public View onCreateView(
@@ -93,11 +98,7 @@ public class NotesListFragment extends Fragment {
 
             // Get background shape and color it depending on category
             try {
-                Drawable bg = view.getContext().getDrawable(R.drawable.layout_note_row_bg);
-                bg.setColorFilter(
-                        new PorterDuffColorFilter(note.getBackgroundColor(), PorterDuff.Mode.SRC)
-                );
-                singleNoteRow.findViewById(R.id.noteElement).setBackground(bg);
+                singleNoteRow.findViewById(R.id.noteElement).setBackground(getBackground(note.getBackgroundColor(), note.getBackgroundColor()));
             } catch (NullPointerException ignored) { }
 
             singleNoteRow.setTag(R.id.TAG_NOTE_ID, note.getID());
@@ -107,7 +108,40 @@ public class NotesListFragment extends Fragment {
                 bundle.putLong("noteID", (Long) v.getTag(R.id.TAG_NOTE_ID));
                 NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment, bundle);
             });
+            singleNoteRow.setOnLongClickListener((View.OnLongClickListener) v -> {
+                if (v.isSelected()) {
+                    showHideMenuForSelection();
+                    selectedNotes.remove((Long) v.getTag(R.id.TAG_NOTE_ID));
+                    v.setSelected(false);
+                    v.findViewById(R.id.noteElement).setBackground(getBackground(note.getBackgroundColor(), note.getBackgroundColor()));
+                } else {
+                    showHideMenuForSelection();
+                    selectedNotes.add( (Long) v.getTag(R.id.TAG_NOTE_ID));
+                    v.setSelected(true);
+                    v.findViewById(R.id.noteElement).setBackground(getBackground(note.getBackgroundColor(), note.getTextColor()));
+                }
+                return true;
+            });
             linearLayoutNotesList.addView(singleNoteRow);
         }
+    }
+
+    /**
+     * Get background for note row based on provided colors.
+     * @param colorBackground Background color.
+     * @param colorStroke Stroke color - accent for selected items.
+     * @return Drawable for use as background.
+     */
+    private Drawable getBackground(int colorBackground, int colorStroke) {
+        LayerDrawable bg = (LayerDrawable) MainActivity.getAppContext().getDrawable(R.drawable.layout_note_row_bg_full);
+        Drawable background = bg.getDrawable(0);
+        Drawable stroke = bg.getDrawable(1);
+        GradientDrawable backgroundGD = (GradientDrawable) background;
+        GradientDrawable strokeGD = (GradientDrawable) stroke;
+        backgroundGD.setColor(colorBackground);
+        strokeGD.setStroke(4, colorStroke);
+        bg.setDrawableByLayerId(0, backgroundGD);
+        bg.setDrawableByLayerId(1, strokeGD);
+        return bg;
     }
 }
