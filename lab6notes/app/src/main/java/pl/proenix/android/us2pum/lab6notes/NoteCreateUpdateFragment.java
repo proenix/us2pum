@@ -45,7 +45,6 @@ import java.util.Map;
 
 /**
  * Fragment for displaying single note read and edit mode.
- * // TODO: 12/05/2020 Add intention to share note via sms/email. 
  * // TODO: 12/05/2020 Add option to attach taken photo.
  */
 public class NoteCreateUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
