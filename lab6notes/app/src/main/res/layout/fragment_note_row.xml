@@ -45,6 +45,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="To jest przykladowa notatka numer jeden z dosc dlugim tytulem, ktory powinien sie jakos tutaj zmiescic jesli nie to mamy spory problem."
+                android:textColor="#FFFFFF"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textViewNoteContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextView"
                 android:textColor="#FFFFFF" />
 
             <TextView

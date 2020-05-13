@@ -30,8 +30,8 @@ import java.util.List;
 /**
  * Fragment for displaying list of all notes.
  *
- * // TODO: 10/05/2020 Add sorting options.
- * // TODO: 12/05/2020 Add content preview. Limited to ~100 chars.
+ * // TODO: 10/05/2020 Add sorting options. v2
+ * // TODO: 13/05/2020 Add burger context menu for each row.
  */
 public class NotesListFragment extends Fragment {
 
@@ -104,7 +104,14 @@ public class NotesListFragment extends Fragment {
 
             // Populate title with data
             TextView textViewNoteTitle = singleNoteRow.findViewById(R.id.textViewNoteTitle);
-            textViewNoteTitle.setText(note.getTitle());
+            textViewNoteTitle.setTextColor(note.getTextColor());
+            textViewNoteTitle.setText(note.getTitleShort());
+
+            // Populate note with content limited to
+            TextView textViewNoteContent = singleNoteRow.findViewById(R.id.textViewNoteContent);
+            textViewNoteContent.setTextColor(note.getTextColor());
+            textViewNoteContent.setText(note.getContentShort());
+
             // Populate due date.
             TextView textViewNoteDueDate = singleNoteRow.findViewById(R.id.textViewNoteDueDate);
             textViewNoteTitle.setTextColor(note.getTextColor());

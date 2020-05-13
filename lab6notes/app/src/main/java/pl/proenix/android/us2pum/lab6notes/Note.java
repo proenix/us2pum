@@ -62,6 +62,9 @@ class Note {
     private Long _dueDate;
     private Calendar _dueDateCalendar;
 
+    private static final int NOTE_TITLE_MAX_PREVIEW_CHARS = 50;
+    private static final int NOTE_CONTENT_MAX_PREVIEW_CHARS = 120;
+
     public Note() {
         this._name = "";
         this._content = "";
@@ -409,5 +412,27 @@ class Note {
             return MainActivity.getAppContext().getString(R.string.note_status_done);
         }
         return MainActivity.getAppContext().getString(R.string.note_status_in_progress);
+    }
+
+    /**
+     * Get shortened version of note title. Limited to NOTE_TITLE_MAX_PREVIEW_CHARS characters.
+     * @return String shortened title.
+     */
+    public String getTitleShort() {
+        if (this._name.length() >= NOTE_TITLE_MAX_PREVIEW_CHARS) {
+            return this._name.substring(0, NOTE_TITLE_MAX_PREVIEW_CHARS) + "...";
+        }
+        return this._name;
+    }
+
+    /**
+     * Get shortened version of note content. Limited to NOTE_CONTENT_MAX_PREVIEW_CHARS characters.
+     * @return String shortened content.
+     */
+    public String getContentShort() {
+        if (this._content.length() >= NOTE_CONTENT_MAX_PREVIEW_CHARS) {
+            return this._content.substring(0, NOTE_CONTENT_MAX_PREVIEW_CHARS) + "...";
+        }
+        return this._content;
     }
 }
