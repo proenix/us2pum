@@ -19,6 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -77,6 +78,7 @@ public class NotesListFragment extends Fragment {
                             note.delete();
                         }
                     }
+                    selectedNotes.clear();
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
                     break;
@@ -153,6 +155,14 @@ public class NotesListFragment extends Fragment {
             });
             linearLayoutNotesList.addView(singleNoteRow);
         }
+
+        // Do not display back button in toolbar.
+        try {
+            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+        } catch (NullPointerException ignored) {}
+
+        // Clear list of selected notes
+        selectedNotes.clear();
     }
 
     /**
@@ -179,6 +189,7 @@ public class NotesListFragment extends Fragment {
         inflater.inflate(R.menu.menu_create_update_note, menu);
         menuItemShare = menu.findItem(R.id.menu_item_share);
         menuItemDelete = menu.findItem(R.id.menu_item_delete);
+        showHideMenuForSelection();
         super.onCreateOptionsMenu(menu, inflater);
     }
 
