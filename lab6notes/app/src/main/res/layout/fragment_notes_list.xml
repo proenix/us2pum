@@ -7,7 +7,7 @@
     tools:context=".NotesListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/RVTest"
+        android:id="@+id/recyclerViewNoteList"
         android:layout_width="0dip"
         android:layout_height="0dip"
         android:layout_marginStart="16dp"
@@ -38,6 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="Sort"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/imageViewSortFilter" />
 
@@ -48,6 +49,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:src="@android:drawable/ic_menu_sort_by_size"
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/textViewSortFilter"
         app:layout_constraintTop_toTopOf="parent" />
 

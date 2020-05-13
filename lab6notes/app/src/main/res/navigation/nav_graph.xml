@@ -10,15 +10,8 @@
         android:label="fragment_notes_list"
         tools:layout="@layout/fragment_notes_list" >
         <action
-            android:id="@+id/action_notesListFragment_to_noteReadFragment"
-            app:destination="@id/noteReadFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
-        <action
-            android:id="@+id/action_notesListFragment_to_noteCreateUpdateFragment"
-            app:destination="@id/noteCreateUpdateFragment"
+            android:id="@+id/action_notesListFragment_to_noteCreateReadUpdateFragment"
+            app:destination="@id/noteCreateReadUpdateFragment"
             app:enterAnim="@anim/fragment_fade_enter"
             app:exitAnim="@anim/fragment_fade_exit"
             app:popEnterAnim="@anim/fragment_close_enter"
@@ -26,34 +19,17 @@
             app:popUpTo="@id/notesListFragment" />
     </fragment>
     <fragment
-        android:id="@+id/noteCreateUpdateFragment"
-        android:name="pl.proenix.android.us2pum.lab6notes.NoteCreateUpdateFragment"
+        android:id="@+id/noteCreateReadUpdateFragment"
+        android:name="pl.proenix.android.us2pum.lab6notes.NoteCreateReadUpdateFragment"
         android:label="fragment_note_create_update"
-        tools:layout="@layout/fragment_note_create_update" >
+        tools:layout="@layout/fragment_note_create_read_update">
         <argument
             android:name="noteID"
-            app:argType="long"
-            android:defaultValue="-1L" />
+            android:defaultValue="-1L"
+            app:argType="long" />
         <argument
             android:name="mode"
-            app:argType="pl.proenix.android.us2pum.lab6notes.NoteCreateUpdateFragment$NoteEditMode"
-            android:defaultValue="NOTE_NEW" />
-    </fragment>
-    <fragment
-        android:id="@+id/noteReadFragment"
-        android:name="pl.proenix.android.us2pum.lab6notes.NoteReadFragment"
-        android:label="fragment_note_read"
-        tools:layout="@layout/fragment_note_read" >
-        <action
-            android:id="@+id/action_noteReadFragment_to_noteCreateUpdateFragment"
-            app:destination="@id/noteCreateUpdateFragment"
-            app:enterAnim="@anim/fragment_fade_enter"
-            app:exitAnim="@anim/fragment_fade_exit"
-            app:popEnterAnim="@anim/fragment_close_enter"
-            app:popExitAnim="@anim/fragment_close_exit" />
-        <argument
-            android:name="noteID"
-            app:argType="long"
-            android:defaultValue="-1L" />
+            android:defaultValue="NOTE_NEW"
+            app:argType="pl.proenix.android.us2pum.lab6notes.NoteCreateReadUpdateFragment$NoteEditMode" />
     </fragment>
 </navigation>

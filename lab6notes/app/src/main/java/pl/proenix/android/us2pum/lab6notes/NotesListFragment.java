@@ -60,13 +60,13 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(view1 -> {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("mode", NoteCreateUpdateFragment.NoteEditMode.NOTE_NEW);
-            NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment, bundle);
+            bundle.putSerializable("mode", NoteCreateReadUpdateFragment.NoteEditMode.NOTE_NEW);
+            NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateReadUpdateFragment, bundle);
         });
 
         notes = MainActivity.db.findAllNotes();
 
-        RecyclerView recyclerView = view.findViewById(R.id.RVTest);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewNoteList);
         notesListAdapter = new NotesListAdapter(notes, this);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.getAppContext());
         recyclerView.setLayoutManager(linearLayoutManager);

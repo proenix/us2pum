@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,7 +46,7 @@ import java.util.Map;
  * Fragment for displaying single note read and edit mode.
  * // TODO: 12/05/2020 Add option to attach taken photo.
  */
-public class NoteCreateUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class NoteCreateReadUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
     private View view;
 
@@ -69,7 +68,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         NOTE_UPDATE
     }
 
-    public NoteCreateUpdateFragment() {}
+    public NoteCreateReadUpdateFragment() {}
 
     @Override
     public View onCreateView(
@@ -83,7 +82,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
         }
 
         // Inflate the layout for this fragment
-        view = inflater.inflate(R.layout.fragment_note_create_update, container, false);
+        view = inflater.inflate(R.layout.fragment_note_create_read_update, container, false);
         setHasOptionsMenu(true);
         return view;
     }
@@ -205,7 +204,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
                 setNoteTitle(editTextNoteTitle.getText().toString());
                 handler.removeCallbacks(workRunnable[1]);
                 setNoteContent(editTextNoteContent.getText().toString());
-                NavHostFragment.findNavController(NoteCreateUpdateFragment.this).popBackStack();
+                NavHostFragment.findNavController(NoteCreateReadUpdateFragment.this).popBackStack();
             }
         };
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backPressedCallback);
@@ -217,7 +216,7 @@ public class NoteCreateUpdateFragment extends Fragment implements AdapterView.On
                 switch (which) {
                     case DialogInterface.BUTTON_POSITIVE:
                         note.delete();
-                        NavHostFragment.findNavController(NoteCreateUpdateFragment.this).popBackStack();
+                        NavHostFragment.findNavController(NoteCreateReadUpdateFragment.this).popBackStack();
                         break;
                     case DialogInterface.BUTTON_NEGATIVE:
                         break;

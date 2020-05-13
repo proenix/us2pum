@@ -62,9 +62,9 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         // Open note on click
         holder.itemView.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("mode", NoteCreateUpdateFragment.NoteEditMode.NOTE_UPDATE);
+            bundle.putSerializable("mode", NoteCreateReadUpdateFragment.NoteEditMode.NOTE_UPDATE);
             bundle.putLong("noteID", (Long) noteList.get(holder.getAdapterPosition()).getID());
-            Navigation.findNavController(v).navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment, bundle);
+            Navigation.findNavController(v).navigate(R.id.action_notesListFragment_to_noteCreateReadUpdateFragment, bundle);
         });
         // On long click select note.
         holder.itemView.setOnLongClickListener(v -> {
