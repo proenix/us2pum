@@ -8,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
-import java.time.LocalDateTime;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -19,7 +18,6 @@ import java.util.Map;
  * Note representation.
  */
 class Note {
-
 
     /**
      * ID in database.
@@ -35,17 +33,17 @@ class Note {
      * Categories types.
      * // TODO: 10/05/2020 Create dedicated table to store categories and allow user to create custom categories.
      */
-    public static final int CATEGORY_HOME = 2001;
-    public static final int CATEGORY_FINANCE = 2002;
-    public static final int CATEGORY_WORK = 2003;
-    public static final int CATEGORY_VACATION = 2004;
-    public static final int CATEGORY_SCHOOL = 2005;
+    private static final int CATEGORY_HOME = 2001;
+    private static final int CATEGORY_FINANCE = 2002;
+    private static final int CATEGORY_WORK = 2003;
+    private static final int CATEGORY_VACATION = 2004;
+    private static final int CATEGORY_SCHOOL = 2005;
     /**
      * Status representation as integer.
      */
     private Integer _status;
-    public static final int STATUS_IN_PROGRESS = 3001;
-    public static final int STATUS_DONE = 3002;
+    private static final int STATUS_IN_PROGRESS = 3001;
+    private static final int STATUS_DONE = 3002;
 
     /**
      * Priority of notes.
@@ -54,7 +52,7 @@ class Note {
     /**
      * Default Priority set for Notes without explicitly declared priority.
      */
-    public static final int PRIORITY_DEFAULT = 1000;
+    private static final int PRIORITY_DEFAULT = 1000;
 
     /**
      * Due Date representation as seconds from epoch.
@@ -65,14 +63,13 @@ class Note {
     private static final int NOTE_TITLE_MAX_PREVIEW_CHARS = 50;
     private static final int NOTE_CONTENT_MAX_PREVIEW_CHARS = 120;
 
-    public Note() {
+    Note() {
         this._name = "";
         this._content = "";
         this._category = CATEGORY_HOME;
         this._status = STATUS_IN_PROGRESS;
         this._priority = PRIORITY_DEFAULT;
         this._dueDate = (long) -1;
-
     }
 
     /**
@@ -85,7 +82,7 @@ class Note {
      * @param priority Priority of note as integer.
      * @param dueDate Due Date time in seconds from epoch as integer.
      */
-    public Note(long id, String name, String content, Integer category, Integer status, Integer priority, Long dueDate) {
+    Note(long id, String name, String content, Integer category, Integer status, Integer priority, Long dueDate) {
         this._id = id;
         this._name = name;
         this._content = content;
@@ -127,10 +124,10 @@ class Note {
 
     /**
      * Find note by ID.
-     * @param noteID
-     * @return
+     * @param noteID ID of note in database.
+     * @return Note object or null.
      */
-    public static Note findById(long noteID) {
+    static Note findById(long noteID) {
         return MainActivity.db.findNoteById(noteID);
     }
 
@@ -221,12 +218,13 @@ class Note {
      * @return boolean true if after due.
      */
     public boolean isAfterDue() {
-        if (this.getDueDateAsCalendar().compareTo(Calendar.getInstance()) < 1) {
-            return true;
-        }
-        return false;
+        return this.getDueDateAsCalendar().compareTo(Calendar.getInstance()) < 1;
     }
 
+    /**
+     * Get text color resource id for note text.
+     * @return Color ID resource.
+     */
     public int getTextColor() {
         switch (this._category) {
             case CATEGORY_HOME:
@@ -244,6 +242,10 @@ class Note {
         }
     }
 
+    /**
+     * Get text color resource id for note due date field.
+     * @return Color ID resource.
+     */
     public int getAfterDueColor() {
         switch (this._category) {
             case CATEGORY_HOME:
@@ -260,7 +262,10 @@ class Note {
                 return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryDefaultText);
         }
     }
-
+    /**
+     * Get text color resource id for note background.
+     * @return Color ID resource.
+     */
     public int getBackgroundColor() {
         switch (this._category) {
             case CATEGORY_HOME:
@@ -278,6 +283,10 @@ class Note {
         }
     }
 
+    /**
+     * Get text color resource id for note category.
+     * @return List of pairs of integers. First integer represents category ID, second background color of that category.
+     */
     public static List<Map.Entry<Integer, Integer>> getCategoriesColors() {
         List<Map.Entry<Integer, Integer>> categoriesColors = new ArrayList<>();
         categoriesColors.add(new AbstractMap.SimpleEntry<Integer, Integer>(CATEGORY_HOME, ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryHomeBackground)));
@@ -288,20 +297,25 @@ class Note {
         return categoriesColors;
     }
 
+    /**
+     * Get name of category in readable format by category integer representation.
+     * @param categoryId Category as integer.
+     * @return String category name in readable format.
+     */
     public static String getCategoryNameByInt(int categoryId) {
         switch (categoryId) {
             case CATEGORY_HOME:
-                return "Home";
+                return MainActivity.getAppContext().getString(R.string.category_name_home);
             case CATEGORY_FINANCE:
-                return "Finance";
+                return MainActivity.getAppContext().getString(R.string.category_name_finance);
             case CATEGORY_WORK:
-                return "Work";
+                return MainActivity.getAppContext().getString(R.string.category_name_work);
             case CATEGORY_VACATION:
-                return "Vacation";
+                return MainActivity.getAppContext().getString(R.string.category_name_vacation);
             case CATEGORY_SCHOOL:
-                return "School";
+                return MainActivity.getAppContext().getString(R.string.category_name_school);
             default:
-                return "Other";
+                return MainActivity.getAppContext().getString(R.string.category_name_other);
         }
     }
 
@@ -314,12 +328,12 @@ class Note {
         } else {
             MainActivity.db.updateNote(this);
         }
-        Log.d("AndroidNotes", "Saving: "+this.toString());
     }
 
     public void setStatusInProgress() {
         this._status = STATUS_IN_PROGRESS;
     }
+
     public void setStatusDone() {
         this._status = STATUS_DONE;
     }
@@ -330,8 +344,7 @@ class Note {
      */
     public String getFormattedDate() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            SimpleDateFormat dateFormat = null;
-            dateFormat = new SimpleDateFormat("E, dd-MMM-YYYY");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("E, dd-MMM-YYYY");
             dateFormat.setTimeZone(TimeZone.getDefault());
             return dateFormat.format(this.getDueDateAsCalendar().getTime());
         } else {
@@ -345,8 +358,7 @@ class Note {
      */
     public String getFormattedTime() {
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-            SimpleDateFormat dateFormat = null;
-            dateFormat = new SimpleDateFormat("HH:mm");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm");
             dateFormat.setTimeZone(TimeZone.getDefault());
             return dateFormat.format(this.getDueDateAsCalendar().getTime());
         } else {
@@ -384,14 +396,14 @@ class Note {
      */
     public String getSharableContent() {
         StringBuilder sharedContent = new StringBuilder();
-        sharedContent.append("Title: ").append(this.getTitle()).append('\n');
-        sharedContent.append("Status: ").append(this.getStatusName()).append('\n');
+        sharedContent.append(MainActivity.getAppContext().getString(R.string.note_sharable_title)).append(this.getTitle()).append('\n');
+        sharedContent.append(MainActivity.getAppContext().getString(R.string.note_sharable_status)).append(this.getStatusName()).append('\n');
         //sharedContent.append("Priority: ").append(this.getPriorityName()).append('\n');
-        sharedContent.append("Category: ").append(this.getCategoryName()).append('\n');
+        sharedContent.append(MainActivity.getAppContext().getString(R.string.note_sharable_category)).append(this.getCategoryName()).append('\n');
         if (hasDueDate()) {
-            sharedContent.append("Due date: ").append(this.getFormattedDate()).append(" ").append(this.getFormattedTime()).append('\n');
+            sharedContent.append(MainActivity.getAppContext().getString(R.string.note_sharable_due_date)).append(this.getFormattedDate()).append(" ").append(this.getFormattedTime()).append('\n');
         }
-        sharedContent.append("Content: ").append(this.getContent()).append('\n');
+        sharedContent.append(MainActivity.getAppContext().getString(R.string.note_sharable_content)).append(this.getContent()).append('\n');
         return sharedContent.toString();
     }
 

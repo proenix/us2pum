@@ -31,7 +31,7 @@ import java.util.stream.Stream;
  * Fragment for displaying list of all notes.
  *
  * // TODO: 10/05/2020 Add sorting options. v2
- * // TODO: 13/05/2020 Add burger context menu for each row.
+ * // TODO: 13/05/2020 Add burger context menu for each row v2.
  */
 public class NotesListFragment extends Fragment implements NoteSelectedInteface {
 
@@ -127,7 +127,7 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
             case R.id.menu_item_share:
                 Intent shareIntent = new Intent(Intent.ACTION_SEND);
                 shareIntent.setTypeAndNormalize("text/*");
-                shareIntent.putExtra(Intent.EXTRA_SUBJECT, "Shared notes");
+                shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.shared_note));
                 StringBuilder sb = new StringBuilder();
                 for (long noteId : selectedNotes) {
                     Note note = Note.findById(noteId);
@@ -136,7 +136,7 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
                     }
                 }
                 shareIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
-                startActivity(Intent.createChooser(shareIntent, "Share notes"));
+                startActivity(Intent.createChooser(shareIntent, getString(R.string.shared_note)));
                 return true;
             case R.id.menu_item_delete:
                 AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(view.getContext());

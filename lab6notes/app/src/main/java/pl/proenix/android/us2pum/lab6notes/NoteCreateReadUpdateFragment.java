@@ -44,7 +44,7 @@ import java.util.Map;
 
 /**
  * Fragment for displaying single note read and edit mode.
- * // TODO: 12/05/2020 Add option to attach taken photo.
+ * // TODO: 12/05/2020 Add option to attach taken photo v2.
  */
 public class NoteCreateReadUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
@@ -210,17 +210,14 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         requireActivity().getOnBackPressedDispatcher().addCallback(getViewLifecycleOwner(), backPressedCallback);
 
 
-        onDeleteDialogClickListener = new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                switch (which) {
-                    case DialogInterface.BUTTON_POSITIVE:
-                        note.delete();
-                        NavHostFragment.findNavController(NoteCreateReadUpdateFragment.this).popBackStack();
-                        break;
-                    case DialogInterface.BUTTON_NEGATIVE:
-                        break;
-                }
+        onDeleteDialogClickListener = (dialog, which) -> {
+            switch (which) {
+                case DialogInterface.BUTTON_POSITIVE:
+                    note.delete();
+                    NavHostFragment.findNavController(NoteCreateReadUpdateFragment.this).popBackStack();
+                    break;
+                case DialogInterface.BUTTON_NEGATIVE:
+                    break;
             }
         };
 

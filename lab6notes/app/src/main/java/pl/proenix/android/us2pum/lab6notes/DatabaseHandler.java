@@ -142,7 +142,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * Find all notes.
      * @return List of Note objects.
      */
-    public List<Note> findAllNotes() {
+    List<Note> findAllNotes() {
         List<Note> notes = new ArrayList<Note>();
         String notesQuery = "SELECT * FROM " + TABLE_NOTES;
         SQLiteDatabase db = this.getReadableDatabase();
@@ -171,7 +171,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      * @param note Note object.
      * @return True if note found and deleted.
      */
-    public boolean removeNote(Note note) {
+    boolean removeNote(Note note) {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_NOTES, KEY_ID + "=?", new String[]{String.valueOf(note.getID())}) > 0;
     }
