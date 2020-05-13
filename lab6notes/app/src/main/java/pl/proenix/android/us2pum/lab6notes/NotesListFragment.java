@@ -3,30 +3,29 @@ package pl.proenix.android.us2pum.lab6notes;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Fragment for displaying list of all notes.
@@ -34,13 +33,14 @@ import java.util.List;
  * // TODO: 10/05/2020 Add sorting options. v2
  * // TODO: 13/05/2020 Add burger context menu for each row.
  */
-public class NotesListFragment extends Fragment {
+public class NotesListFragment extends Fragment implements NoteSelectedInteface {
 
     private List<Long> selectedNotes = new ArrayList<Long>();
+    private List<Note> notes;
     private View view;
     private MenuItem menuItemShare;
     private MenuItem menuItemDelete;
-
+    private NotesListAdapter notesListAdapter;
     private DialogInterface.OnClickListener onDeleteDialogClickListener;
 
     @Override
@@ -64,8 +64,14 @@ public class NotesListFragment extends Fragment {
             NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment, bundle);
         });
 
-        LinearLayout linearLayoutNotesList = view.findViewById(R.id.linearLayoutNotesList);
-        List<Note> notes = MainActivity.db.findAllNotes();
+        notes = MainActivity.db.findAllNotes();
+
+        RecyclerView recyclerView = view.findViewById(R.id.RVTest);
+        notesListAdapter = new NotesListAdapter(notes, this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.getAppContext());
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(notesListAdapter);
 
         // Delete notes dialog.
         onDeleteDialogClickListener = (dialog, which) -> {
@@ -73,88 +79,29 @@ public class NotesListFragment extends Fragment {
                 case DialogInterface.BUTTON_POSITIVE:
                     // Delete selected notes after confirmation.
                     for (long noteId : selectedNotes) {
-                        Note note = Note.findById(noteId);
-                        if (note != null) {
-                            note.delete();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                            Stream<Note> noteStream = notes.stream().filter(n -> n.getID().equals(noteId));
+                            noteStream.forEach(Note::delete);
+                            notes.removeIf(n -> n.getID().equals(noteId));
+                        } else {
+                            // For old API.
+                            Iterator<Note> noteIterator = notes.iterator();
+                            while (noteIterator.hasNext()) {
+                                Note n = noteIterator.next();
+                                if (n.getID().equals(noteId)) {
+                                    n.delete();
+                                    noteIterator.remove();
+                                }
+                            }
                         }
                     }
                     selectedNotes.clear();
+                    notesListAdapter.notifyDataSetChanged();
                     break;
                 case DialogInterface.BUTTON_NEGATIVE:
                     break;
             }
         };
-
-        for (Note note : notes) {
-            View singleNoteRow = View.inflate(view.getContext(), R.layout.fragment_note_row, null);
-
-            // Populate checkbox with state
-            CheckBox checkBoxNoteDone = singleNoteRow.findViewById(R.id.checkBoxListNoteDone);
-            // Set Unique Id for checkbox without this setting checked state pointed to all previous buttons with that id.
-            checkBoxNoteDone.setId(View.generateViewId());
-            checkBoxNoteDone.setTag(R.id.TAG_NOTE_ID, note.getID());
-            checkBoxNoteDone.setChecked(note.isDone());
-            checkBoxNoteDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                Note note1 = Note.findById((long) buttonView.getTag(R.id.TAG_NOTE_ID));
-                if (isChecked) {
-                    note1.setStatusDone();
-                } else {
-                    note1.setStatusInProgress();
-                }
-                note1.save();
-            });
-
-            // Populate title with data
-            TextView textViewNoteTitle = singleNoteRow.findViewById(R.id.textViewNoteTitle);
-            textViewNoteTitle.setTextColor(note.getTextColor());
-            textViewNoteTitle.setText(note.getTitleShort());
-
-            // Populate note with content limited to
-            TextView textViewNoteContent = singleNoteRow.findViewById(R.id.textViewNoteContent);
-            textViewNoteContent.setTextColor(note.getTextColor());
-            textViewNoteContent.setText(note.getContentShort());
-
-            // Populate due date.
-            TextView textViewNoteDueDate = singleNoteRow.findViewById(R.id.textViewNoteDueDate);
-            textViewNoteTitle.setTextColor(note.getTextColor());
-            if (note.hasDueDate()) {
-                textViewNoteDueDate.setText(String.format("%s %s", note.getFormattedDate(), note.getFormattedTime()));
-                if (note.isAfterDue()) {
-                    textViewNoteDueDate.setTextColor(note.getAfterDueColor());
-                } else {
-                    textViewNoteDueDate.setTextColor(note.getTextColor());
-                }
-            } else {
-                textViewNoteDueDate.setVisibility(View.GONE);
-            }
-
-            // Get background shape and color it depending on category
-            try {
-                singleNoteRow.findViewById(R.id.noteElement).setBackground(getBackground(note.getBackgroundColor(), note.getBackgroundColor()));
-            } catch (NullPointerException ignored) { }
-
-            singleNoteRow.setTag(R.id.TAG_NOTE_ID, note.getID());
-            singleNoteRow.setOnClickListener(v -> {
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("mode", NoteCreateUpdateFragment.NoteEditMode.NOTE_UPDATE);
-                bundle.putLong("noteID", (Long) v.getTag(R.id.TAG_NOTE_ID));
-                NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateUpdateFragment, bundle);
-            });
-            singleNoteRow.setOnLongClickListener((View.OnLongClickListener) v -> {
-                if (v.isSelected()) {
-                    selectedNotes.remove((Long) v.getTag(R.id.TAG_NOTE_ID));
-                    v.setSelected(false);
-                    v.findViewById(R.id.noteElement).setBackground(getBackground(note.getBackgroundColor(), note.getBackgroundColor()));
-                } else {
-                    selectedNotes.add( (Long) v.getTag(R.id.TAG_NOTE_ID));
-                    v.setSelected(true);
-                    v.findViewById(R.id.noteElement).setBackground(getBackground(note.getBackgroundColor(), note.getTextColor()));
-                }
-                showHideMenuForSelection();
-                return true;
-            });
-            linearLayoutNotesList.addView(singleNoteRow);
-        }
 
         // Do not display back button in toolbar.
         try {
@@ -163,25 +110,6 @@ public class NotesListFragment extends Fragment {
 
         // Clear list of selected notes
         selectedNotes.clear();
-    }
-
-    /**
-     * Get background for note row based on provided colors.
-     * @param colorBackground Background color.
-     * @param colorStroke Stroke color - accent for selected items.
-     * @return Drawable for use as background.
-     */
-    private Drawable getBackground(int colorBackground, int colorStroke) {
-        LayerDrawable bg = (LayerDrawable) MainActivity.getAppContext().getDrawable(R.drawable.layout_note_row_bg_full);
-        Drawable background = bg.getDrawable(0);
-        Drawable stroke = bg.getDrawable(1);
-        GradientDrawable backgroundGD = (GradientDrawable) background;
-        GradientDrawable strokeGD = (GradientDrawable) stroke;
-        backgroundGD.setColor(colorBackground);
-        strokeGD.setStroke(4, colorStroke);
-        bg.setDrawableByLayerId(0, backgroundGD);
-        bg.setDrawableByLayerId(1, strokeGD);
-        return bg;
     }
 
     @Override
@@ -227,5 +155,18 @@ public class NotesListFragment extends Fragment {
     private void showHideMenuForSelection() {
         menuItemDelete.setVisible(selectedNotes.size() > 0);
         menuItemShare.setVisible(selectedNotes.size() > 0);
-    };
+    }
+
+    @Override
+    public void removeFromSelectedNotes(Long id) {
+        selectedNotes.remove(id);
+        showHideMenuForSelection();
+    }
+
+    @Override
+    public void addToSelectedNotes(Long id) {
+        selectedNotes.add(id);
+        showHideMenuForSelection();
+    }
+
 }
