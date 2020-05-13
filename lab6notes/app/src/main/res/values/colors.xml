@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#6200EE</color>
+
+    <color name="colorCategoryHomeBackground">#1E88E5</color>
+    <color name="colorCategoryFinanceBackground">#00897B</color>
+    <color name="colorCategoryWorkBackground">#FDD835</color>
+    <color name="colorCategoryVacationBackground">#00BCD4</color>
+    <color name="colorCategorySchoolBackground">#C0CA33</color>
+    <color name="colorCategoryDefaultBackground">#8E24AA</color>
+
+    <color name="colorCategoryHomeText">#FFFFFF</color>
+    <color name="colorCategoryFinanceText">#FFFFFF</color>
+    <color name="colorCategoryWorkText">#FFFFFF</color>
+    <color name="colorCategoryVacationText">#FFFFFF</color>
+    <color name="colorCategorySchoolText">#FFFFFF</color>
+    <color name="colorCategoryDefaultText">#FFFFFF</color>
+
+    <color name="colorCategoryHomeAfterDue">#B71C1C</color>
+    <color name="colorCategoryFinanceAfterDue">#B71C1C</color>
+    <color name="colorCategoryWorkAfterDue">#B71C1C</color>
+    <color name="colorCategoryVacationAfterDue">#B71C1C</color>
+    <color name="colorCategorySchoolAfterDue">#B71C1C</color>
+    <color name="colorCategoryDefaultDue">#B71C1C</color>
+</resources>

@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Notes</string>
+    <string name="category">Category:</string>
+    <string name="title">Title</string>
+    <string name="note">Note</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="do_you_really_want_to_delete_note">Do you really want to delete this note? Operation is irreversible.</string>
+    <string name="note_status_done">Done.</string>
+    <string name="note_saved">Note saved.</string>
+    <string name="note_status_in_progress">In progress.</string>
+    <string name="do_you_really_want_to_delete_notes">Do you really want to delete selected notes? Operation is irreversible!</string>
+    <string name="shared_note">Shared notes</string>
+    <string name="category_name_home">Home</string>
+    <string name="category_name_finance">Finance</string>
+    <string name="category_name_work">Work</string>
+    <string name="category_name_vacation">Vacation</string>
+    <string name="category_name_school">School</string>
+    <string name="category_name_other">Other</string>
+    <string name="note_sharable_title">Title: </string>
+    <string name="note_sharable_status">Status: </string>
+    <string name="note_sharable_category">Category: </string>
+    <string name="note_sharable_due_date">Due date: </string>
+    <string name="note_sharable_content">Content: </string>
+</resources>
