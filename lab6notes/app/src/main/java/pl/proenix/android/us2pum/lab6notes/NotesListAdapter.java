@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -44,6 +45,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         holder.noteTitle.setTextColor(note.getTextColor());
         holder.noteContent.setText(note.getContentShort());
         holder.noteContent.setTextColor(note.getTextColor());
+        holder.notePriority.setImageDrawable(note.getPriorityDrawable());
         // Set due field visibility, value and color.
         if (note.hasDueDate()) {
             holder.noteDueDate.setText(String.format("%s %s", note.getFormattedDate(), note.getFormattedTime()));
@@ -98,6 +100,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
 
     class NoteViewHolder extends RecyclerView.ViewHolder {
         TextView noteTitle, noteContent, noteDueDate;
+        ImageView notePriority;
         View noteBackground;
         CheckBox done;
         NoteViewHolder(View view) {
@@ -110,6 +113,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
             noteContent = view.findViewById(R.id.textViewNoteContent);
             noteDueDate = view.findViewById(R.id.textViewNoteDueDate);
             noteBackground = view.findViewById(R.id.noteElement);
+            notePriority = view.findViewById(R.id.imageViewNotePriority);
         }
     }
 

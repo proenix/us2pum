@@ -143,7 +143,7 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
                 tv.setText(priorityItems.get(position).getValue());
                 tv.setTextColor(note.getTextColor());
                 tv.setBackgroundColor(note.getBackgroundColor());
-                tv.setCompoundDrawablesWithIntrinsicBounds(note.getPriorityDrawableByPriorityInt(priorityItems.get(position).getKey()), null, null, null);
+                tv.setCompoundDrawablesWithIntrinsicBounds(note.getPriorityDrawableByPriorityInt(priorityItems.get(position).getKey(), true), null, null, null);
                 return view;
             }
         };
@@ -323,7 +323,7 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
             case R.id.spinnerPriority:
                 note.setPriority(priorityItems.get(position).getKey());
                 ((TextView) view).setText(note.getPriorityName());
-                ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(note.getPriorityDrawable(), null, null, null);
+                ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(note.getPriorityDrawable(true), null, null, null);
                 ((TextView) view).setTextColor(note.getTextColor()); // Text color of spinner visible part
         }
         note.save();

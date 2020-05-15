@@ -1,5 +1,7 @@
 package pl.proenix.android.us2pum.lab6notes;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.TimeZone;
@@ -479,7 +481,10 @@ class Note {
         this._priority = priorityInt;
     }
 
-    public Drawable getPriorityDrawableByPriorityInt(int priorityInt) {
+    public Drawable getPriorityDrawableByPriorityInt(int priorityInt, @Nullable Boolean showNormal) {
+        if (showNormal == null) {
+            showNormal = false;
+        }
         switch (priorityInt) {
             case PRIORITY_CRITICAL:
                 return MainActivity.getAppContext().getDrawable(R.drawable.ic_priority_critical);
@@ -487,12 +492,19 @@ class Note {
                 return MainActivity.getAppContext().getDrawable(R.drawable.ic_priority_high);
             case PRIORITY_LOW:
                 return MainActivity.getAppContext().getDrawable(R.drawable.ic_priority_low);
-            default: // Default priority
-                return MainActivity.getAppContext().getDrawable(R.drawable.ic_priority_normal);
+            case PRIORITY_DEFAULT: // Default priority
+                if (showNormal) {
+                    return MainActivity.getAppContext().getDrawable(R.drawable.ic_priority_normal);
+                }
+            default:
+                return new ColorDrawable(Color.TRANSPARENT);
         }
     }
 
+    public Drawable getPriorityDrawable(@Nullable Boolean showNormal) {
+        return getPriorityDrawableByPriorityInt(this._priority, showNormal);
+    }
     public Drawable getPriorityDrawable() {
-        return getPriorityDrawableByPriorityInt(this._priority);
+        return getPriorityDrawableByPriorityInt(this._priority, false);
     }
 }
