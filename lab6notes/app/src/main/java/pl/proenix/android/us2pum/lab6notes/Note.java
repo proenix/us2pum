@@ -52,7 +52,10 @@ class Note {
     /**
      * Default Priority set for Notes without explicitly declared priority.
      */
-    private static final int PRIORITY_DEFAULT = 1000;
+    private static final int PRIORITY_DEFAULT = 1050;
+    private static final int PRIORITY_LOW = 1010;
+    private static final int PRIORITY_HIGH = 1060;
+    private static final int PRIORITY_CRITICAL = 1080;
 
     /**
      * Due Date representation as seconds from epoch.
@@ -129,6 +132,15 @@ class Note {
      */
     static Note findById(long noteID) {
         return MainActivity.db.findNoteById(noteID);
+    }
+
+    public static List<Map.Entry<Integer, String>> getPriorities() {
+        List<Map.Entry<Integer, String>> prioritiesList = new ArrayList<>();
+        prioritiesList.add(new AbstractMap.SimpleEntry<Integer, String>(PRIORITY_DEFAULT, MainActivity.getAppContext().getString(R.string.note_priority_default)));
+        prioritiesList.add(new AbstractMap.SimpleEntry<Integer, String>(PRIORITY_HIGH, MainActivity.getAppContext().getString(R.string.note_priority_high)));
+        prioritiesList.add(new AbstractMap.SimpleEntry<Integer, String>(PRIORITY_CRITICAL, MainActivity.getAppContext().getString(R.string.note_priority_critical)));
+        prioritiesList.add(new AbstractMap.SimpleEntry<Integer, String>(PRIORITY_LOW, MainActivity.getAppContext().getString(R.string.note_priority_low)));
+        return prioritiesList;
     }
 
     @NonNull
@@ -446,5 +458,23 @@ class Note {
             return this._content.substring(0, NOTE_CONTENT_MAX_PREVIEW_CHARS) + "...";
         }
         return this._content;
+    }
+
+    public String getPriorityName() {
+        switch (this._priority) {
+            case PRIORITY_DEFAULT: // Normal priority
+                return MainActivity.getAppContext().getString(R.string.note_priority_default);
+            case PRIORITY_CRITICAL:
+                return MainActivity.getAppContext().getString(R.string.note_priority_critical);
+            case PRIORITY_HIGH:
+                return MainActivity.getAppContext().getString(R.string.note_priority_high);
+            case PRIORITY_LOW:
+                return MainActivity.getAppContext().getString(R.string.note_priority_low);
+        }
+        return "";
+    }
+
+    public void setPriority(int priorityInt) {
+        this._priority = priorityInt;
     }
 }

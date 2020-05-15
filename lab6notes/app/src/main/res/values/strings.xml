@@ -22,4 +22,9 @@
     <string name="note_sharable_category">Category: </string>
     <string name="note_sharable_due_date">Due date: </string>
     <string name="note_sharable_content">Content: </string>
+    <string name="priority">Priority</string>
+    <string name="note_priority_default">Normal</string>
+    <string name="note_priority_high">High</string>
+    <string name="note_priority_critical">Critical</string>
+    <string name="note_priority_low">Low</string>
 </resources>

@@ -85,7 +85,22 @@
                 android:id="@+id/spinnerCategory"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:backgroundTint="@color/design_default_color_surface" />
+                android:backgroundTint="@color/colorCategoryDefaultText" />
+
+            <TextView
+                android:id="@+id/textViewPriority"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dip"
+                android:text="@string/priority"
+                android:textColor="@color/colorCategoryDefaultText"
+                android:textSize="12sp" />
+
+            <Spinner
+                android:id="@+id/spinnerPriority"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorCategoryDefaultText" />
 
             <TextView
                 android:id="@+id/textView4"

@@ -13,6 +13,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -44,7 +45,10 @@ import java.util.Map;
 
 /**
  * Fragment for displaying single note read and edit mode.
- * // TODO: 12/05/2020 Add option to attach taken photo v2.
+ * // TODO: 12/05/2020 Add option to attach taken photo or video.
+ * // TODO: 14/05/2020 Export to text file.
+ * // TODO: 14/05/2020 Set priority for note
+ * // TODO: 14/05/2020 Manage attachments CRUD operation.
  */
 public class NoteCreateReadUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
@@ -61,7 +65,10 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
     private Calendar dueDate = null;
     private Note note;
     private List<Map.Entry<Integer, Integer>> categoryItems;
+    private List<Map.Entry<Integer, String>> priorityItems;
     private DialogInterface.OnClickListener onDeleteDialogClickListener;
+    private Spinner spinnerPriority;
+    private Spinner spinnerCategory;
 
     enum NoteEditMode {
         NOTE_NEW,
@@ -98,10 +105,9 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
             note = new Note();
         }
         scrollViewNote = view.findViewById(R.id.scrollViewNote);
-        scrollViewNote.setBackgroundColor(note.getBackgroundColor());
 
         // Note categories handling. Color spinner for categories
-        Spinner spinnerCategory = view.findViewById(R.id.spinnerCategory);
+        spinnerCategory = view.findViewById(R.id.spinnerCategory);
         categoryItems = Note.getCategoriesColors();
         ArrayAdapter<Map.Entry<Integer, Integer>> adapter = new ArrayAdapter<Map.Entry<Integer, Integer>>(view.getContext(), R.layout.spinner_item, categoryItems) {
             @Override
@@ -116,7 +122,6 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         };
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerCategory.setAdapter(adapter);
-        spinnerCategory.setBackgroundColor(note.getBackgroundColor());
         spinnerCategory.setOnItemSelectedListener(this);
         // Set current category as selected.
         for (Map.Entry<Integer, Integer> item : categoryItems) {
@@ -124,6 +129,30 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
                 spinnerCategory.setSelection(categoryItems.indexOf(item));
             }
         }
+
+        // Note priority handling.
+        spinnerPriority = view.findViewById(R.id.spinnerPriority);
+        priorityItems = Note.getPriorities();
+        ArrayAdapter<Map.Entry<Integer, String>> adapterPriority = new ArrayAdapter<Map.Entry<Integer, String>>(view.getContext(), R.layout.spinner_item, priorityItems) {
+            @Override
+            public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                View view = super.getDropDownView(position, convertView, parent);
+                TextView tv = (TextView) view;
+                tv.setText(priorityItems.get(position).getValue());
+                tv.setTextColor(note.getTextColor());
+                tv.setBackgroundColor(note.getBackgroundColor());
+                return view;
+            }
+        };
+        adapterPriority.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerPriority.setAdapter(adapterPriority);
+        spinnerPriority.setOnItemSelectedListener(this);
+        for (Map.Entry<Integer, String> item : priorityItems) {
+            if (item.getKey().equals(note.getPriority())) {
+                spinnerPriority.setSelection(priorityItems.indexOf(item));
+            }
+        }
+
 
         // Note title handling
         editTextNoteTitle = view.findViewById(R.id.editTextNoteTitle);
@@ -271,27 +300,33 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        note.setCategory(categoryItems.get(position).getKey());
+        switch (parent.getId()) {
+            case R.id.spinnerCategory:
+                note.setCategory(categoryItems.get(position).getKey());
+                ((TextView) view).setText(Note.getCategoryNameByInt(note.getCategoryAsInt()));
+                ((TextView) view).setTextColor(note.getTextColor()); // Text color of spinner visible part
+                try {
+                    Drawable bg = view.getContext().getDrawable(R.drawable.layout_note_row_bg);
+                    bg.setColorFilter(
+                            new PorterDuffColorFilter(note.getBackgroundColor(), PorterDuff.Mode.SRC)
+                    );
+                    // Set color for note shape.
+                    scrollViewNote.setBackground(bg);
+                    editTextNoteContent.setTextColor(note.getTextColor());
+                    editTextNoteTitle.setTextColor(note.getTextColor());
+                } catch (NullPointerException ignored) { }
+                Log.d("AndroidNotes", "SpinnerCategory");
+                break;
+            case R.id.spinnerPriority:
+                note.setPriority(priorityItems.get(position).getKey());
+                ((TextView) view).setText(note.getPriorityName());
+                ((TextView) view).setTextColor(note.getTextColor()); // Text color of spinner visible part
+        }
         note.save();
-
-        ((TextView) view).setText(Note.getCategoryNameByInt(note.getCategoryAsInt()));
-        ((TextView) view).setTextColor(note.getTextColor()); // Text color of spinner visible part
-        view.setBackgroundColor(note.getBackgroundColor()); // Visible part of Spinner
-        try {
-            Drawable bg = view.getContext().getDrawable(R.drawable.layout_note_row_bg);
-            bg.setColorFilter(
-                    new PorterDuffColorFilter(note.getBackgroundColor(), PorterDuff.Mode.SRC)
-            );
-            // Set color for note shape.
-            scrollViewNote.setBackground(bg);
-            editTextNoteContent.setTextColor(note.getTextColor());
-            editTextNoteTitle.setTextColor(note.getTextColor());
-        } catch (NullPointerException ignored) { }
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
-
     }
 
     @Override
