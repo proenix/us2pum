@@ -3,6 +3,7 @@
     android:id="@+id/textView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:drawablePadding="5dip"
     android:gravity="left"
-    android:padding="5dip"
-    android:textSize="20sp" />
+    android:padding="8dip"
+    android:textSize="18sp" />

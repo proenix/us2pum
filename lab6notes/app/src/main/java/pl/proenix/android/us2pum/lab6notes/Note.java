@@ -1,5 +1,6 @@
 package pl.proenix.android.us2pum.lab6notes;
 
+import android.graphics.drawable.Drawable;
 import android.icu.text.SimpleDateFormat;
 import android.icu.util.TimeZone;
 import android.util.Log;
@@ -136,9 +137,9 @@ class Note {
 
     public static List<Map.Entry<Integer, String>> getPriorities() {
         List<Map.Entry<Integer, String>> prioritiesList = new ArrayList<>();
-        prioritiesList.add(new AbstractMap.SimpleEntry<Integer, String>(PRIORITY_DEFAULT, MainActivity.getAppContext().getString(R.string.note_priority_default)));
-        prioritiesList.add(new AbstractMap.SimpleEntry<Integer, String>(PRIORITY_HIGH, MainActivity.getAppContext().getString(R.string.note_priority_high)));
         prioritiesList.add(new AbstractMap.SimpleEntry<Integer, String>(PRIORITY_CRITICAL, MainActivity.getAppContext().getString(R.string.note_priority_critical)));
+        prioritiesList.add(new AbstractMap.SimpleEntry<Integer, String>(PRIORITY_HIGH, MainActivity.getAppContext().getString(R.string.note_priority_high)));
+        prioritiesList.add(new AbstractMap.SimpleEntry<Integer, String>(PRIORITY_DEFAULT, MainActivity.getAppContext().getString(R.string.note_priority_default)));
         prioritiesList.add(new AbstractMap.SimpleEntry<Integer, String>(PRIORITY_LOW, MainActivity.getAppContext().getString(R.string.note_priority_low)));
         return prioritiesList;
     }
@@ -471,10 +472,27 @@ class Note {
             case PRIORITY_LOW:
                 return MainActivity.getAppContext().getString(R.string.note_priority_low);
         }
-        return "";
+        return MainActivity.getAppContext().getString(R.string.note_priority_default);
     }
 
     public void setPriority(int priorityInt) {
         this._priority = priorityInt;
+    }
+
+    public Drawable getPriorityDrawableByPriorityInt(int priorityInt) {
+        switch (priorityInt) {
+            case PRIORITY_CRITICAL:
+                return MainActivity.getAppContext().getDrawable(R.drawable.ic_priority_critical);
+            case PRIORITY_HIGH:
+                return MainActivity.getAppContext().getDrawable(R.drawable.ic_priority_high);
+            case PRIORITY_LOW:
+                return MainActivity.getAppContext().getDrawable(R.drawable.ic_priority_low);
+            default: // Default priority
+                return MainActivity.getAppContext().getDrawable(R.drawable.ic_priority_normal);
+        }
+    }
+
+    public Drawable getPriorityDrawable() {
+        return getPriorityDrawableByPriorityInt(this._priority);
     }
 }

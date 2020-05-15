@@ -112,7 +112,8 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         ArrayAdapter<Map.Entry<Integer, Integer>> adapter = new ArrayAdapter<Map.Entry<Integer, Integer>>(view.getContext(), R.layout.spinner_item, categoryItems) {
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
+                LayoutInflater inflater = getLayoutInflater();
+                View view = inflater.inflate(R.layout.spinner_item, parent, false);
                 TextView tv = (TextView) view;
                 tv.setText(Note.getCategoryNameByInt(categoryItems.get(position).getKey()));
                 tv.setTextColor(ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryDefaultText));
@@ -136,11 +137,13 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         ArrayAdapter<Map.Entry<Integer, String>> adapterPriority = new ArrayAdapter<Map.Entry<Integer, String>>(view.getContext(), R.layout.spinner_item, priorityItems) {
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                View view = super.getDropDownView(position, convertView, parent);
+                LayoutInflater inflater = getLayoutInflater();
+                View view = inflater.inflate(R.layout.spinner_item, parent, false);
                 TextView tv = (TextView) view;
                 tv.setText(priorityItems.get(position).getValue());
                 tv.setTextColor(note.getTextColor());
                 tv.setBackgroundColor(note.getBackgroundColor());
+                tv.setCompoundDrawablesWithIntrinsicBounds(note.getPriorityDrawableByPriorityInt(priorityItems.get(position).getKey()), null, null, null);
                 return view;
             }
         };
@@ -320,6 +323,7 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
             case R.id.spinnerPriority:
                 note.setPriority(priorityItems.get(position).getKey());
                 ((TextView) view).setText(note.getPriorityName());
+                ((TextView) view).setCompoundDrawablesWithIntrinsicBounds(note.getPriorityDrawable(), null, null, null);
                 ((TextView) view).setTextColor(note.getTextColor()); // Text color of spinner visible part
         }
         note.save();
