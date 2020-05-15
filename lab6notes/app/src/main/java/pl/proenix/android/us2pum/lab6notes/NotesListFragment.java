@@ -33,8 +33,7 @@ import java.util.stream.Stream;
  * // TODO: 10/05/2020 Add sorting options. By title ASC DESC, due date ASC DESC, priority ASC DESC, status ASC DESC
  * // TODO: 14/05/2020 Filter by status (done/not done), due date (from <-> to), having in content/title (string)
  * // TODO: 14/05/2020 Export to text file. 
- * // TODO: 14/05/2020 Add note created_at. 
- * // TODO: 14/05/2020 Add note priority support. (Predefined values low, normal, medium, high, very high, critical.)  
+ * // TODO: 14/05/2020 Add note created_at.
  * // TODO: 14/05/2020 Show attached elements. (as thumb previews)
  * // TODO: 13/05/2020 Add burger context menu for each row.
  */

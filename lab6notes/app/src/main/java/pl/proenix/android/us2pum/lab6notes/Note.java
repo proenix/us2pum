@@ -137,6 +137,10 @@ class Note {
         return MainActivity.db.findNoteById(noteID);
     }
 
+    /**
+     * Get pairs of priority integer representation and name as list.
+     * @return List of key values. First integer represents priority ID, second priority name.
+     */
     public static List<Map.Entry<Integer, String>> getPriorities() {
         List<Map.Entry<Integer, String>> prioritiesList = new ArrayList<>();
         prioritiesList.add(new AbstractMap.SimpleEntry<Integer, String>(PRIORITY_CRITICAL, MainActivity.getAppContext().getString(R.string.note_priority_critical)));
@@ -463,6 +467,10 @@ class Note {
         return this._content;
     }
 
+    /**
+     * Return translated priority names.
+     * @return String priority names in readable form.
+     */
     public String getPriorityName() {
         switch (this._priority) {
             case PRIORITY_DEFAULT: // Normal priority
@@ -481,6 +489,12 @@ class Note {
         this._priority = priorityInt;
     }
 
+    /**
+     * Return priority drawable depending on provided priority integer representation.
+     * @param priorityInt priority integer representation.
+     * @param showNormal Depending if icon for normal priority should be shown.
+     * @return @return Drawable object with icon.
+     */
     public Drawable getPriorityDrawableByPriorityInt(int priorityInt, @Nullable Boolean showNormal) {
         if (showNormal == null) {
             showNormal = false;
@@ -501,9 +515,19 @@ class Note {
         }
     }
 
+    /**
+     * Return Drawable object with priority icon for current note.
+     * @param showNormal Depending if icon for normal priority should be shown.
+     * @return Drawable object with icon.
+     */
     public Drawable getPriorityDrawable(@Nullable Boolean showNormal) {
         return getPriorityDrawableByPriorityInt(this._priority, showNormal);
     }
+
+    /**
+     * Return Drawable object with priority icon for current note. For normal priority return transparent drawable.
+     * @return Drawable object with icon.
+     */
     public Drawable getPriorityDrawable() {
         return getPriorityDrawableByPriorityInt(this._priority, false);
     }

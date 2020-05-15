@@ -47,7 +47,6 @@ import java.util.Map;
  * Fragment for displaying single note read and edit mode.
  * // TODO: 12/05/2020 Add option to attach taken photo or video.
  * // TODO: 14/05/2020 Export to text file.
- * // TODO: 14/05/2020 Set priority for note
  * // TODO: 14/05/2020 Manage attachments CRUD operation.
  */
 public class NoteCreateReadUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
