@@ -210,40 +210,11 @@
                     android:showDividers="middle">
 
                     <ImageButton
-                        android:id="@+id/imageButton"
+                        android:id="@+id/imageButtonAddPhoto"
                         android:layout_width="100dip"
                         android:layout_height="150dip"
+                        android:background="@android:drawable/screen_background_light_transparent"
                         android:src="@android:drawable/ic_menu_camera" />
-
-                    <ImageView
-                        android:id="@+id/imageView54"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dip"
-                        android:layout_weight="1"
-                        android:adjustViewBounds="true"
-                        app:srcCompat="@drawable/sample_long" />
-
-                    <ImageView
-                        android:id="@+id/imageView24"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dip"
-                        android:adjustViewBounds="true"
-                        app:srcCompat="@drawable/sample_square" />
-
-                    <ImageView
-                        android:id="@+id/imageView44"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dip"
-                        android:layout_weight="1"
-                        android:adjustViewBounds="true"
-                        app:srcCompat="@drawable/sample_long" />
-
-                    <ImageView
-                        android:id="@+id/imageView3"
-                        android:layout_width="match_parent"
-                        android:layout_height="150dip"
-                        android:adjustViewBounds="true"
-                        app:srcCompat="@drawable/sample_long" />
 
                 </LinearLayout>
             </HorizontalScrollView>

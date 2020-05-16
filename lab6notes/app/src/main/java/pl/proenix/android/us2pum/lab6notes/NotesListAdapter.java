@@ -59,7 +59,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
             for (NoteAttachment att : attachments) {
                 View v = layoutInflater.inflate(R.layout.image_mini, holder.noteAttachments, false);
                 ImageView iv = v.findViewById(R.id.imageViewMiniPhoto);
-                // TODO: 16/05/2020 Catch if somebody deleted img :)
+                // TODO: 16/05/2020 Catch if somebody deleted file of img :)
                 iv.setImageBitmap(BitmapFactory.decodeFile(att.getPathImageThumbnail()));
                 holder.noteAttachments.addView(v);
             }

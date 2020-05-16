@@ -8,20 +8,17 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +32,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -44,20 +42,14 @@ import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -69,7 +61,9 @@ import java.util.Map;
  */
 public class NoteCreateReadUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
 
+    private static final int REQUEST_TAKE_PHOTO = 1;
     private static final int PERMISSIONS_REQUEST_CAMERA = 349;
+
     private View view;
 
     private long noteID = -1L;
@@ -79,22 +73,19 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
     private TextView textViewDueDate;
     private TextView textViewDueTime;
     private ScrollView scrollViewNote;
+    private LinearLayout linearLayoutAttachments;
     private ImageButton imageButtonDueDelete;
     private Calendar dueDate = null;
     private Note note;
     private List<Map.Entry<Integer, Integer>> categoryItems;
     private List<Map.Entry<Integer, String>> priorityItems;
     private DialogInterface.OnClickListener onDeleteDialogClickListener;
-    private Spinner spinnerPriority;
-    private Spinner spinnerCategory;
     private NoteAttachment noteAttachment;
 
     enum NoteEditMode {
         NOTE_NEW,
         NOTE_UPDATE
     }
-
-    static final int REQUEST_TAKE_PHOTO = 1;
 
     private void dispatchTakePictureIntent() {
         if (ContextCompat.checkSelfPermission(view.getContext(),
@@ -139,6 +130,11 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
             noteAttachment.generateThumbnail();
             noteAttachment.save();
+            View v = getLayoutInflater().inflate(R.layout.image_mini, linearLayoutAttachments, false);
+            ImageView iv = v.findViewById(R.id.imageViewMiniPhoto);
+            // TODO: 16/05/2020 Catch if somebody deleted file of img :)
+            iv.setImageBitmap(BitmapFactory.decodeFile(noteAttachment.getPathImageThumbnail()));
+            linearLayoutAttachments.addView(v);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -174,11 +170,32 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         }
         scrollViewNote = view.findViewById(R.id.scrollViewNote);
 
-        dispatchTakePictureIntent();
+        linearLayoutAttachments = view.findViewById(R.id.linearLayoutAttachments);
+        int childCount = linearLayoutAttachments.getChildCount();
+        if (childCount > 0) {
+            linearLayoutAttachments.removeViews(1, childCount-1);
+        }
+        for (NoteAttachment att : note.getNoteAttachments()) {
+            View v = getLayoutInflater().inflate(R.layout.image_mini, linearLayoutAttachments, false);
+            ImageView iv = v.findViewById(R.id.imageViewMiniPhoto);
+            // TODO: 16/05/2020 Catch if somebody deleted file of img :)
+            iv.setImageBitmap(BitmapFactory.decodeFile(att.getPathImageThumbnail()));
+            linearLayoutAttachments.addView(v);
+        }
+
+        ImageButton imageButtonAddPhoto = view.findViewById(R.id.imageButtonAddPhoto);
+        imageButtonAddPhoto.setOnClickListener(v -> {
+            dispatchTakePictureIntent();
+        });
+
+        ImageButton imageButtonGoToAttachments = view.findViewById(R.id.imageButtonGoToAttachments);
+        imageButtonGoToAttachments.setOnClickListener(v -> {
+            scrollViewNote.smoothScrollTo(0, imageButtonAddPhoto.getBottom());
+        });
 
 
         // Note categories handling. Color spinner for categories
-        spinnerCategory = view.findViewById(R.id.spinnerCategory);
+        Spinner spinnerCategory = view.findViewById(R.id.spinnerCategory);
         categoryItems = Note.getCategoriesColors();
         ArrayAdapter<Map.Entry<Integer, Integer>> adapter = new ArrayAdapter<Map.Entry<Integer, Integer>>(view.getContext(), R.layout.spinner_item, categoryItems) {
             @Override
@@ -203,7 +220,7 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         }
 
         // Note priority handling.
-        spinnerPriority = view.findViewById(R.id.spinnerPriority);
+        Spinner spinnerPriority = view.findViewById(R.id.spinnerPriority);
         priorityItems = Note.getPriorities();
         ArrayAdapter<Map.Entry<Integer, String>> adapterPriority = new ArrayAdapter<Map.Entry<Integer, String>>(view.getContext(), R.layout.spinner_item, priorityItems) {
             @Override
