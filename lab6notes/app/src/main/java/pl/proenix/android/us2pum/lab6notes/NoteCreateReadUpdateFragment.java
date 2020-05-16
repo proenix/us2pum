@@ -317,7 +317,6 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
                     editTextNoteContent.setTextColor(note.getTextColor());
                     editTextNoteTitle.setTextColor(note.getTextColor());
                 } catch (NullPointerException ignored) { }
-                Log.d("AndroidNotes", "SpinnerCategory");
                 break;
             case R.id.spinnerPriority:
                 note.setPriority(priorityItems.get(position).getKey());
