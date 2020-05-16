@@ -87,6 +87,7 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
     private DialogInterface.OnClickListener onDeleteDialogClickListener;
     private Spinner spinnerPriority;
     private Spinner spinnerCategory;
+    private NoteAttachment noteAttachment;
 
     enum NoteEditMode {
         NOTE_NEW,
@@ -116,7 +117,8 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
                 // Create the File where the photo should go
                 File photoFile = null;
                 try {
-                    photoFile = createImageFile(Environment.DIRECTORY_PICTURES, true);
+                    noteAttachment = new NoteAttachment(noteID);
+                    photoFile = noteAttachment.prepareFullSizeImageFile();
                 } catch (IOException ex) {
                     // Error occurred while creating the File
                 }
@@ -131,132 +133,14 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
             }
         }
     }
-//
-//    Uri photoURI;
-//
-//    private void galleryAddPic() {
-//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//        File f = new File(note.test);
-//        Uri contentUri = Uri.fromFile(f);
-//        mediaScanIntent.setData(contentUri);
-//        MainActivity.getAppContext().sendBroadcast(mediaScanIntent);
-//    }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
-
-            Log.d("AndroidNotes", "Dodać do bazy: " + currentPhotoPath);
-
-            // Getting photo in full size and add to Pictures.
-//            galleryAddPic();
-
-            // Rescale to smaller version.
-            try {
-                File photoThumbFile = createImageFile("Thumbnails", false);
-
-                File photoFile = new File(currentPhotoPath);
-                InputStream input = new FileInputStream(photoFile);
-                BitmapFactory.Options oBO = new BitmapFactory.Options();
-                oBO.inJustDecodeBounds = true;
-                oBO.inDither = true;
-                oBO.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                BitmapFactory.decodeStream(input, null, oBO);
-                input.close();
-
-                if ((oBO.outWidth == -1) || oBO.outHeight == -1) {
-                    return;
-                }
-
-                double ratio = (oBO.outHeight > 400) ? (oBO.outHeight / 400) : 1.0;
-
-                BitmapFactory.Options bO = new BitmapFactory.Options();
-                bO.inSampleSize = getPowerOfTwoForSampleRatio(ratio);
-                bO.inDither = true;
-                bO.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                input = new FileInputStream(photoFile);
-                Bitmap bitmap = BitmapFactory.decodeStream(input, null, bO);
-                input.close();
-
-                try (FileOutputStream out = new FileOutputStream(photoThumbFile)) {
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                ImageView iv = view.findViewById(R.id.imageView54);
-                iv.setImageBitmap(bitmap);
-                Log.d("AndroidNotes", "Bitmapa zmniejszona: " + bitmap.getHeight() + " " + bitmap.getWidth());
-
-
-                note.addAttachment(currentPhotoPath, photoThumbFile.getAbsolutePath());
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-//            note.addAttachment(big, small);
-//            note.addAttachment(currentPhotoPath);
-
-            Log.d("AndroidNotes", currentPhotoPath);
-
+            noteAttachment.generateThumbnail();
+            noteAttachment.save();
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    /**
-     *
-     * @param ratio
-     * @link https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri/4717740#4717740
-     * @return
-     */
-    private int getPowerOfTwoForSampleRatio(double ratio){
-        int k = Integer.highestOneBit((int)Math.floor(ratio));
-        if(k==0) return 1;
-        else return k;
-    }
-
-    private File createImageFile(String directory, boolean esz) throws IOException {
-        // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timeStamp + "_";
-        File storageDir = MainActivity.getAppContext().getExternalFilesDir(directory);
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                storageDir      /* directory */
-        );
-
-        // Save a file: path for use with ACTION_VIEW intents
-        if (esz) {
-            currentPhotoPath = image.getAbsolutePath();
-        }
-        return image;
-    }
-    String currentPhotoPath;
-
-    private void setPic(ImageView imageView) {
-
-        // Get the dimensions of the View
-        int targetW = imageView.getWidth();
-        int targetH = imageView.getHeight();
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        //bmOptions.inPurgeable = true;
-
-        //Bitmap bitmap = BitmapFactory.decodeFile(note.test, bmOptions);
-        //imageView.setImageBitmap(bitmap);
     }
 
     public NoteCreateReadUpdateFragment() {}
