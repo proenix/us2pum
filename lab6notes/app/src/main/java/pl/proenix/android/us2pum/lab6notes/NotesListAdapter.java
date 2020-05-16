@@ -1,5 +1,6 @@
 package pl.proenix.android.us2pum.lab6notes;
 
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.LayerDrawable;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -23,10 +25,12 @@ import java.util.List;
 public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.NoteViewHolder> {
     private List<Note> noteList;
     private NoteSelectedInteface noteSelectedInteface;
+    private LayoutInflater layoutInflater;
 
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        layoutInflater = LayoutInflater.from(parent.getContext());
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_note_row, parent, false);
         return new NoteViewHolder(itemView);
@@ -46,6 +50,30 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         holder.noteContent.setText(note.getContentShort());
         holder.noteContent.setTextColor(note.getTextColor());
         holder.notePriority.setImageDrawable(note.getPriorityDrawable());
+
+        List<NoteAttachment> attachments = note.getNoteAttachments();
+        if (attachments == null) {
+            holder.noteAttachments.setVisibility(View.GONE);
+        } else {
+            holder.noteAttachments.removeAllViews();
+            for (NoteAttachment att : attachments) {
+                View v = layoutInflater.inflate(R.layout.image_mini, holder.noteAttachments, false);
+                ImageView iv = v.findViewById(R.id.imageViewMiniPhoto);
+                // TODO: 16/05/2020 Catch if somebody deleted img :)
+                iv.setImageBitmap(BitmapFactory.decodeFile(att.getPathImageThumbnail()));
+                holder.noteAttachments.addView(v);
+            }
+        }
+        holder.noteAttachments.setOnClickListener(v -> {
+            // Override scrollview click interception.
+            holder.itemView.callOnClick();
+        });
+        holder.noteAttachments.setOnLongClickListener(v -> {
+            // Override scrollview click interception.
+            holder.itemView.performLongClick();
+            return true;
+        });
+
         // Set due field visibility, value and color.
         if (note.hasDueDate()) {
             holder.noteDueDate.setText(String.format("%s %s", note.getFormattedDate(), note.getFormattedTime()));
@@ -103,6 +131,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         ImageView notePriority;
         View noteBackground;
         CheckBox done;
+        LinearLayout noteAttachments;
         NoteViewHolder(View view) {
             super(view);
             done = view.findViewById(R.id.checkBoxListNoteDone);
@@ -114,10 +143,11 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
             noteDueDate = view.findViewById(R.id.textViewNoteDueDate);
             noteBackground = view.findViewById(R.id.noteElement);
             notePriority = view.findViewById(R.id.imageViewNotePriority);
+            noteAttachments = view.findViewById(R.id.linearLayoutAttachments);
         }
     }
 
-    public NotesListAdapter(List<Note> noteList, NoteSelectedInteface noteSelectedInteface) {
+    NotesListAdapter(List<Note> noteList, NoteSelectedInteface noteSelectedInteface) {
         this.noteList = noteList;
         this.noteSelectedInteface = noteSelectedInteface;
     }

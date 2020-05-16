@@ -74,6 +74,12 @@ class Note {
      */
     private Long _createdAt;
 
+
+    /**
+     * Store attachments related to note.
+     */
+    private List<NoteAttachment> _noteAttachments;
+
     Note() {
         this._name = "";
         this._content = "";
@@ -362,6 +368,7 @@ class Note {
         } else {
             MainActivity.db.updateNote(this);
         }
+        Log.d("AndroidNotes", this.toString());
     }
 
     public void setStatusInProgress() {
@@ -419,7 +426,7 @@ class Note {
      * Current time representation as Long.
      * @return Long current time representation in second since epoch.
      */
-    private Long getCurrentDateTime() {
+    public Long getCurrentDateTime() {
         return Calendar.getInstance().getTimeInMillis() / 1000;
     }
 
@@ -561,5 +568,29 @@ class Note {
      */
     public Long getCreatedAt() {
         return this._createdAt;
+    }
+
+    /**
+     * Return list of note attachment objects.
+     * Check with db only if not already populated with data.
+     * @return
+     */
+    public List<NoteAttachment> getNoteAttachments() {
+        if (this._noteAttachments == null) {
+            this._noteAttachments = MainActivity.db.findAllAttachmentsByNoteId(this._id);
+        }
+        return this._noteAttachments;
+    }
+
+    /**
+     * Add Attachment to note.
+     * Creates Attachment populates it with data and saves to database. After that adds to list of attachments.
+     * @param pathImage Path to full size image
+     * @param pathThumbnail Path to thumbnail size image.
+     */
+    public void addAttachment(String pathImage, String pathThumbnail) {
+        NoteAttachment noteAttachment = new NoteAttachment(this._id, pathImage, pathThumbnail);
+        noteAttachment.save();
+        this._noteAttachments.add(noteAttachment);
     }
 }

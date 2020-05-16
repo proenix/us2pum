@@ -26,13 +26,18 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_DUE_DATE = "due_date";
     private static final String KEY_CREATED_AT = "created_at";
 
+    private static final String TABLE_ATTACHMENTS = "attachments";
+    private static final String KEY_NOTE_ID = "id_note";
+    private static final String KEY_PATH_IMG_NORMAL = "path_img_normal";
+    private static final String KEY_PATH_IMG_THUMB = "path_img_thumb";
+
     DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_NOTES_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NOTES + "("
+        String CREATE_NOTES_TABLE = "CREATE TABLE " + TABLE_NOTES + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"
                 + KEY_CONTENT + " TEXT,"
@@ -42,6 +47,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + KEY_DUE_DATE + " INTEGER "
                 + ")";
         db.execSQL(CREATE_NOTES_TABLE);
+
+        upgradeToVersion2(db);
     }
 
     @Override
@@ -56,6 +63,15 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String UPDATE_NOTES_TABLE = "ALTER TABLE " + TABLE_NOTES
                 + " ADD COLUMN " + KEY_CREATED_AT + " INTEGER;";
         db.execSQL(UPDATE_NOTES_TABLE);
+
+        String CREATE_ATTACHMENTS_TABLE = "CREATE TABLE " + TABLE_ATTACHMENTS + "("
+                + KEY_ID + " INTEGER PRIMARY KEY,"
+                + KEY_NOTE_ID + " INTEGER,"
+                + KEY_PATH_IMG_NORMAL + " TEXT,"
+                + KEY_PATH_IMG_THUMB + " TEXT,"
+                + KEY_CREATED_AT + " INTEGER"
+                + ")";
+        db.execSQL(CREATE_ATTACHMENTS_TABLE);
     }
 
     /**
@@ -65,6 +81,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_NOTES);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ATTACHMENTS);
 
         onCreate(db);
     }
@@ -146,6 +163,81 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             }
         }
         return null;
+    }
+
+    /**
+     * Add attachment to database.
+     * @param attachment Attachment object - already populated with data.
+     * @return id of added attachment.
+     */
+    long addAttachment(NoteAttachment attachment) {
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_NOTE_ID, attachment.getNoteId());
+        values.put(KEY_PATH_IMG_NORMAL, attachment.getPathImageNormal());
+        values.put(KEY_PATH_IMG_THUMB, attachment.getPathImageThumbnail());
+        values.put(KEY_CREATED_AT, attachment.getCurrentDateTime());
+
+        // Save row to database, and update Note object with id.
+        long id = db.insert(TABLE_ATTACHMENTS, null, values);
+        attachment.setID(id);
+
+        return id;
+    }
+
+    /**
+     * Find single attachment by id.
+     * @param id Id of attachment.
+     * @return Attachment Object.
+     */
+    NoteAttachment findAttachmentById(long id) {
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        try (Cursor cursor = db.query(
+                TABLE_ATTACHMENTS,
+                new String[]{ KEY_ID, KEY_NOTE_ID, KEY_PATH_IMG_NORMAL, KEY_PATH_IMG_THUMB},
+                KEY_ID + "=?",
+                new String[]{ String.valueOf(id) },
+                null, null, null, null)) {
+            if (cursor != null) {
+                cursor.moveToFirst();
+                return new NoteAttachment(
+                        cursor.getLong(0),
+                        cursor.getLong(1),
+                        cursor.getString(2),
+                        cursor.getString(3)
+                );
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Find all attachments in database that are connected to chosen note id.
+     * @param noteId Note id.
+     * @return List of attachment objects.
+     */
+    List<NoteAttachment> findAllAttachmentsByNoteId(long noteId) {
+        List<NoteAttachment> attachments = new ArrayList<NoteAttachment>();
+        String attachmentsQuery = "SELECT * FROM " + TABLE_ATTACHMENTS
+                + " WHERE " + KEY_NOTE_ID + " = " + noteId;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(attachmentsQuery, null);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                NoteAttachment noteAttachment = new NoteAttachment(
+                        cursor.getLong(0),
+                        cursor.getLong(1),
+                        cursor.getString(2),
+                        cursor.getString(3)
+                );
+                attachments.add(noteAttachment);
+            }
+            cursor.close();
+        }
+        return attachments;
     }
 
     /**
