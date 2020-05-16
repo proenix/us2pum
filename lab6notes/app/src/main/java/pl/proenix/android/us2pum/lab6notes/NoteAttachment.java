@@ -211,4 +211,21 @@ public class NoteAttachment {
         mediaScanIntent.setData(contentUri);
         MainActivity.getAppContext().sendBroadcast(mediaScanIntent);
     }
+
+    public Long getID() {
+        return this._id;
+    }
+
+    public void delete() {
+        File file = new File(this._path_image_normal);
+        if(file.exists()) {
+            file.delete();
+        }
+        file = new File(this._path_image_thumb);
+        if(file.exists()) {
+            file.delete();
+        }
+        MainActivity.db.removeNoteAttachment(this);
+
+    }
 }

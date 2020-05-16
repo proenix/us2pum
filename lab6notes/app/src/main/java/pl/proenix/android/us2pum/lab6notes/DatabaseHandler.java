@@ -278,4 +278,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         return db.delete(TABLE_NOTES, KEY_ID + "=?", new String[]{String.valueOf(note.getID())}) > 0;
     }
+
+    /**
+     * Remove attachment from DB.
+     * @param noteAttachment NoteAttachment object.
+     * @return True if note found and deleted.
+     */
+    boolean removeNoteAttachment(NoteAttachment noteAttachment) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        return db.delete(TABLE_ATTACHMENTS, KEY_ID + "=?", new String[]{String.valueOf(noteAttachment.getID())}) > 0;
+    }
 }

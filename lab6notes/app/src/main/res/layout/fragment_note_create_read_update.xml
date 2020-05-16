@@ -196,6 +196,17 @@
                 android:textColor="@color/colorCategoryDefaultText"
                 android:textSize="12sp" />
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewNoteAttachments"
+                android:layout_width="match_parent"
+                android:layout_height="150dip"
+                android:orientation="horizontal"
+                android:scrollbarAlwaysDrawHorizontalTrack="true"
+                android:scrollbars="horizontal"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+
+            </androidx.recyclerview.widget.RecyclerView>
+
             <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
@@ -208,13 +219,6 @@
                     android:dividerPadding="4dip"
                     android:orientation="horizontal"
                     android:showDividers="middle">
-
-                    <ImageButton
-                        android:id="@+id/imageButtonAddPhoto"
-                        android:layout_width="100dip"
-                        android:layout_height="150dip"
-                        android:background="@android:drawable/screen_background_light_transparent"
-                        android:src="@android:drawable/ic_menu_camera" />
 
                 </LinearLayout>
             </HorizontalScrollView>

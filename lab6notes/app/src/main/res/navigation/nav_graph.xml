@@ -31,5 +31,40 @@
             android:name="mode"
             android:defaultValue="NOTE_NEW"
             app:argType="pl.proenix.android.us2pum.lab6notes.NoteCreateReadUpdateFragment$NoteEditMode" />
+        <action
+            android:id="@+id/action_noteCreateReadUpdateFragment_to_noteAttachmentFragment"
+            app:destination="@id/noteAttachmentFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit" />
+    </fragment>
+    <fragment
+        android:id="@+id/noteAttachmentFragment"
+        android:name="pl.proenix.android.us2pum.lab6notes.NoteAttachmentFragment"
+        android:label="fragment_note_attachment"
+        tools:layout="@layout/fragment_note_attachment" >
+        <argument
+            android:name="noteID"
+            app:argType="long"
+            android:defaultValue="-1L" />
+        <argument
+            android:name="attachmentID"
+            app:argType="long"
+            android:defaultValue="-1L" />
+        <action
+            android:id="@+id/action_noteAttachmentFragment_self"
+            app:destination="@id/noteAttachmentFragment"
+            app:enterAnim="@anim/fragment_open_enter"
+            app:popEnterAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/noteCreateReadUpdateFragment" />
+        <action
+            android:id="@+id/action_noteAttachmentFragment_to_noteCreateReadUpdateFragment"
+            app:destination="@id/noteCreateReadUpdateFragment"
+            app:enterAnim="@anim/fragment_fade_enter"
+            app:exitAnim="@anim/fragment_fade_exit"
+            app:popEnterAnim="@anim/fragment_close_enter"
+            app:popExitAnim="@anim/fragment_close_exit"
+            app:popUpTo="@id/noteCreateReadUpdateFragment" />
     </fragment>
 </navigation>

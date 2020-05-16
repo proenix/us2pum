@@ -19,6 +19,7 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -45,7 +46,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,11 +60,9 @@ import java.util.Map;
 
 /**
  * Fragment for displaying single note read and edit mode.
- * // TODO: 12/05/2020 Add option to attach taken photo or video.
  * // TODO: 14/05/2020 Export to text file.
- * // TODO: 14/05/2020 Manage attachments CRUD operation.
  */
-public class NoteCreateReadUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class NoteCreateReadUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, NoteAttachmentInterface {
 
     private static final int REQUEST_TAKE_PHOTO = 1;
     private static final int PERMISSIONS_REQUEST_CAMERA = 349;
@@ -81,13 +84,29 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
     private List<Map.Entry<Integer, String>> priorityItems;
     private DialogInterface.OnClickListener onDeleteDialogClickListener;
     private NoteAttachment noteAttachment;
+    private List<NoteAttachment> noteAttachments;
+    private NoteAttachmentListAdapter noteAttachmentListAdapter;
+
+    ArrayAdapter<Map.Entry<Integer, String>> adapterPriority;
+    Spinner spinnerPriority;
+
+    @Override
+    public void removeNoteAttachment(Long id) {
+
+    }
+
+    @Override
+    public void dispatchPhoto() {
+        dispatchTakePictureIntent();
+    }
 
     enum NoteEditMode {
         NOTE_NEW,
-        NOTE_UPDATE
+        NOTE_UPDATE,
+        TAKE_PHOTO
     }
 
-    private void dispatchTakePictureIntent() {
+    public void dispatchTakePictureIntent() {
         if (ContextCompat.checkSelfPermission(view.getContext(),
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -127,14 +146,20 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == REQUEST_TAKE_PHOTO && mode == NoteEditMode.TAKE_PHOTO) {
+            if (resultCode == Activity.RESULT_OK) {
+                noteAttachment.generateThumbnail();
+                noteAttachment.save();
+            }
+            NavHostFragment.findNavController(NoteCreateReadUpdateFragment.this).popBackStack();
+            return;
+        }
         if (requestCode == REQUEST_TAKE_PHOTO && resultCode == Activity.RESULT_OK) {
+
             noteAttachment.generateThumbnail();
             noteAttachment.save();
-            View v = getLayoutInflater().inflate(R.layout.image_mini, linearLayoutAttachments, false);
-            ImageView iv = v.findViewById(R.id.imageViewMiniPhoto);
-            // TODO: 16/05/2020 Catch if somebody deleted file of img :)
-            iv.setImageBitmap(BitmapFactory.decodeFile(noteAttachment.getPathImageThumbnail()));
-            linearLayoutAttachments.addView(v);
+            noteAttachments.add(noteAttachment);
+            noteAttachmentListAdapter.notifyDataSetChanged();
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -158,39 +183,37 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         return view;
     }
 
-
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        scrollViewNote = view.findViewById(R.id.scrollViewNote);
+
         // NOTE_NEW
+        if (mode == NoteEditMode.TAKE_PHOTO) {
+
+            dispatchTakePictureIntent();
+            note = Note.findById(noteID);
+            scrollViewNote.setVisibility(View.GONE);
+            return;
+        }
         if (mode == NoteEditMode.NOTE_UPDATE) {
             note = Note.findById(noteID);
         } else {
             note = new Note();
         }
-        scrollViewNote = view.findViewById(R.id.scrollViewNote);
+        scrollViewNote.setVisibility(View.VISIBLE);
 
-        linearLayoutAttachments = view.findViewById(R.id.linearLayoutAttachments);
-        int childCount = linearLayoutAttachments.getChildCount();
-        if (childCount > 0) {
-            linearLayoutAttachments.removeViews(1, childCount-1);
-        }
-        for (NoteAttachment att : note.getNoteAttachments()) {
-            View v = getLayoutInflater().inflate(R.layout.image_mini, linearLayoutAttachments, false);
-            ImageView iv = v.findViewById(R.id.imageViewMiniPhoto);
-            // TODO: 16/05/2020 Catch if somebody deleted file of img :)
-            iv.setImageBitmap(BitmapFactory.decodeFile(att.getPathImageThumbnail()));
-            linearLayoutAttachments.addView(v);
-        }
-
-        ImageButton imageButtonAddPhoto = view.findViewById(R.id.imageButtonAddPhoto);
-        imageButtonAddPhoto.setOnClickListener(v -> {
-            dispatchTakePictureIntent();
-        });
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerViewNoteAttachments);
+        noteAttachments = note.getNoteAttachments();
+        noteAttachmentListAdapter = new NoteAttachmentListAdapter(noteAttachments, this);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(), LinearLayoutManager.HORIZONTAL, false);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(noteAttachmentListAdapter);
 
         ImageButton imageButtonGoToAttachments = view.findViewById(R.id.imageButtonGoToAttachments);
         imageButtonGoToAttachments.setOnClickListener(v -> {
-            scrollViewNote.smoothScrollTo(0, imageButtonAddPhoto.getBottom());
+            scrollViewNote.smoothScrollTo(0, recyclerView.getBottom());
         });
 
 
@@ -215,14 +238,14 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         // Set current category as selected.
         for (Map.Entry<Integer, Integer> item : categoryItems) {
             if (item.getKey().equals(note.getCategoryAsInt())) {
-                spinnerCategory.setSelection(categoryItems.indexOf(item));
+                spinnerCategory.setSelection(categoryItems.indexOf(item), false);
             }
         }
 
         // Note priority handling.
-        Spinner spinnerPriority = view.findViewById(R.id.spinnerPriority);
+        spinnerPriority = view.findViewById(R.id.spinnerPriority);
         priorityItems = Note.getPriorities();
-        ArrayAdapter<Map.Entry<Integer, String>> adapterPriority = new ArrayAdapter<Map.Entry<Integer, String>>(view.getContext(), R.layout.spinner_item, priorityItems) {
+        adapterPriority = new ArrayAdapter<Map.Entry<Integer, String>>(view.getContext(), R.layout.spinner_item, priorityItems) {
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 LayoutInflater inflater = getLayoutInflater();
@@ -240,7 +263,7 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         spinnerPriority.setOnItemSelectedListener(this);
         for (Map.Entry<Integer, String> item : priorityItems) {
             if (item.getKey().equals(note.getPriority())) {
-                spinnerPriority.setSelection(priorityItems.indexOf(item));
+                spinnerPriority.setSelection(priorityItems.indexOf(item), false);
             }
         }
 
@@ -393,6 +416,7 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
             case R.id.spinnerCategory:
+                Log.d("AndroidNotes", note.toString());
                 note.setCategory(categoryItems.get(position).getKey());
                 ((TextView) view).setText(Note.getCategoryNameByInt(note.getCategoryAsInt()));
                 ((TextView) view).setTextColor(note.getTextColor()); // Text color of spinner visible part

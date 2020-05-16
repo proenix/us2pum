@@ -435,6 +435,9 @@ class Note {
      */
     public void delete() {
         if (this._id != null) {
+            for (NoteAttachment att : getNoteAttachments()) {
+                att.delete();
+            }
             MainActivity.db.removeNote(this);
         }
     }
@@ -447,7 +450,7 @@ class Note {
         StringBuilder sharedContent = new StringBuilder();
         sharedContent.append(MainActivity.getAppContext().getString(R.string.note_sharable_title)).append(this.getTitle()).append('\n');
         sharedContent.append(MainActivity.getAppContext().getString(R.string.note_sharable_status)).append(this.getStatusName()).append('\n');
-        //sharedContent.append("Priority: ").append(this.getPriorityName()).append('\n');
+        sharedContent.append("Priority: ").append(this.getPriorityName()).append('\n');
         sharedContent.append(MainActivity.getAppContext().getString(R.string.note_sharable_category)).append(this.getCategoryName()).append('\n');
         if (hasDueDate()) {
             sharedContent.append(MainActivity.getAppContext().getString(R.string.note_sharable_due_date)).append(this.getFormattedDate()).append(" ").append(this.getFormattedTime()).append('\n');
@@ -577,6 +580,7 @@ class Note {
      */
     public List<NoteAttachment> getNoteAttachments() {
         if (this._noteAttachments == null) {
+            this.save();
             this._noteAttachments = MainActivity.db.findAllAttachmentsByNoteId(this._id);
         }
         return this._noteAttachments;
