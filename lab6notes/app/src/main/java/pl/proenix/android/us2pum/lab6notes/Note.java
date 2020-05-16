@@ -591,6 +591,6 @@ class Note {
     public void addAttachment(String pathImage, String pathThumbnail) {
         NoteAttachment noteAttachment = new NoteAttachment(this._id, pathImage, pathThumbnail);
         noteAttachment.save();
-        this._noteAttachments.add(noteAttachment);
+        this._noteAttachments = MainActivity.db.findAllAttachmentsByNoteId(this._id);
     }
 }
