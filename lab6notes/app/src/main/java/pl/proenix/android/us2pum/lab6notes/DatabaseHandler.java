@@ -13,7 +13,7 @@ import java.util.List;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
     private static final String DATABASE_NAME = "notes.db";
 
     private static final String TABLE_NOTES = "notes";
@@ -24,6 +24,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String KEY_STATUS = "status";
     private static final String KEY_PRIORITY = "priority";
     private static final String KEY_DUE_DATE = "due_date";
+    private static final String KEY_CREATED_AT = "created_at";
 
     DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -31,7 +32,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String CREATE_NOTES_TABLE = "CREATE TABLE " + TABLE_NOTES + "("
+        String CREATE_NOTES_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_NOTES + "("
                 + KEY_ID + " INTEGER PRIMARY KEY,"
                 + KEY_NAME + " TEXT,"
                 + KEY_CONTENT + " TEXT,"
@@ -45,10 +46,16 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        onCreate(db);
         if (oldVersion < 2) {
-            // Future releases
-            // upgradeToVersion2(db);
+            upgradeToVersion2(db);
         }
+    }
+
+    private void upgradeToVersion2(SQLiteDatabase db) {
+        String UPDATE_NOTES_TABLE = "ALTER TABLE " + TABLE_NOTES
+                + " ADD COLUMN " + KEY_CREATED_AT + " INTEGER;";
+        db.execSQL(UPDATE_NOTES_TABLE);
     }
 
     /**
@@ -77,6 +84,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_STATUS, note.getStatus());
         values.put(KEY_PRIORITY, note.getPriority());
         values.put(KEY_DUE_DATE, note.getDueDateAsLong());
+        values.put(KEY_CREATED_AT, note.getCreatedAt());
 
         // Save row to database, and update Note object with id.
         long id = db.insert(TABLE_NOTES, null, values);
@@ -100,6 +108,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_STATUS, note.getStatus());
         values.put(KEY_PRIORITY, note.getPriority());
         values.put(KEY_DUE_DATE, note.getDueDateAsLong());
+        values.put(KEY_CREATED_AT, note.getCreatedAt());
 
         int rowsUpdated = db.update(TABLE_NOTES, values, KEY_ID + " = ?",
                 new String[] { String.valueOf(note.getID()) });
@@ -118,7 +127,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         try (Cursor cursor = db.query(
                 TABLE_NOTES,
-                new String[]{ KEY_ID, KEY_NAME, KEY_CONTENT, KEY_CATEGORY, KEY_STATUS, KEY_PRIORITY, KEY_DUE_DATE },
+                new String[]{ KEY_ID, KEY_NAME, KEY_CONTENT, KEY_CATEGORY, KEY_STATUS, KEY_PRIORITY, KEY_DUE_DATE, KEY_CREATED_AT },
                 KEY_ID + "=?",
                 new String[]{ String.valueOf(id) },
                 null, null, null, null)) {
@@ -131,7 +140,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         cursor.getInt(3),
                         cursor.getInt(4),
                         cursor.getInt(5),
-                        cursor.getLong(6)
+                        cursor.getLong(6),
+                        cursor.getLong(7)
                 );
             }
         }
@@ -157,7 +167,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                         cursor.getInt(3),
                         cursor.getInt(4),
                         cursor.getInt(5),
-                        cursor.getLong(6)
+                        cursor.getLong(6),
+                        cursor.getLong(7)
                 );
                 notes.add(note);
             }

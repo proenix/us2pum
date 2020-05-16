@@ -69,6 +69,11 @@ class Note {
     private static final int NOTE_TITLE_MAX_PREVIEW_CHARS = 50;
     private static final int NOTE_CONTENT_MAX_PREVIEW_CHARS = 120;
 
+    /**
+     * Created At Date representation as second from epoch.
+     */
+    private Long _createdAt;
+
     Note() {
         this._name = "";
         this._content = "";
@@ -76,6 +81,7 @@ class Note {
         this._status = STATUS_IN_PROGRESS;
         this._priority = PRIORITY_DEFAULT;
         this._dueDate = (long) -1;
+        this._createdAt = getCurrentDateTime();
     }
 
     /**
@@ -86,9 +92,10 @@ class Note {
      * @param category Category of note as integer.
      * @param status Status of note as integer
      * @param priority Priority of note as integer.
-     * @param dueDate Due Date time in seconds from epoch as integer.
+     * @param dueDate Due Date time in seconds from epoch as long.
+     * @param createdAt Note creation time in seconds from epoch as long.
      */
-    Note(long id, String name, String content, Integer category, Integer status, Integer priority, Long dueDate) {
+    Note(long id, String name, String content, Integer category, Integer status, Integer priority, Long dueDate, Long createdAt) {
         this._id = id;
         this._name = name;
         this._content = content;
@@ -100,6 +107,7 @@ class Note {
         } else {
             this._dueDate = dueDate;
         }
+        this._createdAt = createdAt;
     }
 
     /**
@@ -109,9 +117,10 @@ class Note {
      * @param category Category of note as integer.
      * @param status Status of note as integer
      * @param priority Priority of note as integer.
-     * @param dueDate Due Date time in seconds from epoch as integer.
+     * @param dueDate Due Date time in seconds from epoch as long.
+     * @param createdAt Note creation time in seconds from epoch as long.
      */
-    public Note(String name, String content, Integer status, Integer category, @Nullable Integer priority, @Nullable Long dueDate) {
+    public Note(String name, String content, Integer status, Integer category, @Nullable Integer priority, @Nullable Long dueDate, @Nullable Long createdAt) {
         this._name = name;
         this._content = content;
         this._status = status;
@@ -125,6 +134,11 @@ class Note {
             this._dueDate = (long) -1;
         } else {
             this._dueDate = dueDate;
+        }
+        if (createdAt == null) {
+            this._createdAt = getCurrentDateTime();
+        } else {
+            this._dueDate = createdAt;
         }
     }
 
@@ -160,7 +174,8 @@ class Note {
         "; category:" + this._category +
         "; status: " + this._status +
         "; priority: " + this._priority +
-        "; dueDate: " + this._dueDate + "}";
+        "; dueDate: " + this._dueDate +
+        "; createdAt: " + this._createdAt +"}";
     }
 
     public String getName() {
@@ -401,6 +416,14 @@ class Note {
     }
 
     /**
+     * Current time representation as Long.
+     * @return Long current time representation in second since epoch.
+     */
+    private Long getCurrentDateTime() {
+        return Calendar.getInstance().getTimeInMillis() / 1000;
+    }
+
+    /**
      * Delete note from existence (from database).
      */
     public void delete() {
@@ -530,5 +553,13 @@ class Note {
      */
     public Drawable getPriorityDrawable() {
         return getPriorityDrawableByPriorityInt(this._priority, false);
+    }
+
+    /**
+     * Get created at time as long.
+     * @return
+     */
+    public Long getCreatedAt() {
+        return this._createdAt;
     }
 }
