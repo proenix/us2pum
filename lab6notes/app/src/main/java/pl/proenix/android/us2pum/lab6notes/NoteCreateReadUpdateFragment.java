@@ -255,8 +255,8 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         bmOptions.inSampleSize = scaleFactor;
         //bmOptions.inPurgeable = true;
 
-        Bitmap bitmap = BitmapFactory.decodeFile(note.test, bmOptions);
-        imageView.setImageBitmap(bitmap);
+        //Bitmap bitmap = BitmapFactory.decodeFile(note.test, bmOptions);
+        //imageView.setImageBitmap(bitmap);
     }
 
     public NoteCreateReadUpdateFragment() {}

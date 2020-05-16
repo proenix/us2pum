@@ -33,7 +33,6 @@ import java.util.stream.Stream;
  * // TODO: 10/05/2020 Add sorting options. By title ASC DESC, due date ASC DESC, priority ASC DESC, status ASC DESC
  * // TODO: 14/05/2020 Filter by status (done/not done), due date (from <-> to), having in content/title (string)
  * // TODO: 14/05/2020 Export to text file.
- * // TODO: 14/05/2020 Show attached elements. (as thumb previews)
  * // TODO: 13/05/2020 Add burger context menu for each row.
  */
 public class NotesListFragment extends Fragment implements NoteSelectedInteface {
@@ -132,12 +131,21 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
                 shareIntent.setTypeAndNormalize("text/*");
                 shareIntent.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.shared_note));
                 StringBuilder sb = new StringBuilder();
+//                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+//                ArrayList<Uri> uriList = new ArrayList<Uri>();
                 for (long noteId : selectedNotes) {
                     Note note = Note.findById(noteId);
                     if (note != null) {
                         sb.append(note.getSharableContent()).append('\n');
+                        // TODO: 16/05/2020 Convert to ACTION_SEND_MULTIPLE to attach files. 
+//                        for (NoteAttachment noteAtt : note.getNoteAttachments()) {
+//                            File file = new File(noteAtt.getPathImageNormal());
+//                            Uri uri = FileProvider.getUriForFile(view.getContext(), "pl.proenix.android.us2pum.lab6notes.fileprovider", file);
+//                            uriList.add(uri);
+//                        }
                     }
                 }
+//                shareIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uriList);
                 shareIntent.putExtra(Intent.EXTRA_TEXT, sb.toString());
                 startActivity(Intent.createChooser(shareIntent, getString(R.string.shared_note)));
                 return true;
