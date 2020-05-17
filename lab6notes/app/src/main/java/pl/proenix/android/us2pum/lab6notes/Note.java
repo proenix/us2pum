@@ -45,8 +45,8 @@ class Note {
      * Status representation as integer.
      */
     private Integer _status;
-    public static final int STATUS_IN_PROGRESS = 3001;
-    public static final int STATUS_DONE = 3002;
+    static final int STATUS_IN_PROGRESS = 3001;
+    static final int STATUS_DONE = 3002;
 
     /**
      * Priority of notes.
@@ -578,7 +578,7 @@ class Note {
 
     /**
      * Get created at time as long.
-     * @return
+     * @return Get created at as long.
      */
     public Long getCreatedAt() {
         return this._createdAt;
@@ -587,7 +587,7 @@ class Note {
     /**
      * Return list of note attachment objects.
      * Check with db only if not already populated with data.
-     * @return
+     * @return Get note attachment objects as list.
      */
     public List<NoteAttachment> getNoteAttachments() {
         if (this._noteAttachments == null) {

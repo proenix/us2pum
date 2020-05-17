@@ -32,6 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
+                android:contentDescription="@string/s_priority_indicator"
                 app:srcCompat="@drawable/ic_priority_critical" />
 
             <CheckBox
@@ -58,7 +59,6 @@
                 android:id="@+id/textViewNoteTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="To jest przykladowa notatka numer jeden z dosc dlugim tytulem, ktory powinien sie jakos tutaj zmiescic jesli nie to mamy spory problem."
                 android:textColor="#FFFFFF"
                 android:textStyle="bold" />
 
@@ -66,7 +66,6 @@
                 android:id="@+id/textViewNoteContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="TextView"
                 android:textColor="#FFFFFF" />
 
             <HorizontalScrollView
@@ -89,7 +88,6 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
                 android:gravity="end"
-                android:text="Due: 20.20.2020 20:20"
                 android:textColor="#FFFFFF"
                 android:textSize="12sp"
                 android:visibility="visible" />

@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Environment;
-import android.util.Log;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 
@@ -18,6 +16,7 @@ import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * NoteAttachment object representation.
@@ -57,7 +56,6 @@ public class NoteAttachment {
     }
 
     NoteAttachment() { }
-
 
     NoteAttachment(Long noteId) {
         this._note_id = noteId;
@@ -149,10 +147,10 @@ public class NoteAttachment {
 
             try (FileOutputStream out = new FileOutputStream(photoThumbFile)) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            } catch (IOException e) {
+            } catch (NullPointerException|IOException e) {
                 e.printStackTrace();
             }
-            Log.d("AndroidNotes", "Bitmapa zmniejszona: " + bitmap.getHeight() + " " + bitmap.getWidth());
+            //Log.d("AndroidNotes", "Bitmape shrinked: " + bitmap.getHeight() + " " + bitmap.getWidth());
             this._path_image_thumb = photoThumbFile.getAbsolutePath();
         } catch (IOException e) {
             e.printStackTrace();
@@ -180,7 +178,7 @@ public class NoteAttachment {
      */
     private File createImageFile(boolean fullSize) throws IOException {
         // Create an image file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
         String imageFileName = "JPEG_" + timeStamp + "_";
         File storageDir = MainActivity.getAppContext().getExternalFilesDir((fullSize) ? Environment.DIRECTORY_PICTURES : "Thumbnails");
         File image = File.createTempFile(
@@ -202,7 +200,7 @@ public class NoteAttachment {
 
     /**
      * Broadcast media to gallery.
-     * // TODO: 16/05/2020 Check why that is not working as expected. 
+     * // TODO: 16/05/2020 Check why that is not working as expected. ? Change location of photos taken to public dir.
      */
     private void galleryAddPic() {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);

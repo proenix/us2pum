@@ -9,7 +9,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,12 +25,10 @@ import java.util.List;
  */
 public class NoteAttachmentFragment extends Fragment {
 
-    private View view;
-    private ViewGroup viewGroup;
     private Long noteID;
     private Long attachmentID;
     private int currentPosition;
-    private float x1,x2,y1,y2;
+    private float x1,x2;
 
     private List<NoteAttachment> noteAttachments;
 
@@ -44,7 +41,7 @@ public class NoteAttachmentFragment extends Fragment {
             attachmentID = bundle.getLong("attachmentID");
         }
 
-        view = inflater.inflate(R.layout.fragment_note_attachment, container, false);
+        View view = inflater.inflate(R.layout.fragment_note_attachment, container, false);
         setHasOptionsMenu(true);
         return view;
     }
@@ -67,11 +64,9 @@ public class NoteAttachmentFragment extends Fragment {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     x1 = event.getX();
-                    y1 = event.getY();
                     break;
                 case MotionEvent.ACTION_UP:
                     x2 = event.getX();
-                    y2 = event.getY();
                     if(x1< x2) {
                         Bundle bundle = new Bundle();
                         bundle.putLong("noteID", noteID);
@@ -89,14 +84,14 @@ public class NoteAttachmentFragment extends Fragment {
         });
     }
 
-    Long getNextAttachmentId() {
+    private Long getNextAttachmentId() {
         if ((noteAttachments.size() - 1) == currentPosition) {
             return noteAttachments.get(0).getID();
         }
         return noteAttachments.get(currentPosition + 1).getID();
     }
 
-    Long getPreviousAttachmentId() {
+    private Long getPreviousAttachmentId() {
         if (currentPosition == 0) {
             return noteAttachments.get(noteAttachments.size()-1).getID();
         }

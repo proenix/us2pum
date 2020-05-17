@@ -8,7 +8,6 @@ import android.app.TimePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.BitmapFactory;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
@@ -19,7 +18,6 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -29,10 +27,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -73,7 +69,6 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
     private TextView textViewDueDate;
     private TextView textViewDueTime;
     private ScrollView scrollViewNote;
-    private LinearLayout linearLayoutAttachments;
     private ImageButton imageButtonDueDelete;
     private Calendar dueDate = null;
     private Note note;
@@ -83,14 +78,6 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
     private NoteAttachment noteAttachment;
     private List<NoteAttachment> noteAttachments;
     private NoteAttachmentListAdapter noteAttachmentListAdapter;
-
-    ArrayAdapter<Map.Entry<Integer, String>> adapterPriority;
-    Spinner spinnerPriority;
-
-    @Override
-    public void removeNoteAttachment(Long id) {
-
-    }
 
     @Override
     public void dispatchPhoto() {
@@ -103,18 +90,16 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         TAKE_PHOTO
     }
 
-    public void dispatchTakePictureIntent() {
+    private void dispatchTakePictureIntent() {
         if (ContextCompat.checkSelfPermission(view.getContext(),
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
             if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
-                Toast.makeText(view.getContext(), "Please grant Camera permission manually.", Toast.LENGTH_LONG).show();
+                Toast.makeText(view.getContext(), R.string.ask_manual_camera_permission, Toast.LENGTH_LONG).show();
             } else {
                 requestPermissions( new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_CAMERA);
-                // PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
+                // The callback method gets the result of the request.
             }
         } else {
             // Already granted.
@@ -176,7 +161,7 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
 
     @Override
     public View onCreateView(
-            LayoutInflater inflater, ViewGroup container,
+            @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState
     ) {
         Bundle bundle = getArguments();
@@ -220,9 +205,7 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         recyclerView.setAdapter(noteAttachmentListAdapter);
 
         ImageButton imageButtonGoToAttachments = view.findViewById(R.id.imageButtonGoToAttachments);
-        imageButtonGoToAttachments.setOnClickListener(v -> {
-            scrollViewNote.smoothScrollTo(0, recyclerView.getBottom());
-        });
+        imageButtonGoToAttachments.setOnClickListener(v -> scrollViewNote.smoothScrollTo(0, recyclerView.getBottom()));
 
 
         // Note categories handling. Color spinner for categories
@@ -251,9 +234,9 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         }
 
         // Note priority handling.
-        spinnerPriority = view.findViewById(R.id.spinnerPriority);
+        Spinner spinnerPriority = view.findViewById(R.id.spinnerPriority);
         priorityItems = Note.getPriorities();
-        adapterPriority = new ArrayAdapter<Map.Entry<Integer, String>>(view.getContext(), R.layout.spinner_item, priorityItems) {
+        ArrayAdapter<Map.Entry<Integer, String>> adapterPriority = new ArrayAdapter<Map.Entry<Integer, String>>(view.getContext(), R.layout.spinner_item, priorityItems) {
             @Override
             public View getDropDownView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 LayoutInflater inflater = getLayoutInflater();
@@ -335,16 +318,13 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         // Note done handling
         CheckBox checkBoxNoteDone = view.findViewById(R.id.checkBoxNoteDone);
         checkBoxNoteDone.setChecked(note.isDone());
-        checkBoxNoteDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    note.setStatusDone();
-                } else {
-                    note.setStatusInProgress();
-                }
-                note.save();
+        checkBoxNoteDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                note.setStatusDone();
+            } else {
+                note.setStatusInProgress();
             }
+            note.save();
         });
 
         // Add on back pressed callback.
@@ -374,7 +354,10 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
 
         // Display back button in toolbar.
         try {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            AppCompatActivity appCompatActivity = (AppCompatActivity) getActivity();
+            if (appCompatActivity != null) {
+                appCompatActivity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            }
         } catch (NullPointerException ignored) {}
 
     }
@@ -429,11 +412,13 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
                 ((TextView) view).setTextColor(note.getTextColor()); // Text color of spinner visible part
                 try {
                     Drawable bg = view.getContext().getDrawable(R.drawable.layout_note_row_bg);
-                    bg.setColorFilter(
-                            new PorterDuffColorFilter(note.getBackgroundColor(), PorterDuff.Mode.SRC)
-                    );
+                    if (bg != null) {
+                        bg.setColorFilter(
+                                new PorterDuffColorFilter(note.getBackgroundColor(), PorterDuff.Mode.SRC)
+                        );
+                        scrollViewNote.setBackground(bg);
+                    }
                     // Set color for note shape.
-                    scrollViewNote.setBackground(bg);
                     editTextNoteContent.setTextColor(note.getTextColor());
                     editTextNoteTitle.setTextColor(note.getTextColor());
                 } catch (NullPointerException ignored) { }

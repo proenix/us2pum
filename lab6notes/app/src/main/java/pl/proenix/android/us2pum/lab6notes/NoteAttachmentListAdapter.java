@@ -4,8 +4,6 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -30,7 +28,7 @@ class NoteAttachmentListAdapter extends RecyclerView.Adapter<NoteAttachmentListA
         return new NoteAttachmentViewHolder(itemView);
     }
 
-    public NoteAttachmentListAdapter(List<NoteAttachment> noteAttachments, NoteAttachmentInterface noteCreateReadUpdateFragment) {
+    NoteAttachmentListAdapter(List<NoteAttachment> noteAttachments, NoteAttachmentInterface noteCreateReadUpdateFragment) {
         this.noteAttachmentList = noteAttachments;
         this.noteAttachmentSelectedInterface = noteCreateReadUpdateFragment;
     }
@@ -41,9 +39,7 @@ class NoteAttachmentListAdapter extends RecyclerView.Adapter<NoteAttachmentListA
             Log.d("AndroidNotes", "Displaying Button");
             holder.imageView.setVisibility(View.GONE);
             holder.imageButtonAddPhoto.setVisibility(View.VISIBLE);
-            holder.imageButtonAddPhoto.setOnClickListener(v -> {
-                noteAttachmentSelectedInterface.dispatchPhoto();
-            });
+            holder.imageButtonAddPhoto.setOnClickListener(v -> noteAttachmentSelectedInterface.dispatchPhoto());
             return;
         }
         holder.imageView.setVisibility(View.VISIBLE);

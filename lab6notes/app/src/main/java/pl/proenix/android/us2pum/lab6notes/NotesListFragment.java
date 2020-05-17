@@ -9,7 +9,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -43,7 +42,6 @@ import java.util.stream.Stream;
 /**
  * Fragment for displaying list of all notes.
  *
- * // TODO: 14/05/2020 Export to text file.
  */
 public class NotesListFragment extends Fragment implements NoteSelectedInteface {
 
@@ -52,7 +50,7 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
     private View view;
     private MenuItem menuItemShare;
     private MenuItem menuItemDelete;
-    RecyclerView recyclerView;
+    private RecyclerView recyclerView;
     private NotesListAdapter notesListAdapter;
     private DialogInterface.OnClickListener onDeleteDialogClickListener;
 
@@ -208,7 +206,6 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
      */
     @SuppressLint("ClickableViewAccessibility")
     private void openPopupSort() {
-        LayoutInflater inflater = getLayoutInflater();
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
 
@@ -220,9 +217,7 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
 
         // Close button for popup.
         ImageView imageViewClosePopup = popupView.findViewById(R.id.imageButtonClose);
-        imageViewClosePopup.setOnClickListener(v -> {
-            popupWindow.dismiss();
-        });
+        imageViewClosePopup.setOnClickListener(v -> popupWindow.dismiss());
 
         popupWindow.setElevation(20);
         popupWindow.showAtLocation(view, Gravity.CENTER, 0,0 );
@@ -243,7 +238,7 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
      * Only notifying about data set changed did not refresh adapter.
      */
     private void recreateRecyclerView() {
-        new Handler(Looper.getMainLooper()).post((Runnable) () -> {
+        new Handler(Looper.getMainLooper()).post(() -> {
             notes = MainActivity.db.findAllNotes();
             notesListAdapter = new NotesListAdapter(notes, this);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(MainActivity.getAppContext());
@@ -257,7 +252,7 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
     /**
      * Inflate popup.
      */
-    void popupInflate() {
+    private void popupInflate() {
         LayoutInflater inflater = getLayoutInflater();
         popupView = inflater.inflate(R.layout.popup_sort, null);
         int width = LinearLayout.LayoutParams.MATCH_PARENT;
@@ -296,7 +291,7 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
         for (Map.Entry<Integer, Integer> cat : categoriesList) {
             Chip chip = new Chip(view.getContext());
             chip.setText(Note.getCategoryNameByInt(cat.getKey()));
-            // todo set background tint color
+            // Set color for chip
             chip.setChipBackgroundColor(ColorStateList.valueOf(cat.getValue()));
             chip.setTextColor(MainActivity.getAppContext().getColor(R.color.colorCategoryDefaultText));
             chip.setTag(R.id.TAG_CATEGORY_ID, cat.getKey());
@@ -314,7 +309,7 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
             chipGroupCategories.addView(chip);
         }
 
-        // Chips for fitlering by priorities
+        // Chips for filtering by priorities
         ChipGroup chipGroupPriorities = popupView.findViewById(R.id.chipGroupPriorities);
         List<Map.Entry<Integer, String>> priorities = Note.getPriorities();
         for (Map.Entry<Integer, String> priority : priorities) {

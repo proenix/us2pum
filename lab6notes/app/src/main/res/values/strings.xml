@@ -27,4 +27,14 @@
     <string name="note_priority_high">High</string>
     <string name="note_priority_critical">Critical</string>
     <string name="note_priority_low">Low</string>
+    <string name="ask_manual_camera_permission">Please grant Camera permission manually.</string>
+    <string name="s_title">Title:</string>
+    <string name="s_due_date">Due date:</string>
+    <string name="s_set_date">set date</string>
+    <string name="s_set_time">set time</string>
+    <string name="s_note_content">Note content:</string>
+    <string name="s_attachments">Attachments:</string>
+    <string name="s_delete_due_date">Delete Due Date</string>
+    <string name="s_go_to_attachments">Go to attachments</string>
+    <string name="s_priority_indicator">Priority indicator</string>
 </resources>

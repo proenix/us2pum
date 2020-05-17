@@ -160,14 +160,16 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
      */
     private Drawable getBackground(int colorBackground, int colorStroke) {
         LayerDrawable bg = (LayerDrawable) MainActivity.getAppContext().getDrawable(R.drawable.layout_note_row_bg_full);
-        Drawable background = bg.getDrawable(0);
-        Drawable stroke = bg.getDrawable(1);
-        GradientDrawable backgroundGD = (GradientDrawable) background;
-        GradientDrawable strokeGD = (GradientDrawable) stroke;
-        backgroundGD.setColor(colorBackground);
-        strokeGD.setStroke(4, colorStroke);
-        bg.setDrawableByLayerId(0, backgroundGD);
-        bg.setDrawableByLayerId(1, strokeGD);
+        if (bg != null) {
+            Drawable background = bg.getDrawable(0);
+            Drawable stroke = bg.getDrawable(1);
+            GradientDrawable backgroundGD = (GradientDrawable) background;
+            GradientDrawable strokeGD = (GradientDrawable) stroke;
+            backgroundGD.setColor(colorBackground);
+            strokeGD.setStroke(4, colorStroke);
+            bg.setDrawableByLayerId(0, backgroundGD);
+            bg.setDrawableByLayerId(1, strokeGD);
+        }
         return bg;
     }
 }

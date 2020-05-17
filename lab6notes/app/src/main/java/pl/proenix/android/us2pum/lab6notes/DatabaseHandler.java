@@ -122,6 +122,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         long id = db.insert(TABLE_NOTES, null, values);
         note.setID(id);
 
+        //Log.d("AndroidNotes", "Note saved: "+ note.toString());
+
         return id;
     }
 
@@ -198,6 +200,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         long id = db.insert(TABLE_ATTACHMENTS, null, values);
         attachment.setID(id);
 
+        //Log.d("AndroidNotes", "Attachment saved: "+ attachment.toString());
         return id;
     }
 
@@ -267,6 +270,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 + " AND " + KEY_STATUS + " IN " + getStatusFilterString()
                 + " ORDER BY " + _sortBy;
         SQLiteDatabase db = this.getReadableDatabase();
+        // Log.d("AndroidNotes", notesQuery);
         Cursor cursor = db.rawQuery(notesQuery, null);
 
         if (cursor != null) {

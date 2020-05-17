@@ -88,7 +88,9 @@ public class MainActivity extends AppCompatActivity {
             NotificationChannel channel = new NotificationChannel(CHANNEL_ID, "NoteDueDate", importance);
             channel.setDescription("Note due date notifications!");
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
         }
     }
 }
