@@ -1,7 +1,6 @@
 package pl.proenix.android.us2pum.lab6notes;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
@@ -9,7 +8,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
-import androidx.viewpager.widget.PagerAdapter;
 
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -33,9 +31,9 @@ public class NoteAttachmentFragment extends Fragment {
     private Long noteID;
     private Long attachmentID;
     private int currentPosition;
-    float x1,x2,y1,y2;
+    private float x1,x2,y1,y2;
 
-    List<NoteAttachment> noteAttachments;
+    private List<NoteAttachment> noteAttachments;
 
     @Nullable
     @Override
@@ -62,11 +60,6 @@ public class NoteAttachmentFragment extends Fragment {
                 currentPosition = noteAttachments.indexOf(att);
             }
         }
-        if (currentPosition == -1) {
-            Log.d("AndroidNotes", "Olaboga.");
-
-        }
-        Log.d("AndroidNotes", "c" + currentPosition);
 
         ImageView imageViewSingleAttachment = view.findViewById(R.id.imageViewSingleAttachment);
         imageViewSingleAttachment.setImageBitmap(BitmapFactory.decodeFile(noteAttachments.get(currentPosition).getPathImageNormal()));
@@ -84,13 +77,11 @@ public class NoteAttachmentFragment extends Fragment {
                         bundle.putLong("noteID", noteID);
                         bundle.putLong("attachmentID", getPreviousAttachmentId());
                         NavHostFragment.findNavController(this).navigate(R.id.action_noteAttachmentFragment_self, bundle);
-                       Log.d("AndroidNotes", "To left");
                     } else if (x1 > x2) {
                         Bundle bundle = new Bundle();
                         bundle.putLong("noteID", noteID);
                         bundle.putLong("attachmentID", getNextAttachmentId());
                         NavHostFragment.findNavController(this).navigate(R.id.action_noteAttachmentFragment_self, bundle);
-                        Log.d("AndroidNotes", "To right");
                     }
                     break;
             }
@@ -134,13 +125,11 @@ public class NoteAttachmentFragment extends Fragment {
                 noteAttachments.get(currentPosition).delete();
                 noteAttachments.remove(currentPosition);
                 if (noteAttachments.size() != 0) {
-                    Log.d("AndroidNotes", "Moar exist");
                     bundle.putLong("noteID", noteID);
                     bundle.putLong("attachmentID", getPreviousAttachmentId());
                     NavHostFragment.findNavController(this).navigate(R.id.action_noteAttachmentFragment_self, bundle);
                     return true;
                 } else {
-                    Log.d("AndroidNotes", "Sayonara");
                     NavHostFragment.findNavController(this).popBackStack();
                     return true;
                 }

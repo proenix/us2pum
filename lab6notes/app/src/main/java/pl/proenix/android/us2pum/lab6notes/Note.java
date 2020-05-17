@@ -45,8 +45,8 @@ class Note {
      * Status representation as integer.
      */
     private Integer _status;
-    private static final int STATUS_IN_PROGRESS = 3001;
-    private static final int STATUS_DONE = 3002;
+    public static final int STATUS_IN_PROGRESS = 3001;
+    public static final int STATUS_DONE = 3002;
 
     /**
      * Priority of notes.

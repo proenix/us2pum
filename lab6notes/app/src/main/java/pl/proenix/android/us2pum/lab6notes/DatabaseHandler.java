@@ -10,6 +10,7 @@ import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class DatabaseHandler extends SQLiteOpenHelper {
 
@@ -84,6 +85,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ATTACHMENTS);
 
         onCreate(db);
+    }
+
+    /**
+     * Initialize Sort and Filter with data.
+     */
+    void initializeSorterFilter() {
+        _sortBy = KEY_DUE_DATE + " DESC";
+        for (Map.Entry<Integer, Integer> cat : Note.getCategoriesColors()) {
+            _categoryFilter.add(cat.getKey());
+        }
+        for (Map.Entry<Integer, String> priority : Note.getPriorities()) {
+            _priorityFilter.add(priority.getKey());
+        }
+        _statusFilter.add(Note.STATUS_DONE);
+        _statusFilter.add(Note.STATUS_IN_PROGRESS);
     }
 
     /**
@@ -246,7 +262,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      */
     List<Note> findAllNotes() {
         List<Note> notes = new ArrayList<Note>();
-        String notesQuery = "SELECT * FROM " + TABLE_NOTES;
+        String notesQuery = "SELECT * FROM " + TABLE_NOTES
+                + " WHERE " + KEY_CATEGORY + " IN " + getCategoryFilterString()
+                + " AND " + KEY_PRIORITY + " IN " + getPriorityFilterString()
+                + " AND " + KEY_STATUS + " IN " + getStatusFilterString()
+                + " ORDER BY " + _sortBy;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(notesQuery, null);
 
@@ -268,6 +288,102 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         }
         return notes;
     }
+
+    private String _sortBy = KEY_DUE_DATE + " DESC";
+    void setSortBy(String column, String order) {
+        this._sortBy = column + " " + order;
+    }
+    public void setSortByPriority(String order) {
+        if (order == "ASC") {
+            setSortBy(KEY_PRIORITY, "ASC");
+        } else {
+            setSortBy(KEY_PRIORITY, "DESC");
+        }
+    }
+    public void setSortByTitle(String order) {
+        if (order == "ASC") {
+            setSortBy(KEY_NAME, "ASC");
+        } else {
+            setSortBy(KEY_NAME, "DESC");
+        }
+    }
+    public void setSortByDueDate(String order) {
+        if (order == "ASC") {
+            setSortBy(KEY_DUE_DATE, "ASC");
+        } else {
+            setSortBy(KEY_DUE_DATE, "DESC");
+        }
+    }
+
+    private List<Integer> _priorityFilter = new ArrayList<Integer>();
+    public List<Integer> getPriorityFilter() {
+        return this._priorityFilter;
+    }
+    void addPriorityFilter(Integer id) {
+        if (_priorityFilter.indexOf(id) == -1) {
+            _priorityFilter.add(id);
+        }
+    }
+    void removePriorityFilter(Integer id) {
+        _priorityFilter.remove(id);
+    }
+    String getPriorityFilterString() {
+        if (_priorityFilter.size() != 0) {
+            StringBuilder s = new StringBuilder();
+            for (Integer cat : _priorityFilter) {
+                s.append(cat).append(", ");
+            }
+            return "(" + s.toString().substring(0, s.toString().length() - 2) + ")";
+        }
+        return  "()";
+    }
+
+    private List<Integer> _categoryFilter = new ArrayList<Integer>();
+    public List<Integer> getCategoryFilter() {
+        return this._categoryFilter;
+    }
+    void addCategoryFilter(Integer id) {
+        if (_categoryFilter.indexOf(id) == -1) {
+            _categoryFilter.add(id);
+        }
+    }
+    void removeCategoryFilter(Integer id) {
+        _categoryFilter.remove(id);
+    }
+    String getCategoryFilterString() {
+        if (_categoryFilter.size() != 0) {
+            StringBuilder s = new StringBuilder();
+            for (Integer cat : _categoryFilter) {
+                s.append(cat).append(", ");
+            }
+            return "(" + s.toString().substring(0, s.toString().length() - 2) + ")";
+        }
+        return "()";
+    }
+
+    private List<Integer> _statusFilter = new ArrayList<Integer>();
+    public List<Integer> getStatusFilter() {
+        return this._statusFilter;
+    }
+    void addStatusFilter(Integer id) {
+        if (_statusFilter.indexOf(id) == -1) {
+            _statusFilter.add(id);
+        }
+    }
+    void removeStatusFilter(Integer id) {
+        _statusFilter.remove(id);
+    }
+    String getStatusFilterString() {
+        if (_statusFilter.size() != 0) {
+            StringBuilder s = new StringBuilder();
+            for (Integer cat : _statusFilter) {
+                s.append(cat).append(", ");
+            }
+            return "(" + s.toString().substring(0, s.toString().length() - 2) + ")";
+        }
+        return "()";
+    }
+
 
     /**
      * Remove note from DB.
