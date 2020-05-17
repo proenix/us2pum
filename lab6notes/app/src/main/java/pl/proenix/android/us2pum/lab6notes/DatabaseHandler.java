@@ -54,7 +54,6 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        onCreate(db);
         if (oldVersion < 2) {
             upgradeToVersion2(db);
         }

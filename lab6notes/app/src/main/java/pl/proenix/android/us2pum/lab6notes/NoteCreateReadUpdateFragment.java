@@ -32,7 +32,6 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -46,7 +45,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -60,7 +58,6 @@ import java.util.Map;
 
 /**
  * Fragment for displaying single note read and edit mode.
- * // TODO: 14/05/2020 Export to text file.
  */
 public class NoteCreateReadUpdateFragment extends Fragment implements AdapterView.OnItemSelectedListener, View.OnClickListener, NoteAttachmentInterface {
 
@@ -127,7 +124,8 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
                 // Create the File where the photo should go
                 File photoFile = null;
                 try {
-                    noteAttachment = new NoteAttachment(noteID);
+                    note.save();
+                    noteAttachment = new NoteAttachment(note.getID());
                     photoFile = noteAttachment.prepareFullSizeImageFile();
                 } catch (IOException ex) {
                     // Error occurred while creating the File
@@ -142,6 +140,16 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
                 }
             }
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSIONS_REQUEST_CAMERA) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                dispatchTakePictureIntent();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
@@ -416,7 +424,6 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         switch (parent.getId()) {
             case R.id.spinnerCategory:
-                Log.d("AndroidNotes", note.toString());
                 note.setCategory(categoryItems.get(position).getKey());
                 ((TextView) view).setText(Note.getCategoryNameByInt(note.getCategoryAsInt()));
                 ((TextView) view).setTextColor(note.getTextColor()); // Text color of spinner visible part
