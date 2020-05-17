@@ -95,6 +95,7 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
         imageViewSortFilter.setOnClickListener(sortClicked);
 
         // Create recycler.
+        recyclerView = view.findViewById(R.id.recyclerViewNoteList);
         recreateRecyclerView();
 
         // Delete notes dialog.

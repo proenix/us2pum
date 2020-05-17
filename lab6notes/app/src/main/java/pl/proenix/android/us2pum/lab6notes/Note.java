@@ -254,6 +254,17 @@ class Note {
     }
 
     /**
+     * Check if due date is before next 24h.
+     * @return boolean true if so.
+     */
+    public boolean isDueDateBeforeTomorrow() {
+        if (hasDueDate()) {
+            return (getDueDateAsLong() < getCurrentDateTime()+24*3600);
+        }
+        return false;
+    }
+
+    /**
      * Check if due date is older than now.
      * @return boolean true if after due.
      */
