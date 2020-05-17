@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -71,9 +72,6 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Initialize filters.
-        MainActivity.db.initializeSorterFilter();
-
         // Floating action button.
         FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(view1 -> {
@@ -82,12 +80,14 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
             NavHostFragment.findNavController(NotesListFragment.this).navigate(R.id.action_notesListFragment_to_noteCreateReadUpdateFragment, bundle);
         });
 
+        // Inflate popup at start so it won't block threat while trying to display it.
+        popupInflate();
+
         TextView textViewSortFilter = view.findViewById(R.id.textViewSortFilter);
         ImageView imageViewSortFilter = view.findViewById(R.id.imageViewSortFilter);
 
         View.OnClickListener sortClicked = v -> {
             if (v.getId() == textViewSortFilter.getId() || v.getId() == imageViewSortFilter.getId()) {
-                Log.d("AndroidNotes", "sort clicked");
                 openPopupSort();
             }
         };
@@ -214,98 +214,7 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
 
         // Initialize popup content only once.
         if (popupView == null) {
-            popupView = inflater.inflate(R.layout.popup_sort, null);
-
-            ChipGroup chipGroupSortBy = popupView.findViewById(R.id.chipGroupSortBy);
-            chipGroupSortBy.setOnCheckedChangeListener((group, checkedId) -> {
-                switch (checkedId) {
-                    case R.id.chipSortPriorityAsc:
-                        MainActivity.db.setSortByPriority("ASC");
-                        break;
-                    case R.id.chipSortPriorityDesc:
-                        MainActivity.db.setSortByPriority("DESC");
-                        break;
-                    case R.id.chipSortTitleAsc:
-                        MainActivity.db.setSortByTitle("ASC");
-                        break;
-                    case R.id.chipSortTitleDesc:
-                        MainActivity.db.setSortByTitle("DESC");
-                        break;
-                    case R.id.chipSortDueDateAsc:
-                        MainActivity.db.setSortByDueDate("ASC");
-                        break;
-                    case R.id.chipSortDueDateDesc:
-                        MainActivity.db.setSortByDueDate("DESC");
-                        break;
-                    default:
-                        MainActivity.db.setSortByDueDate("DESC");
-                }
-            });
-            // Set first default sort.
-            ((Chip)popupView.findViewById(R.id.chipSortDueDateDesc)).setChecked(true);
-
-            // Chips for filtering by categories
-            ChipGroup chipGroupCategories = popupView.findViewById(R.id.chipGroupCategories);
-            List<Map.Entry<Integer, Integer>> categoriesList = Note.getCategoriesColors();
-            for (Map.Entry<Integer, Integer> cat : categoriesList) {
-                Chip chip = new Chip(view.getContext());
-                //chip.setId(View.generateViewId());
-                chip.setText(Note.getCategoryNameByInt(cat.getKey()));
-                // todo set background tint color
-                chip.setTag(R.id.TAG_CATEGORY_ID, cat.getKey());
-                chip.setWidth(width);
-                // Initial check state
-                chip.setCheckable(true);
-                chip.setChecked((MainActivity.db.getCategoryFilter().indexOf(cat.getKey()) != -1));
-                chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if (isChecked) {
-                        MainActivity.db.addCategoryFilter((Integer) chip.getTag(R.id.TAG_CATEGORY_ID));
-                    } else {
-                        MainActivity.db.removeCategoryFilter((Integer) chip.getTag(R.id.TAG_CATEGORY_ID));
-                    }
-                });
-                chipGroupCategories.addView(chip);
-            }
-
-            // Chips for fitlering by priorities
-            ChipGroup chipGroupPriorities = popupView.findViewById(R.id.chipGroupPriorities);
-            List<Map.Entry<Integer, String>> priorities = Note.getPriorities();
-            for (Map.Entry<Integer, String> priority : priorities) {
-                Chip chip = new Chip(view.getContext());
-                chip.setText(priority.getValue());
-                chip.setTag(R.id.TAG_PRIORITY_ID, priority.getKey());
-                // Initial check state
-                chip.setCheckable(true);
-                chip.setChecked((MainActivity.db.getPriorityFilter().indexOf(priority.getKey()) != -1));
-                chip.setOnCheckedChangeListener(((buttonView, isChecked) -> {
-                    if (isChecked) {
-                        MainActivity.db.addPriorityFilter((Integer) chip.getTag(R.id.TAG_PRIORITY_ID));
-                    } else {
-                        MainActivity.db.removePriorityFilter((Integer) chip.getTag(R.id.TAG_PRIORITY_ID));
-                    }
-                }));
-                chipGroupPriorities.addView(chip);
-            }
-
-            // Chips for filtering by status
-            ChipGroup chipGroupStatus = popupView.findViewById(R.id.chipGroupStatus);
-            // Status Done button
-            ((Chip) chipGroupStatus.getChildAt(0)).setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    MainActivity.db.addStatusFilter(Note.STATUS_DONE);
-                } else {
-                    MainActivity.db.removeStatusFilter(Note.STATUS_DONE);
-                }
-            });
-            // Status In progress button
-            ((Chip) chipGroupStatus.getChildAt(1)).setOnCheckedChangeListener((buttonView, isChecked) -> {
-                if (isChecked) {
-                    MainActivity.db.addStatusFilter(Note.STATUS_IN_PROGRESS);
-                } else {
-                    MainActivity.db.removeStatusFilter(Note.STATUS_IN_PROGRESS);
-                }
-            });
-
+            popupInflate();
         }
         final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
 
@@ -343,5 +252,106 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
             recyclerView.setAdapter(notesListAdapter);
             notesListAdapter.notifyDataSetChanged();
         });
+    }
+
+    /**
+     * Inflate popup.
+     */
+    void popupInflate() {
+        LayoutInflater inflater = getLayoutInflater();
+        popupView = inflater.inflate(R.layout.popup_sort, null);
+        int width = LinearLayout.LayoutParams.MATCH_PARENT;
+
+        ChipGroup chipGroupSortBy = popupView.findViewById(R.id.chipGroupSortBy);
+        chipGroupSortBy.setOnCheckedChangeListener((group, checkedId) -> {
+            switch (checkedId) {
+                case R.id.chipSortPriorityAsc:
+                    MainActivity.db.setSortByPriority("ASC");
+                    break;
+                case R.id.chipSortPriorityDesc:
+                    MainActivity.db.setSortByPriority("DESC");
+                    break;
+                case R.id.chipSortTitleAsc:
+                    MainActivity.db.setSortByTitle("ASC");
+                    break;
+                case R.id.chipSortTitleDesc:
+                    MainActivity.db.setSortByTitle("DESC");
+                    break;
+                case R.id.chipSortDueDateAsc:
+                    MainActivity.db.setSortByDueDate("ASC");
+                    break;
+                case R.id.chipSortDueDateDesc:
+                    MainActivity.db.setSortByDueDate("DESC");
+                    break;
+                default:
+                    MainActivity.db.setSortByDueDate("DESC");
+            }
+        });
+        // Set first default sort.
+        ((Chip)popupView.findViewById(R.id.chipSortDueDateDesc)).setChecked(true);
+
+        // Chips for filtering by categories
+        ChipGroup chipGroupCategories = popupView.findViewById(R.id.chipGroupCategories);
+        List<Map.Entry<Integer, Integer>> categoriesList = Note.getCategoriesColors();
+        for (Map.Entry<Integer, Integer> cat : categoriesList) {
+            Chip chip = new Chip(view.getContext());
+            chip.setText(Note.getCategoryNameByInt(cat.getKey()));
+            // todo set background tint color
+            chip.setChipBackgroundColor(ColorStateList.valueOf(cat.getValue()));
+            chip.setTextColor(MainActivity.getAppContext().getColor(R.color.colorCategoryDefaultText));
+            chip.setTag(R.id.TAG_CATEGORY_ID, cat.getKey());
+            chip.setWidth(width);
+            // Initial check state
+            chip.setCheckable(true);
+            chip.setChecked((MainActivity.db.getCategoryFilter().indexOf(cat.getKey()) != -1));
+            chip.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (isChecked) {
+                    MainActivity.db.addCategoryFilter((Integer) chip.getTag(R.id.TAG_CATEGORY_ID));
+                } else {
+                    MainActivity.db.removeCategoryFilter((Integer) chip.getTag(R.id.TAG_CATEGORY_ID));
+                }
+            });
+            chipGroupCategories.addView(chip);
+        }
+
+        // Chips for fitlering by priorities
+        ChipGroup chipGroupPriorities = popupView.findViewById(R.id.chipGroupPriorities);
+        List<Map.Entry<Integer, String>> priorities = Note.getPriorities();
+        for (Map.Entry<Integer, String> priority : priorities) {
+            Chip chip = new Chip(view.getContext());
+            chip.setText(priority.getValue());
+            chip.setTag(R.id.TAG_PRIORITY_ID, priority.getKey());
+            // Initial check state
+            chip.setCheckable(true);
+            chip.setChecked((MainActivity.db.getPriorityFilter().indexOf(priority.getKey()) != -1));
+            chip.setOnCheckedChangeListener(((buttonView, isChecked) -> {
+                if (isChecked) {
+                    MainActivity.db.addPriorityFilter((Integer) chip.getTag(R.id.TAG_PRIORITY_ID));
+                } else {
+                    MainActivity.db.removePriorityFilter((Integer) chip.getTag(R.id.TAG_PRIORITY_ID));
+                }
+            }));
+            chipGroupPriorities.addView(chip);
+        }
+
+        // Chips for filtering by status
+        ChipGroup chipGroupStatus = popupView.findViewById(R.id.chipGroupStatus);
+        // Status Done button
+        ((Chip) chipGroupStatus.getChildAt(0)).setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                MainActivity.db.addStatusFilter(Note.STATUS_DONE);
+            } else {
+                MainActivity.db.removeStatusFilter(Note.STATUS_DONE);
+            }
+        });
+        // Status In progress button
+        ((Chip) chipGroupStatus.getChildAt(1)).setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                MainActivity.db.addStatusFilter(Note.STATUS_IN_PROGRESS);
+            } else {
+                MainActivity.db.removeStatusFilter(Note.STATUS_IN_PROGRESS);
+            }
+        });
+
     }
 }

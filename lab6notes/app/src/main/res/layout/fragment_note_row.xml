@@ -29,18 +29,19 @@
 
             <ImageView
                 android:id="@+id/imageViewNotePriority"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 app:srcCompat="@drawable/ic_priority_critical" />
 
             <CheckBox
                 android:id="@+id/checkBoxListNoteDone"
-                android:layout_width="wrap_content"
+                android:layout_width="30dip"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:buttonTint="#FFFFFF"
-                android:checked="true" />
+                android:checked="true"
+                android:gravity="center|center_horizontal" />
         </LinearLayout>
 
         <LinearLayout
@@ -69,7 +70,7 @@
                 android:textColor="#FFFFFF" />
 
             <HorizontalScrollView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent">
 
                 <LinearLayout
@@ -79,7 +80,7 @@
                     android:divider="?attr/dividerVertical"
                     android:dividerPadding="4dip"
                     android:orientation="horizontal"
-                    android:showDividers="middle"/>
+                    android:showDividers="middle" />
             </HorizontalScrollView>
 
             <TextView

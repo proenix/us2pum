@@ -55,8 +55,8 @@ class Note {
     /**
      * Default Priority set for Notes without explicitly declared priority.
      */
-    private static final int PRIORITY_DEFAULT = 1050;
     private static final int PRIORITY_LOW = 1010;
+    private static final int PRIORITY_DEFAULT = 1050;
     private static final int PRIORITY_HIGH = 1060;
     private static final int PRIORITY_CRITICAL = 1080;
 
