@@ -55,7 +55,8 @@ public class NoteAttachment {
         return this._path_image_thumb;
     }
 
-    NoteAttachment() { }
+    NoteAttachment() {
+    }
 
     NoteAttachment(Long noteId) {
         this._note_id = noteId;
@@ -63,10 +64,11 @@ public class NoteAttachment {
 
     /**
      * Create NoteAttachment object. (Use only from DatabaseHandler)
-     * @param id ID of NoteAttachment
-     * @param noteId Related Note ID
+     *
+     * @param id            ID of NoteAttachment
+     * @param noteId        Related Note ID
      * @param pathImgNormal Path to Image in full size.
-     * @param pathImgThumb Path to Image as thumbnail.
+     * @param pathImgThumb  Path to Image as thumbnail.
      */
     NoteAttachment(Long id, Long noteId, String pathImgNormal, String pathImgThumb) {
         this._id = id;
@@ -77,9 +79,10 @@ public class NoteAttachment {
 
     /**
      * Create NoteAttachment object.
-     * @param noteId Related Note ID
+     *
+     * @param noteId        Related Note ID
      * @param pathImgNormal Path to Image in full size.
-     * @param pathImgThumb Path to Image as thumbnail.
+     * @param pathImgThumb  Path to Image as thumbnail.
      */
     NoteAttachment(Long noteId, String pathImgNormal, String pathImgThumb) {
         this._note_id = noteId;
@@ -109,6 +112,7 @@ public class NoteAttachment {
 
     /**
      * Current time representation as Long.
+     *
      * @return Long current time representation in second since epoch.
      */
     public Long getCurrentDateTime() {
@@ -147,7 +151,7 @@ public class NoteAttachment {
 
             try (FileOutputStream out = new FileOutputStream(photoThumbFile)) {
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 90, out);
-            } catch (NullPointerException|IOException e) {
+            } catch (NullPointerException | IOException e) {
                 e.printStackTrace();
             }
             //Log.d("AndroidNotes", "Bitmape shrinked: " + bitmap.getHeight() + " " + bitmap.getWidth());
@@ -160,18 +164,20 @@ public class NoteAttachment {
 
     /**
      * Get max round integer of 2^.
+     *
      * @param ratio Ratio to check.
-     * @link https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri/4717740#4717740
      * @return Integer ratio.
+     * @link https://stackoverflow.com/questions/3879992/how-to-get-bitmap-from-an-uri/4717740#4717740
      */
-    private int getPowerOfTwoForSampleRatio(double ratio){
-        int k = Integer.highestOneBit((int)Math.floor(ratio));
-        if(k==0) return 1;
+    private int getPowerOfTwoForSampleRatio(double ratio) {
+        int k = Integer.highestOneBit((int) Math.floor(ratio));
+        if (k == 0) return 1;
         else return k;
     }
 
     /**
      * Create file name for saving data to it.
+     *
      * @param fullSize If name generated is for full size pic
      * @return File object
      * @throws IOException
@@ -216,11 +222,11 @@ public class NoteAttachment {
 
     public void delete() {
         File file = new File(this._path_image_normal);
-        if(file.exists()) {
+        if (file.exists()) {
             file.delete();
         }
         file = new File(this._path_image_thumb);
-        if(file.exists()) {
+        if (file.exists()) {
             file.delete();
         }
         MainActivity.db.removeNoteAttachment(this);

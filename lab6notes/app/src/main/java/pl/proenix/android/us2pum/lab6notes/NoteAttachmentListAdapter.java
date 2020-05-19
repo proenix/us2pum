@@ -18,7 +18,7 @@ import java.util.List;
 class NoteAttachmentListAdapter extends RecyclerView.Adapter<NoteAttachmentListAdapter.NoteAttachmentViewHolder> {
 
     private List<NoteAttachment> noteAttachmentList;
-     private NoteAttachmentInterface noteAttachmentSelectedInterface;
+    private NoteAttachmentInterface noteAttachmentSelectedInterface;
 
     @NonNull
     @Override
@@ -64,6 +64,7 @@ class NoteAttachmentListAdapter extends RecyclerView.Adapter<NoteAttachmentListA
     class NoteAttachmentViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         ImageButton imageButtonAddPhoto;
+
         NoteAttachmentViewHolder(View view) {
             super(view);
             imageView = view.findViewById(R.id.imageView);

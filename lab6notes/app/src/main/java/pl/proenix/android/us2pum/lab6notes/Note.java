@@ -92,13 +92,14 @@ class Note {
 
     /**
      * Recreate Note object and populate with data. (from database)
-     * @param id ID of object from database
-     * @param name Name - subject of note
-     * @param content Content of note
-     * @param category Category of note as integer.
-     * @param status Status of note as integer
-     * @param priority Priority of note as integer.
-     * @param dueDate Due Date time in seconds from epoch as long.
+     *
+     * @param id        ID of object from database
+     * @param name      Name - subject of note
+     * @param content   Content of note
+     * @param category  Category of note as integer.
+     * @param status    Status of note as integer
+     * @param priority  Priority of note as integer.
+     * @param dueDate   Due Date time in seconds from epoch as long.
      * @param createdAt Note creation time in seconds from epoch as long.
      */
     Note(long id, String name, String content, Integer category, Integer status, Integer priority, Long dueDate, Long createdAt) {
@@ -118,12 +119,13 @@ class Note {
 
     /**
      * Create new Note object and populate with data.
-     * @param name Name - subject of note
-     * @param content Content of note
-     * @param category Category of note as integer.
-     * @param status Status of note as integer
-     * @param priority Priority of note as integer.
-     * @param dueDate Due Date time in seconds from epoch as long.
+     *
+     * @param name      Name - subject of note
+     * @param content   Content of note
+     * @param category  Category of note as integer.
+     * @param status    Status of note as integer
+     * @param priority  Priority of note as integer.
+     * @param dueDate   Due Date time in seconds from epoch as long.
      * @param createdAt Note creation time in seconds from epoch as long.
      */
     public Note(String name, String content, Integer status, Integer category, @Nullable Integer priority, @Nullable Long dueDate, @Nullable Long createdAt) {
@@ -150,6 +152,7 @@ class Note {
 
     /**
      * Find note by ID.
+     *
      * @param noteID ID of note in database.
      * @return Note object or null.
      */
@@ -159,6 +162,7 @@ class Note {
 
     /**
      * Get pairs of priority integer representation and name as list.
+     *
      * @return List of key values. First integer represents priority ID, second priority name.
      */
     public static List<Map.Entry<Integer, String>> getPriorities() {
@@ -174,14 +178,14 @@ class Note {
     @Override
     public String toString() {
         return "Note: {" +
-        "id: " + this._id +
-        "; name: " + this._name +
-        "; content: " + this._content +
-        "; category:" + this._category +
-        "; status: " + this._status +
-        "; priority: " + this._priority +
-        "; dueDate: " + this._dueDate +
-        "; createdAt: " + this._createdAt +"}";
+                "id: " + this._id +
+                "; name: " + this._name +
+                "; content: " + this._content +
+                "; category:" + this._category +
+                "; status: " + this._status +
+                "; priority: " + this._priority +
+                "; dueDate: " + this._dueDate +
+                "; createdAt: " + this._createdAt + "}";
     }
 
     public String getName() {
@@ -218,6 +222,7 @@ class Note {
 
     /**
      * Set Due Date from provided Calendar object.
+     *
      * @param dueDate Calendar object with date time set.
      */
     public void setDueDate(Calendar dueDate) {
@@ -255,17 +260,19 @@ class Note {
 
     /**
      * Check if due date is before next 24h.
+     *
      * @return boolean true if so.
      */
     public boolean isDueDateBeforeTomorrow() {
         if (hasDueDate()) {
-            return (getDueDateAsLong() < getCurrentDateTime()+24*3600);
+            return (getDueDateAsLong() < getCurrentDateTime() + 24 * 3600);
         }
         return false;
     }
 
     /**
      * Check if due date is older than now.
+     *
      * @return boolean true if after due.
      */
     public boolean isAfterDue() {
@@ -274,6 +281,7 @@ class Note {
 
     /**
      * Get text color resource id for note text.
+     *
      * @return Color ID resource.
      */
     public int getTextColor() {
@@ -295,6 +303,7 @@ class Note {
 
     /**
      * Get text color resource id for note due date field.
+     *
      * @return Color ID resource.
      */
     public int getAfterDueColor() {
@@ -313,8 +322,10 @@ class Note {
                 return ContextCompat.getColor(MainActivity.getAppContext(), R.color.colorCategoryDefaultText);
         }
     }
+
     /**
      * Get text color resource id for note background.
+     *
      * @return Color ID resource.
      */
     public int getBackgroundColor() {
@@ -336,6 +347,7 @@ class Note {
 
     /**
      * Get text color resource id for note category.
+     *
      * @return List of pairs of integers. First integer represents category ID, second background color of that category.
      */
     public static List<Map.Entry<Integer, Integer>> getCategoriesColors() {
@@ -350,6 +362,7 @@ class Note {
 
     /**
      * Get name of category in readable format by category integer representation.
+     *
      * @param categoryId Category as integer.
      * @return String category name in readable format.
      */
@@ -391,6 +404,7 @@ class Note {
 
     /**
      * Format date in standardized way.
+     *
      * @return String Formatted date string.
      */
     public String getFormattedDate() {
@@ -405,6 +419,7 @@ class Note {
 
     /**
      * Format time in standardized way.
+     *
      * @return String Formatted time string.
      */
     public String getFormattedTime() {
@@ -420,13 +435,14 @@ class Note {
     /**
      * Get Calendar type object representing due date.
      * If due date is not set for note returns current time.
+     *
      * @return Calendar object representing due date.
      */
     public Calendar getDueDateAsCalendar() {
         if (this._dueDateCalendar == null) {
             this._dueDateCalendar = Calendar.getInstance();
             if (this.hasDueDate()) {
-             this._dueDateCalendar.setTimeInMillis(this.getDueDateAsLong()*1000);
+                this._dueDateCalendar.setTimeInMillis(this.getDueDateAsLong() * 1000);
             }
         }
         return this._dueDateCalendar;
@@ -434,6 +450,7 @@ class Note {
 
     /**
      * Current time representation as Long.
+     *
      * @return Long current time representation in second since epoch.
      */
     public Long getCurrentDateTime() {
@@ -454,6 +471,7 @@ class Note {
 
     /**
      * Get pretty formatted all note fields.
+     *
      * @return String pretty formatted note
      */
     public String getSharableContent() {
@@ -471,6 +489,7 @@ class Note {
 
     /**
      * Get Category in human readable form.
+     *
      * @return String category name.
      */
     private String getCategoryName() {
@@ -479,6 +498,7 @@ class Note {
 
     /**
      * Get status in readable form.
+     *
      * @return String status name.
      */
     private String getStatusName() {
@@ -490,6 +510,7 @@ class Note {
 
     /**
      * Get shortened version of note title. Limited to NOTE_TITLE_MAX_PREVIEW_CHARS characters.
+     *
      * @return String shortened title.
      */
     public String getTitleShort() {
@@ -501,6 +522,7 @@ class Note {
 
     /**
      * Get shortened version of note content. Limited to NOTE_CONTENT_MAX_PREVIEW_CHARS characters.
+     *
      * @return String shortened content.
      */
     public String getContentShort() {
@@ -512,6 +534,7 @@ class Note {
 
     /**
      * Return translated priority names.
+     *
      * @return String priority names in readable form.
      */
     public String getPriorityName() {
@@ -534,8 +557,9 @@ class Note {
 
     /**
      * Return priority drawable depending on provided priority integer representation.
+     *
      * @param priorityInt priority integer representation.
-     * @param showNormal Depending if icon for normal priority should be shown.
+     * @param showNormal  Depending if icon for normal priority should be shown.
      * @return @return Drawable object with icon.
      */
     public Drawable getPriorityDrawableByPriorityInt(int priorityInt, @Nullable Boolean showNormal) {
@@ -560,6 +584,7 @@ class Note {
 
     /**
      * Return Drawable object with priority icon for current note.
+     *
      * @param showNormal Depending if icon for normal priority should be shown.
      * @return Drawable object with icon.
      */
@@ -569,6 +594,7 @@ class Note {
 
     /**
      * Return Drawable object with priority icon for current note. For normal priority return transparent drawable.
+     *
      * @return Drawable object with icon.
      */
     public Drawable getPriorityDrawable() {
@@ -577,6 +603,7 @@ class Note {
 
     /**
      * Get created at time as long.
+     *
      * @return Get created at as long.
      */
     public Long getCreatedAt() {
@@ -586,6 +613,7 @@ class Note {
     /**
      * Return list of note attachment objects.
      * Check with db only if not already populated with data.
+     *
      * @return Get note attachment objects as list.
      */
     public List<NoteAttachment> getNoteAttachments() {
@@ -599,7 +627,8 @@ class Note {
     /**
      * Add Attachment to note.
      * Creates Attachment populates it with data and saves to database. After that adds to list of attachments.
-     * @param pathImage Path to full size image
+     *
+     * @param pathImage     Path to full size image
      * @param pathThumbnail Path to thumbnail size image.
      */
     public void addAttachment(String pathImage, String pathThumbnail) {

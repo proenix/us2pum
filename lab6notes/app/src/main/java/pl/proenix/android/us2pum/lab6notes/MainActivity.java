@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * On back navigate up.
      * Catches event on back navigation button in toolbar pressed from CreateUpdate Fragment.
+     *
      * @return true
      */
     @Override

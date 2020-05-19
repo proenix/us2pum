@@ -28,7 +28,7 @@ public class NoteAttachmentFragment extends Fragment {
     private Long noteID;
     private Long attachmentID;
     private int currentPosition;
-    private float x1,x2;
+    private float x1, x2;
 
     private List<NoteAttachment> noteAttachments;
 
@@ -67,7 +67,7 @@ public class NoteAttachmentFragment extends Fragment {
                     break;
                 case MotionEvent.ACTION_UP:
                     x2 = event.getX();
-                    if(x1< x2) {
+                    if (x1 < x2) {
                         Bundle bundle = new Bundle();
                         bundle.putLong("noteID", noteID);
                         bundle.putLong("attachmentID", getPreviousAttachmentId());
@@ -93,7 +93,7 @@ public class NoteAttachmentFragment extends Fragment {
 
     private Long getPreviousAttachmentId() {
         if (currentPosition == 0) {
-            return noteAttachments.get(noteAttachments.size()-1).getID();
+            return noteAttachments.get(noteAttachments.size() - 1).getID();
         }
         return noteAttachments.get(currentPosition - 1).getID();
     }

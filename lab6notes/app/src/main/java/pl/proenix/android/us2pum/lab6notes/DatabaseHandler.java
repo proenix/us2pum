@@ -103,6 +103,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * Add new note to database and return its id.
+     *
      * @param note Note object populated with data.
      * @return long ID of added note.
      */
@@ -129,6 +130,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * Update provided Note object representation in database.
+     *
      * @param note Note object populated with data and already existing in DB.
      * @return Boolean depending on success of operation.
      */
@@ -145,13 +147,14 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_CREATED_AT, note.getCreatedAt());
 
         int rowsUpdated = db.update(TABLE_NOTES, values, KEY_ID + " = ?",
-                new String[] { String.valueOf(note.getID()) });
+                new String[]{String.valueOf(note.getID())});
         // True if at least one row updated.
         return rowsUpdated > 0;
     }
 
     /**
      * Finds Note in database by provided id.
+     *
      * @param id Long ID of note
      * @return Note object or null
      */
@@ -161,9 +164,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         try (Cursor cursor = db.query(
                 TABLE_NOTES,
-                new String[]{ KEY_ID, KEY_NAME, KEY_CONTENT, KEY_CATEGORY, KEY_STATUS, KEY_PRIORITY, KEY_DUE_DATE, KEY_CREATED_AT },
+                new String[]{KEY_ID, KEY_NAME, KEY_CONTENT, KEY_CATEGORY, KEY_STATUS, KEY_PRIORITY, KEY_DUE_DATE, KEY_CREATED_AT},
                 KEY_ID + "=?",
-                new String[]{ String.valueOf(id) },
+                new String[]{String.valueOf(id)},
                 null, null, null, null)) {
             if (cursor != null) {
                 cursor.moveToFirst();
@@ -184,6 +187,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * Add attachment to database.
+     *
      * @param attachment Attachment object - already populated with data.
      * @return id of added attachment.
      */
@@ -206,6 +210,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * Find single attachment by id.
+     *
      * @param id Id of attachment.
      * @return Attachment Object.
      */
@@ -214,9 +219,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         try (Cursor cursor = db.query(
                 TABLE_ATTACHMENTS,
-                new String[]{ KEY_ID, KEY_NOTE_ID, KEY_PATH_IMG_NORMAL, KEY_PATH_IMG_THUMB},
+                new String[]{KEY_ID, KEY_NOTE_ID, KEY_PATH_IMG_NORMAL, KEY_PATH_IMG_THUMB},
                 KEY_ID + "=?",
-                new String[]{ String.valueOf(id) },
+                new String[]{String.valueOf(id)},
                 null, null, null, null)) {
             if (cursor != null) {
                 cursor.moveToFirst();
@@ -233,6 +238,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * Find all attachments in database that are connected to chosen note id.
+     *
      * @param noteId Note id.
      * @return List of attachment objects.
      */
@@ -260,6 +266,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * Find all notes.
+     *
      * @return List of Note objects.
      */
     List<Note> findAllNotes() {
@@ -293,9 +300,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     private String _sortBy = KEY_DUE_DATE + " DESC";
+
     void setSortBy(String column, String order) {
         this._sortBy = column + " " + order;
     }
+
     public void setSortByPriority(String order) {
         if (order == "ASC") {
             setSortBy(KEY_PRIORITY, "ASC");
@@ -303,6 +312,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             setSortBy(KEY_PRIORITY, "DESC");
         }
     }
+
     public void setSortByTitle(String order) {
         if (order == "ASC") {
             setSortBy(KEY_NAME, "ASC");
@@ -310,6 +320,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             setSortBy(KEY_NAME, "DESC");
         }
     }
+
     public void setSortByDueDate(String order) {
         if (order == "ASC") {
             setSortBy(KEY_DUE_DATE, "ASC");
@@ -319,17 +330,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     private List<Integer> _priorityFilter = new ArrayList<Integer>();
+
     public List<Integer> getPriorityFilter() {
         return this._priorityFilter;
     }
+
     void addPriorityFilter(Integer id) {
         if (_priorityFilter.indexOf(id) == -1) {
             _priorityFilter.add(id);
         }
     }
+
     void removePriorityFilter(Integer id) {
         _priorityFilter.remove(id);
     }
+
     String getPriorityFilterString() {
         if (_priorityFilter.size() != 0) {
             StringBuilder s = new StringBuilder();
@@ -338,21 +353,25 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             }
             return "(" + s.toString().substring(0, s.toString().length() - 2) + ")";
         }
-        return  "()";
+        return "()";
     }
 
     private List<Integer> _categoryFilter = new ArrayList<Integer>();
+
     public List<Integer> getCategoryFilter() {
         return this._categoryFilter;
     }
+
     void addCategoryFilter(Integer id) {
         if (_categoryFilter.indexOf(id) == -1) {
             _categoryFilter.add(id);
         }
     }
+
     void removeCategoryFilter(Integer id) {
         _categoryFilter.remove(id);
     }
+
     String getCategoryFilterString() {
         if (_categoryFilter.size() != 0) {
             StringBuilder s = new StringBuilder();
@@ -365,17 +384,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     }
 
     private List<Integer> _statusFilter = new ArrayList<Integer>();
+
     public List<Integer> getStatusFilter() {
         return this._statusFilter;
     }
+
     void addStatusFilter(Integer id) {
         if (_statusFilter.indexOf(id) == -1) {
             _statusFilter.add(id);
         }
     }
+
     void removeStatusFilter(Integer id) {
         _statusFilter.remove(id);
     }
+
     String getStatusFilterString() {
         if (_statusFilter.size() != 0) {
             StringBuilder s = new StringBuilder();
@@ -390,6 +413,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * Remove note from DB.
+     *
      * @param note Note object.
      * @return True if note found and deleted.
      */
@@ -400,6 +424,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
     /**
      * Remove attachment from DB.
+     *
      * @param noteAttachment NoteAttachment object.
      * @return True if note found and deleted.
      */

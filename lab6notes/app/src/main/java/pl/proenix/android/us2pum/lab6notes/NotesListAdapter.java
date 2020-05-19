@@ -38,7 +38,8 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
 
     /**
      * Populate holder with data.
-     * @param holder Holder
+     *
+     * @param holder   Holder
      * @param position Adapter position.
      */
     @Override
@@ -88,7 +89,8 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         // Color background for note.
         try {
             holder.noteBackground.setBackground(getBackground(note.getBackgroundColor(), note.getBackgroundColor()));
-        } catch (NullPointerException ignored) { }
+        } catch (NullPointerException ignored) {
+        }
         // Open note on click
         holder.itemView.setOnClickListener(v -> {
             Bundle bundle = new Bundle();
@@ -132,6 +134,7 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
         View noteBackground;
         CheckBox done;
         LinearLayout noteAttachments;
+
         NoteViewHolder(View view) {
             super(view);
             done = view.findViewById(R.id.checkBoxListNoteDone);
@@ -154,8 +157,9 @@ public class NotesListAdapter extends RecyclerView.Adapter<NotesListAdapter.Note
 
     /**
      * Get background for note row based on provided colors.
+     *
      * @param colorBackground Background color.
-     * @param colorStroke Stroke color - accent for selected items.
+     * @param colorStroke     Stroke color - accent for selected items.
      * @return Drawable for use as background.
      */
     private Drawable getBackground(int colorBackground, int colorStroke) {
