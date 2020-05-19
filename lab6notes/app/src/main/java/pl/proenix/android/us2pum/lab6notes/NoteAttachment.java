@@ -93,8 +93,8 @@ public class NoteAttachment {
     @NonNull
     @Override
     public String toString() {
-        return "NoteAttachment: {id: " + String.valueOf(_id)
-                + "; note_id: " + String.valueOf(_note_id)
+        return "NoteAttachment: {id: " + _id
+                + "; note_id: " + _note_id
                 + "; pathImgNorm: " + _path_image_normal
                 + "; pathImgThumb: " + _path_image_thumb + "}";
     }
