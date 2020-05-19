@@ -379,7 +379,6 @@ class Note {
         } else {
             MainActivity.db.updateNote(this);
         }
-        Log.d("AndroidNotes", this.toString());
     }
 
     public void setStatusInProgress() {

@@ -5,11 +5,11 @@
     <item
         android:id="@+id/menu_take_photo"
         android:icon="@android:drawable/ic_menu_camera"
-        android:title="Take photo"
+        android:title="@string/take_a_photo"
         app:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_delete_attachment"
         android:icon="@drawable/ic_delete_forever_24px"
-        android:title="Delete photo"
+        android:title="@string/delete_photo"
         app:showAsAction="ifRoom" />
 </menu>

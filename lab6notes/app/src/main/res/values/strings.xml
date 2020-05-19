@@ -37,4 +37,11 @@
     <string name="s_delete_due_date">Delete Due Date</string>
     <string name="s_go_to_attachments">Go to attachments</string>
     <string name="s_priority_indicator">Priority indicator</string>
+    <string name="delete">Delete</string>
+    <string name="download">Download</string>
+    <string name="share">Share</string>
+    <string name="take_a_photo">Take a photo</string>
+    <string name="delete_photo">Delete photo</string>
+    <string name="ask_manual_file_write_permission">Please grant file write permission manualy.</string>
+    <string name="note_saved_to_downloads">Note saved to downloads.</string>
 </resources>

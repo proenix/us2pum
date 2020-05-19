@@ -13,6 +13,7 @@ import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -46,10 +47,16 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.snackbar.Snackbar;
+
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -59,6 +66,7 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
 
     private static final int REQUEST_TAKE_PHOTO = 1;
     private static final int PERMISSIONS_REQUEST_CAMERA = 349;
+    private static final int PERMISSION_REQUEST_DOWNLOAD_FILE = 351;
 
     private View view;
 
@@ -90,12 +98,15 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
         TAKE_PHOTO
     }
 
+    /**
+     * Show intent that allows to take picture. Ask for permissions if not granted.
+     */
     private void dispatchTakePictureIntent() {
         if (ContextCompat.checkSelfPermission(view.getContext(),
                 Manifest.permission.CAMERA)
                 != PackageManager.PERMISSION_GRANTED) {
             // Permission is not granted
-            if (shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
                 Toast.makeText(view.getContext(), R.string.ask_manual_camera_permission, Toast.LENGTH_LONG).show();
             } else {
                 requestPermissions( new String[]{Manifest.permission.CAMERA}, PERMISSIONS_REQUEST_CAMERA);
@@ -134,7 +145,42 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
                 dispatchTakePictureIntent();
             }
         }
+        if (requestCode == PERMISSION_REQUEST_DOWNLOAD_FILE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                downloadNote();
+            }
+        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    /**
+     * Process note download. Ask for permissions if not granted.
+     */
+    private void downloadNote() {
+        if (ContextCompat.checkSelfPermission(view.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Toast.makeText(view.getContext(), R.string.ask_manual_file_write_permission, Toast.LENGTH_LONG).show();
+            } else {
+                requestPermissions( new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_DOWNLOAD_FILE);
+                // The callback method gets the result of the request.
+            }
+        } else {
+            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File file = new File(path, new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date()) + ".txt");
+            FileOutputStream stream = null;
+            try {
+                stream = new FileOutputStream(file);
+                try {
+                    stream.write(note.getSharableContent().getBytes());
+                } finally {
+                    stream.close();
+                    Snackbar.make(view, R.string.note_saved_to_downloads, Snackbar.LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -385,6 +431,9 @@ public class NoteCreateReadUpdateFragment extends Fragment implements AdapterVie
                 dialogBuilder.setMessage(R.string.do_you_really_want_to_delete_note).
                         setNegativeButton(R.string.no, onDeleteDialogClickListener).
                         setPositiveButton(R.string.yes, onDeleteDialogClickListener).show();
+                return true;
+            case R.id.menu_item_download:
+                downloadNote();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

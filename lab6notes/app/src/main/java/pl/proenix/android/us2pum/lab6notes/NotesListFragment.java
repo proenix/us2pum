@@ -1,12 +1,15 @@
 package pl.proenix.android.us2pum.lab6notes;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
@@ -20,9 +23,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -32,10 +37,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -45,11 +57,14 @@ import java.util.stream.Stream;
  */
 public class NotesListFragment extends Fragment implements NoteSelectedInteface {
 
+    private static final int PERMISSION_REQUEST_DOWNLOAD_FILE = 23;
+
     private List<Long> selectedNotes = new ArrayList<Long>();
     private List<Note> notes;
     private View view;
     private MenuItem menuItemShare;
     private MenuItem menuItemDelete;
+    private MenuItem menuItemDownload;
     private RecyclerView recyclerView;
     private NotesListAdapter notesListAdapter;
     private DialogInterface.OnClickListener onDeleteDialogClickListener;
@@ -140,6 +155,7 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
         inflater.inflate(R.menu.menu_create_update_note, menu);
         menuItemShare = menu.findItem(R.id.menu_item_share);
         menuItemDelete = menu.findItem(R.id.menu_item_delete);
+        menuItemDownload = menu.findItem(R.id.menu_item_download);
         showHideMenuForSelection();
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -176,6 +192,9 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
                         setNegativeButton(R.string.no, onDeleteDialogClickListener).
                         setPositiveButton(R.string.yes, onDeleteDialogClickListener).show();
                 return true;
+            case R.id.menu_item_download:
+                // Save notes to download
+                downloadNotes();
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -187,6 +206,7 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
     private void showHideMenuForSelection() {
         menuItemDelete.setVisible(selectedNotes.size() > 0);
         menuItemShare.setVisible(selectedNotes.size() > 0);
+        menuItemDownload.setVisible(selectedNotes.size() > 0);
     }
 
     @Override
@@ -348,5 +368,52 @@ public class NotesListFragment extends Fragment implements NoteSelectedInteface 
             }
         });
 
+    }
+
+    /**
+     * Process note download. Ask for permissions if not granted.
+     */
+    private void downloadNotes() {
+        if (ContextCompat.checkSelfPermission(view.getContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                Toast.makeText(view.getContext(), R.string.ask_manual_file_write_permission, Toast.LENGTH_LONG).show();
+            } else {
+                requestPermissions( new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_DOWNLOAD_FILE);
+                // The callback method gets the result of the request.
+            }
+        } else {
+            File path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            File file = new File(path, new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date()) + ".txt");
+            FileOutputStream stream = null;
+            StringBuilder sb2 = new StringBuilder();
+            for (long noteId : selectedNotes) {
+                Note note = Note.findById(noteId);
+                if (note != null) {
+                    sb2.append(note.getSharableContent()).append('\n');
+                }
+            }
+            try {
+                stream = new FileOutputStream(file);
+                try {
+                    stream.write(sb2.toString().getBytes());
+                } finally {
+                    stream.close();
+                    Snackbar.make(view, R.string.note_saved_to_downloads, Snackbar.LENGTH_SHORT).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == PERMISSION_REQUEST_DOWNLOAD_FILE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                downloadNotes();
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }
